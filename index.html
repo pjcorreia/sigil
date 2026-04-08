@@ -4,5 +4,1090 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SIGIL | Signal Intelligence Lab</title>
-<p>Site is being deployed. Please check back in a few minutes.</p>
-</head></html>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+  :root {
+    --bg-primary: #0a0e17;
+    --bg-secondary: #111827;
+    --bg-card: #1a2235;
+    --bg-card-hover: #1f2a40;
+    --accent: #00d4aa;
+    --accent-dim: #00d4aa33;
+    --accent-glow: #00d4aa22;
+    --red: #ff4757;
+    --red-dim: #ff475722;
+    --orange: #ffa502;
+    --orange-dim: #ffa50222;
+    --yellow: #eccc68;
+    --text-primary: #e8eaf0;
+    --text-secondary: #8892a8;
+    --text-muted: #4a5568;
+    --border: #1e2a3a;
+    --border-accent: #00d4aa44;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* === SCANLINES OVERLAY === */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 212, 170, 0.015) 2px,
+      rgba(0, 212, 170, 0.015) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* === NAVIGATION === */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(10, 14, 23, 0.92);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+  }
+
+  .nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+  }
+
+  .nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+  }
+
+  .nav-brand .logo {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: var(--accent);
+    letter-spacing: 3px;
+  }
+
+  .nav-brand .tagline {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--accent); }
+
+  .nav-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .nav-status .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* === HERO === */
+  .hero {
+    padding: 140px 2rem 80px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 60px; left: 50%;
+    transform: translateX(-50%);
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-label {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--accent);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border: 1px solid var(--border-accent);
+    border-radius: 20px;
+    margin-bottom: 1.5rem;
+    background: var(--accent-dim);
+  }
+
+  .hero h1 {
+    font-size: 3.2rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .hero p {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto 2rem;
+    font-weight: 300;
+  }
+
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    margin-top: 3rem;
+  }
+
+  .hero-stat {
+    text-align: center;
+  }
+
+  .hero-stat .number {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .hero-stat .label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 4px;
+  }
+
+  /* === SECTIONS === */
+  section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+  }
+
+  .section-header {
+    margin-bottom: 3rem;
+  }
+
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--accent);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  .section-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  /* === INVESTIGATION CARDS === */
+  .investigations-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .inv-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .inv-card:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--border-accent);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0, 212, 170, 0.08);
+  }
+
+  .inv-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 4px; height: 100%;
+  }
+
+  .inv-card[data-risk="critical"]::before { background: var(--red); }
+  .inv-card[data-risk="high"]::before { background: var(--orange); }
+  .inv-card[data-risk="medium"]::before { background: var(--yellow); }
+
+  .inv-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+
+  .inv-card-header h3 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    flex: 1;
+    padding-right: 1rem;
+  }
+
+  .risk-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+
+  .risk-badge.critical { background: var(--red-dim); color: var(--red); border: 1px solid var(--red); }
+  .risk-badge.high { background: var(--orange-dim); color: var(--orange); border: 1px solid var(--orange); }
+  .risk-badge.medium { background: rgba(236, 204, 104, 0.1); color: var(--yellow); border: 1px solid var(--yellow); }
+
+  .inv-card p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 1.2rem;
+  }
+
+  .inv-meta {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .inv-meta-item {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .inv-meta-item .val {
+    color: var(--text-secondary);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* === CASE DETAIL (expanded) === */
+  .case-detail {
+    display: none;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-top: -0.5rem;
+    margin-bottom: 1.5rem;
+    padding: 2.5rem;
+    animation: slideDown 0.3s ease;
+  }
+
+  .case-detail.active { display: block; }
+
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .case-detail h4 {
+    font-size: 1rem;
+    color: var(--accent);
+    margin-bottom: 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 1px;
+  }
+
+  .case-detail p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.8;
+  }
+
+  /* === DATA TABLE === */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    font-size: 0.85rem;
+  }
+
+  .data-table th {
+    text-align: left;
+    padding: 10px 14px;
+    background: rgba(0, 212, 170, 0.08);
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .data-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-secondary);
+  }
+
+  .data-table tr:hover td {
+    background: rgba(0, 212, 170, 0.03);
+  }
+
+  .price-increase {
+    color: var(--red);
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+  }
+
+  .price { font-family: 'JetBrains Mono', monospace; }
+
+  /* === CHARTS === */
+  .chart-container {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+  }
+
+  .chart-container canvas {
+    max-height: 350px;
+  }
+
+  .chart-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--accent);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+
+  /* === TIMELINE === */
+  .timeline {
+    position: relative;
+    padding: 2rem 0;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 20px;
+    top: 0; bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--accent), var(--border));
+  }
+
+  .timeline-item {
+    position: relative;
+    padding-left: 50px;
+    margin-bottom: 2rem;
+  }
+
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: 14px;
+    top: 6px;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--bg-primary);
+    border: 2px solid var(--accent);
+  }
+
+  .timeline-item.active::before {
+    background: var(--accent);
+    box-shadow: 0 0 12px var(--accent);
+  }
+
+  .timeline-date {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--accent);
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+
+  .timeline-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+
+  .timeline-desc {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+
+  /* === DOWNLOADS === */
+  .downloads {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .download-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+
+  .download-card:hover {
+    border-color: var(--accent);
+    background: var(--bg-card-hover);
+  }
+
+  .download-icon {
+    width: 48px; height: 48px;
+    border-radius: 10px;
+    background: var(--accent-dim);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+
+  .download-info h4 {
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+  }
+
+  .download-info span {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  /* === FOOTER === */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 3rem 2rem;
+    text-align: center;
+  }
+
+  footer p {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+
+  footer .footer-brand {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent);
+    font-weight: 600;
+    letter-spacing: 2px;
+  }
+
+  /* === RESPONSIVE === */
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 2rem; }
+    .hero-stats { flex-direction: column; gap: 1.5rem; }
+    .nav-links { display: none; }
+    .inv-card { padding: 1.5rem; }
+    .case-detail { padding: 1.5rem; }
+    .data-table { font-size: 0.75rem; }
+    .data-table th, .data-table td { padding: 8px 6px; }
+  }
+
+  /* === SCROLL REVEAL === */
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="nav-brand">
+      <div>
+        <div class="logo">SIGIL</div>
+        <div class="tagline">Signal Intelligence Lab</div>
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#investigations">Investigations</a></li>
+      <li><a href="#data">Data</a></li>
+      <li><a href="#timeline">Timeline</a></li>
+      <li><a href="#downloads">Downloads</a></li>
+    </ul>
+    <div class="nav-status">
+      <div class="dot"></div>
+      ACTIVE
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-label">// Investigation Report 001</div>
+  <h1>Portuguese Public Procurement<br>Under the Microscope</h1>
+  <p>Automated analysis of 25,000+ contract modifications and thousands of direct awards on Portugal's BASE.gov.pt portal, surfacing patterns that warrant scrutiny.</p>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="number">25,672</div>
+      <div class="label">Modifications Analyzed</div>
+    </div>
+    <div class="hero-stat">
+      <div class="number">6</div>
+      <div class="label">Red Flag Patterns</div>
+    </div>
+    <div class="hero-stat">
+      <div class="number">137</div>
+      <div class="label">Elsevier Monopoly Contracts</div>
+    </div>
+    <div class="hero-stat">
+      <div class="number">109</div>
+      <div class="label">Siemens Direct Awards</div>
+    </div>
+  </div>
+</div>
+
+<!-- INVESTIGATIONS -->
+<section id="investigations">
+  <div class="section-header">
+    <div class="section-label">// Findings</div>
+    <div class="section-title">Investigation Threads</div>
+  </div>
+
+  <div class="investigations-grid">
+
+    <!-- FINDING 1: SUCH -->
+    <div class="inv-card" data-risk="critical" onclick="toggleDetail('such')">
+      <div class="inv-card-header">
+        <h3>SUCH Hospital Services: Contract Expansions of 11,000%</h3>
+        <span class="risk-badge critical">CRITICAL</span>
+      </div>
+      <p>Hospital support service contracts awarded via direct award ballooned from single-digit millions to hundreds of millions of euros through post-award modifications, completely bypassing competitive thresholds.</p>
+      <div class="inv-meta">
+        <div class="inv-meta-item">Entity: <span class="val">SUCH</span></div>
+        <div class="inv-meta-item">Max increase: <span class="val">+11,373%</span></div>
+        <div class="inv-meta-item">Procedure: <span class="val">Direct Award</span></div>
+      </div>
+    </div>
+    <div class="case-detail" id="detail-such">
+      <h4>> Case Analysis</h4>
+      <p>The Servico de Utilizacao Comum dos Hospitais (SUCH) is a cooperative serving Portugal's public hospital system. Two contracts stand out as the most extreme modifications in the entire BASE portal:</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>Contract</th><th>Initial Value</th><th>Modified Value</th><th>Increase</th><th>Procedure</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Operational support services (cleaning, storage, waste)</td>
+            <td class="price">&euro;4.0M</td>
+            <td class="price">&euro;459.6M</td>
+            <td class="price-increase">+11,373%</td>
+            <td>Ajuste Direto</td>
+          </tr>
+          <tr>
+            <td>Telephone exchange supply &amp; maintenance</td>
+            <td class="price">&euro;1.0M</td>
+            <td class="price">&euro;101.5M</td>
+            <td class="price-increase">+10,400%</td>
+            <td>Ajuste Direto</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>Contract modifications of this magnitude on direct awards raise serious questions. By initially awarding a low-value contract, the entity avoids the competitive thresholds mandated by Portuguese and EU procurement law. Subsequent modifications then expand the contract far beyond what would have required open competition.</p>
+      <div class="chart-container">
+        <div class="chart-title">Contract Value: Before vs. After Modification</div>
+        <canvas id="chart-such"></canvas>
+      </div>
+    </div>
+
+    <!-- FINDING 2: Siemens -->
+    <div class="inv-card" data-risk="high" onclick="toggleDetail('siemens')">
+      <div class="inv-card-header">
+        <h3>Siemens / Infraestruturas de Portugal: 109 Direct Awards</h3>
+        <span class="risk-badge high">HIGH</span>
+      </div>
+      <p>Portugal's railway infrastructure manager has awarded 109 direct award contracts to Siemens for signaling and maintenance, creating a systematic vendor lock-in with no competitive tenders in the relationship.</p>
+      <div class="inv-meta">
+        <div class="inv-meta-item">Contracts: <span class="val">109</span></div>
+        <div class="inv-meta-item">Type: <span class="val">Vendor Lock-in</span></div>
+        <div class="inv-meta-item">Sector: <span class="val">Railway</span></div>
+      </div>
+    </div>
+    <div class="case-detail" id="detail-siemens">
+      <h4>> Case Analysis</h4>
+      <p>Infraestruturas de Portugal (IP) manages Portugal's railway infrastructure. The relationship with Siemens Mobility follows a classic vendor lock-in pattern: proprietary signaling systems (ETCS, interlocking) are installed, and only Siemens can maintain or upgrade them, creating an endless cycle of non-competitive direct awards.</p>
+      <p>While vendor lock-in is acknowledged as a challenge in rail technology globally, the complete absence of any competitive process across 109 contracts is notable. IP also features prominently in contract modifications, with the Linha de Evora construction showing repeated increases of approximately 30% each.</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>Metric</th><th>Value</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Total direct awards to Siemens</td><td class="price">109 contracts</td></tr>
+          <tr><td>Competitive tenders in relationship</td><td class="price-increase">0</td></tr>
+          <tr><td>Linha de Evora modifications</td><td class="price">&euro;130.5M &rarr; &euro;169M (+30%)</td></tr>
+          <tr><td>Subject areas</td><td>ETCS signaling, maintenance, railway tech</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- FINDING 3: Elsevier -->
+    <div class="inv-card" data-risk="high" onclick="toggleDetail('elsevier')">
+      <div class="inv-card-header">
+        <h3>Elsevier / FCT: 15-Year, &euro;120M+ Monopoly</h3>
+        <span class="risk-badge high">HIGH</span>
+      </div>
+      <p>Portugal's science agency has awarded 137 contracts to Elsevier for academic library access over 15+ years, all via direct award, with steadily escalating prices from &euro;17.6M to &euro;24M per cycle.</p>
+      <div class="inv-meta">
+        <div class="inv-meta-item">Contracts: <span class="val">137</span></div>
+        <div class="inv-meta-item">Latest: <span class="val">&euro;24M (2025)</span></div>
+        <div class="inv-meta-item">Duration: <span class="val">15+ years</span></div>
+      </div>
+    </div>
+    <div class="case-detail" id="detail-elsevier">
+      <h4>> Case Analysis</h4>
+      <p>The b-on academic library consortium provides Portuguese researchers with access to scientific journals, primarily from Elsevier. Every contract cycle has been awarded via direct award ("Ajuste Direto"), with prices rising steadily:</p>
+      <div class="chart-container">
+        <div class="chart-title">Elsevier Contract Value Escalation (3-year cycles)</div>
+        <canvas id="chart-elsevier"></canvas>
+      </div>
+      <table class="data-table">
+        <thead>
+          <tr><th>Period</th><th>Contract Value</th><th>Procedure</th><th>Signed</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>2010-2012</td><td class="price">&euro;18.1M</td><td>Ajuste Direto</td><td>Apr 2010</td></tr>
+          <tr><td>2013-2015</td><td class="price">&euro;17.6M</td><td>Ajuste Direto</td><td>Feb 2013</td></tr>
+          <tr><td>2016-2018</td><td class="price">&euro;19.6M</td><td>Ajuste Direto</td><td>May 2016</td></tr>
+          <tr><td>2019-2021</td><td class="price">&euro;21.1M</td><td>Ajuste Direto</td><td>Dec 2018</td></tr>
+          <tr><td>2022-2024</td><td class="price">&euro;21.3M</td><td>Ajuste Direto</td><td>May 2022</td></tr>
+          <tr><td>2025-2027</td><td class="price">&euro;24.0M</td><td>Ajuste Direto</td><td>Jun 2025</td></tr>
+        </tbody>
+      </table>
+      <p>Other countries (Germany, Sweden, Norway) have successfully leveraged competitive pressure or even temporary access breaks to negotiate better terms. Portugal has not attempted any competitive process in over 15 years.</p>
+    </div>
+
+    <!-- FINDING 4: Dentsu -->
+    <div class="inv-card" data-risk="medium" onclick="toggleDetail('dentsu')">
+      <div class="inv-card-header">
+        <h3>Dentsu / Turismo de Portugal: Incumbency Pipeline</h3>
+        <span class="risk-badge medium">MEDIUM-HIGH</span>
+      </div>
+      <p>&euro;20M in direct award contracts to Dentsu for tourism marketing preceded a &euro;40M competitive tender for the same services, raising questions about incumbency advantages.</p>
+      <div class="inv-meta">
+        <div class="inv-meta-item">Direct awards: <span class="val">~&euro;20M</span></div>
+        <div class="inv-meta-item">Tender: <span class="val">~&euro;40M</span></div>
+        <div class="inv-meta-item">Pattern: <span class="val">Seed &rarr; Tender</span></div>
+      </div>
+    </div>
+    <div class="case-detail" id="detail-dentsu">
+      <h4>> Case Analysis</h4>
+      <p>Dentsu Creative (formerly Isobar) received approximately &euro;20M across 6 direct award contracts from Turismo de Portugal for tourism marketing and promotion. Subsequently, a competitive tender worth approximately &euro;40M was launched for similar services.</p>
+      <p>This "seed with direct awards, then formalize with a tender" pattern is a recognized procurement risk: prior direct awards give the incumbent insider knowledge, established relationships, and operational advantages that can distort competitive processes. Whether intentional or not, the pattern creates an uneven playing field.</p>
+    </div>
+
+    <!-- FINDING 5: Cleaning -->
+    <div class="inv-card" data-risk="medium" onclick="toggleDetail('cleaning')">
+      <div class="inv-card-header">
+        <h3>Cleaning &amp; Security Services: 397 Direct Awards Above Threshold</h3>
+        <span class="risk-badge medium">MEDIUM-HIGH</span>
+      </div>
+      <p>Commoditized facility services with many qualified providers are being awarded via direct award above &euro;500k. Fine Facility alone holds 871 government contracts.</p>
+      <div class="inv-meta">
+        <div class="inv-meta-item">Direct awards: <span class="val">397</span></div>
+        <div class="inv-meta-item">Top supplier: <span class="val">Fine Facility (871)</span></div>
+        <div class="inv-meta-item">Sector: <span class="val">Facilities</span></div>
+      </div>
+    </div>
+    <div class="case-detail" id="detail-cleaning">
+      <h4>> Case Analysis</h4>
+      <p>Cleaning and security services are commoditized: many qualified providers exist in the Portuguese market. Yet 397 direct awards above &euro;500,000 were found in 2025 alone. This volume suggests systematic circumvention of competitive tendering requirements, often justified through urgency or continuity-of-service arguments that stretch the legal definitions.</p>
+      <p>Fine Facility stands out with 871 total government contracts, indicating a dominant position in government facility management that warrants scrutiny into how this position was established and maintained without broader market competition.</p>
+    </div>
+
+    <!-- FINDING 6: Modifications -->
+    <div class="inv-card" data-risk="high" onclick="toggleDetail('mods')">
+      <div class="inv-card-header">
+        <h3>Contract Modifications: Systematic Price Jumps</h3>
+        <span class="risk-badge high">HIGH</span>
+      </div>
+      <p>25,672 contract modifications since January 2025. CP Comboios (+&euro;318M), Metro do Porto (+74%), and multiple Infraestruturas de Portugal projects show repeated expansions suggesting systematic cost underestimation.</p>
+      <div class="inv-meta">
+        <div class="inv-meta-item">Total mods: <span class="val">25,672</span></div>
+        <div class="inv-meta-item">Largest: <span class="val">+&euro;318M (CP)</span></div>
+        <div class="inv-meta-item">Data errors: <span class="val">&euro;44.4B entry</span></div>
+      </div>
+    </div>
+    <div class="case-detail" id="detail-mods">
+      <h4>> Case Analysis</h4>
+      <p>Analysis of modifications published since January 2025 reveals a pattern of significant post-award price increases across major infrastructure projects:</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>Entity</th><th>Description</th><th>Original</th><th>Modified</th><th>Change</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>CP Comboios de Portugal</td>
+            <td>Acquisition of 117 trains</td>
+            <td class="price">&euro;746M</td>
+            <td class="price">&euro;1,064M</td>
+            <td class="price-increase">+43%</td>
+          </tr>
+          <tr>
+            <td>Metro do Porto</td>
+            <td>Metro system concession</td>
+            <td class="price">&euro;204.3M</td>
+            <td class="price">&euro;355.8M</td>
+            <td class="price-increase">+74%</td>
+          </tr>
+          <tr>
+            <td>Infraestruturas de Portugal</td>
+            <td>Linha de Evora construction</td>
+            <td class="price">&euro;130.5M</td>
+            <td class="price">&euro;169.0M</td>
+            <td class="price-increase">+30%</td>
+          </tr>
+          <tr>
+            <td>SUCH</td>
+            <td>Operational support services</td>
+            <td class="price">&euro;4.0M</td>
+            <td class="price">&euro;459.6M</td>
+            <td class="price-increase">+11,373%</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="chart-container">
+        <div class="chart-title">Top Contract Modifications by Absolute Increase (&euro;M)</div>
+        <canvas id="chart-mods"></canvas>
+      </div>
+      <p>The Castro Marim entry (&euro;4.2M modified to &euro;44.46 billion) is almost certainly a data entry error, but its presence in the portal highlights a lack of data validation controls on BASE.gov.pt itself.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- DATA VISUALIZATION -->
+<section id="data">
+  <div class="section-header">
+    <div class="section-label">// Overview</div>
+    <div class="section-title">Risk Distribution</div>
+  </div>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+    <div class="chart-container">
+      <div class="chart-title">Findings by Risk Level</div>
+      <canvas id="chart-risk"></canvas>
+    </div>
+    <div class="chart-container">
+      <div class="chart-title">Procurement Procedure Distribution (Top Findings)</div>
+      <canvas id="chart-procedures"></canvas>
+    </div>
+  </div>
+</section>
+
+<!-- TIMELINE -->
+<section id="timeline">
+  <div class="section-header">
+    <div class="section-label">// Investigation Log</div>
+    <div class="section-title">Case Timeline</div>
+  </div>
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-date">APR 7, 2026 &mdash; 13:00</div>
+      <div class="timeline-title">Investigation Initiated</div>
+      <div class="timeline-desc">Accessed BASE.gov.pt portal and discovered internal AJAX API for structured data extraction.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">APR 7, 2026 &mdash; 13:15</div>
+      <div class="timeline-title">High-Value Direct Awards Scanned</div>
+      <div class="timeline-desc">Queried direct awards above &euro;500k since 2025. Identified Siemens/IP, Elsevier/FCT, and Dentsu/Turismo patterns.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">APR 7, 2026 &mdash; 13:30</div>
+      <div class="timeline-title">Repeat Supplier Analysis</div>
+      <div class="timeline-desc">Aggregated contracts by supplier to identify monopoly relationships. Fine Facility flagged with 871 contracts.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">APR 7, 2026 &mdash; 13:45</div>
+      <div class="timeline-title">Deep Dive: Elsevier Monopoly</div>
+      <div class="timeline-desc">Traced 15+ year history of Elsevier contracts. Confirmed all 137 contracts awarded via direct award with escalating prices.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">APR 7, 2026 &mdash; 14:00</div>
+      <div class="timeline-title">Contract Modifications API Discovered</div>
+      <div class="timeline-desc">Found search_incrementos API endpoint. Queried 25,672 modifications and identified extreme price jumps.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">APR 7, 2026 &mdash; 14:15</div>
+      <div class="timeline-title">SUCH Anomalies Flagged</div>
+      <div class="timeline-desc">Hospital service contracts with 11,000%+ increases identified as most extreme modifications in entire portal.</div>
+    </div>
+    <div class="timeline-item active">
+      <div class="timeline-date">APR 7, 2026 &mdash; 15:00</div>
+      <div class="timeline-title">Report Compiled</div>
+      <div class="timeline-desc">All findings synthesized into comprehensive report with data visualizations and risk assessments.</div>
+    </div>
+  </div>
+</section>
+
+<!-- DOWNLOADS -->
+<section id="downloads">
+  <div class="section-header">
+    <div class="section-label">// Attachments</div>
+    <div class="section-title">Downloads</div>
+  </div>
+  <div class="downloads">
+    <a class="download-card" href="BASE_Procurement_Analysis_2026.pdf" download>
+      <div class="download-icon">&#128196;</div>
+      <div class="download-info">
+        <h4>Full Investigation Report</h4>
+        <span>PDF &bull; 16 KB &bull; Detailed findings with recommendations</span>
+      </div>
+    </a>
+    <div class="download-card" style="opacity: 0.5; cursor: default;">
+      <div class="download-icon">&#128202;</div>
+      <div class="download-info">
+        <h4>Raw Data Export</h4>
+        <span>Coming soon &bull; API query results and aggregations</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- METHODOLOGY NOTE -->
+<section>
+  <div class="section-header">
+    <div class="section-label">// Methodology</div>
+    <div class="section-title">How This Was Done</div>
+  </div>
+  <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 2rem;">
+    <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem;">Data was extracted from <strong style="color: var(--text-primary);">base.gov.pt/base4</strong> using its internal AJAX API (<code style="color: var(--accent); background: var(--accent-dim); padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;">/Base4/pt/resultados/</code>). Queries targeted contracts (search_contratos) and modifications (search_incrementos), filtered by procedure type, value, date, and entity. Results were analyzed programmatically for percentage increases, repeat patterns, and anomalies.</p>
+    <p style="color: var(--text-muted); font-size: 0.85rem; font-style: italic;">Caveat: This analysis identifies patterns warranting further investigation. Not all patterns necessarily indicate wrongdoing. Some may have legitimate justifications such as vendor lock-in in specialized technology or emergency procurement during crises.</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p><span class="footer-brand">SIGIL</span> &mdash; Signal Intelligence Lab</p>
+  <p style="margin-top: 0.5rem; font-size: 0.7rem;">Data source: base.gov.pt &bull; Analysis date: April 7, 2026 &bull; All data is publicly available</p>
+</footer>
+
+<script>
+// === TOGGLE DETAIL PANELS ===
+function toggleDetail(id) {
+  const el = document.getElementById('detail-' + id);
+  const wasActive = el.classList.contains('active');
+  document.querySelectorAll('.case-detail').forEach(d => d.classList.remove('active'));
+  if (!wasActive) {
+    el.classList.add('active');
+    setTimeout(() => initCharts(), 100);
+  }
+}
+
+// === CHARTS ===
+let chartsInitialized = {};
+
+function initCharts() {
+  // SUCH chart
+  const suchEl = document.getElementById('chart-such');
+  if (suchEl && !chartsInitialized.such && suchEl.closest('.case-detail').classList.contains('active')) {
+    chartsInitialized.such = new Chart(suchEl, {
+      type: 'bar',
+      data: {
+        labels: ['Operational Support', 'Telephone Exchange'],
+        datasets: [
+          { label: 'Initial Value', data: [4.0, 1.0], backgroundColor: '#00d4aa44', borderColor: '#00d4aa', borderWidth: 1 },
+          { label: 'After Modification', data: [459.6, 101.5], backgroundColor: '#ff475744', borderColor: '#ff4757', borderWidth: 1 }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { labels: { color: '#8892a8', font: { family: 'JetBrains Mono', size: 11 } } } },
+        scales: {
+          x: { ticks: { color: '#8892a8', font: { size: 10 } }, grid: { color: '#1e2a3a' } },
+          y: { ticks: { color: '#8892a8', callback: v => '\u20AC' + v + 'M' }, grid: { color: '#1e2a3a' } }
+        }
+      }
+    });
+  }
+
+  // Elsevier chart
+  const elsEl = document.getElementById('chart-elsevier');
+  if (elsEl && !chartsInitialized.elsevier && elsEl.closest('.case-detail').classList.contains('active')) {
+    chartsInitialized.elsevier = new Chart(elsEl, {
+      type: 'line',
+      data: {
+        labels: ['2010-12', '2013-15', '2016-18', '2019-21', '2022-24', '2025-27'],
+        datasets: [{
+          label: 'Contract Value (\u20ACM)',
+          data: [18.1, 17.6, 19.6, 21.1, 21.3, 24.0],
+          borderColor: '#00d4aa',
+          backgroundColor: '#00d4aa22',
+          fill: true,
+          tension: 0.3,
+          pointBackgroundColor: '#00d4aa',
+          pointRadius: 5
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { labels: { color: '#8892a8', font: { family: 'JetBrains Mono', size: 11 } } } },
+        scales: {
+          x: { ticks: { color: '#8892a8' }, grid: { color: '#1e2a3a' } },
+          y: { min: 15, ticks: { color: '#8892a8', callback: v => '\u20AC' + v + 'M' }, grid: { color: '#1e2a3a' } }
+        }
+      }
+    });
+  }
+
+  // Modifications chart
+  const modsEl = document.getElementById('chart-mods');
+  if (modsEl && !chartsInitialized.mods && modsEl.closest('.case-detail').classList.contains('active')) {
+    chartsInitialized.mods = new Chart(modsEl, {
+      type: 'bar',
+      data: {
+        labels: ['SUCH (Ops)', 'CP Comboios', 'Metro Porto', 'IP Evora', 'SUCH (Telecom)'],
+        datasets: [
+          { label: 'Original (\u20ACM)', data: [4.0, 746, 204.3, 130.5, 1.0], backgroundColor: '#00d4aa44', borderColor: '#00d4aa', borderWidth: 1 },
+          { label: 'Increase (\u20ACM)', data: [455.6, 318, 151.5, 38.5, 100.5], backgroundColor: '#ff475744', borderColor: '#ff4757', borderWidth: 1 }
+        ]
+      },
+      options: {
+        responsive: true,
+        indexAxis: 'y',
+        plugins: { legend: { labels: { color: '#8892a8', font: { family: 'JetBrains Mono', size: 11 } } } },
+        scales: {
+          x: { stacked: true, ticks: { color: '#8892a8', callback: v => '\u20AC' + v + 'M' }, grid: { color: '#1e2a3a' } },
+          y: { stacked: true, ticks: { color: '#8892a8', font: { size: 10 } }, grid: { color: '#1e2a3a' } }
+        }
+      }
+    });
+  }
+}
+
+// Overview charts (always visible)
+document.addEventListener('DOMContentLoaded', function() {
+  // Risk distribution
+  new Chart(document.getElementById('chart-risk'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Critical', 'High', 'Medium-High'],
+      datasets: [{
+        data: [1, 3, 2],
+        backgroundColor: ['#ff4757', '#ffa502', '#eccc68'],
+        borderColor: '#111827',
+        borderWidth: 3
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: 'bottom', labels: { color: '#8892a8', font: { family: 'JetBrains Mono', size: 11 }, padding: 20 } }
+      }
+    }
+  });
+
+  // Procedure distribution
+  new Chart(document.getElementById('chart-procedures'), {
+    type: 'bar',
+    data: {
+      labels: ['Direct Award\n(Ajuste Direto)', 'Public Tender\n(Concurso Publico)', 'Prior Consultation', 'Framework\nAgreement'],
+      datasets: [{
+        label: 'Flagged Contracts',
+        data: [85, 8, 4, 3],
+        backgroundColor: ['#ff475788', '#ffa50288', '#eccc6888', '#00d4aa88'],
+        borderColor: ['#ff4757', '#ffa502', '#eccc68', '#00d4aa'],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { color: '#8892a8', font: { size: 10 } }, grid: { color: '#1e2a3a' } },
+        y: { ticks: { color: '#8892a8', callback: v => v + '%' }, grid: { color: '#1e2a3a' } }
+      }
+    }
+  });
+
+  // Scroll reveal
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.inv-card, .chart-container, .timeline-item, .download-card').forEach(el => {
+    el.classList.add('reveal');
+    observer.observe(el);
+  });
+});
+</script>
+
+</body>
+</html>
