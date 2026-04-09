@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sobre SIGIL | Signal Intelligence Lab</title>
+<meta property="og:title" content="Sobre SIGIL — Signal Intelligence Lab">
+<meta property="og:description" content="Quem somos e o que fazemos: investigação independente de padrões na contratação pública portuguesa">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://sigil.pt/sobre.html">
+<meta property="og:site_name" content="SIGIL">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Sobre SIGIL — Signal Intelligence Lab">
+<meta name="twitter:description" content="Quem somos e o que fazemos: investigação independente de padrões na contratação pública portuguesa">
+
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+  :root {
+    --bg-primary: #0a0e17; --bg-secondary: #111827; --bg-card: #1a2235; --bg-card-hover: #1f2a40;
+    --accent: #00d4aa; --accent-dim: #00d4aa33; --accent-glow: #00d4aa22;
+    --red: #ff4757; --red-dim: #ff475722; --orange: #ffa502; --orange-dim: #ffa50222; --yellow: #eccc68;
+    --text-primary: #e8eaf0; --text-secondary: #8892a8; --text-muted: #4a5568;
+    --border: #1e2a3a; --border-accent: #00d4aa44;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg-primary); color: var(--text-primary); line-height: 1.7; overflow-x: hidden; }
+  body::before { content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,212,170,0.015) 2px, rgba(0,212,170,0.015) 4px); pointer-events: none; z-index: 9999; }
+
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: rgba(10,14,23,0.92); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); padding: 0 2rem; }
+  .nav-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 60px; }
+  .nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .nav-brand .logo { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 1.3rem; color: var(--accent); letter-spacing: 3px; }
+  .nav-brand .tagline { font-size: 0.7rem; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a { color: var(--text-secondary); text-decoration: none; font-size: 0.85rem; font-weight: 500; letter-spacing: 0.5px; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--accent); }
+  .back-link { color: var(--accent) !important; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem !important; }
+  .lang-toggle { display: flex; gap: 0; border: 1px solid #1e2a3a; border-radius: 4px; overflow: hidden; margin-left: 1rem; }
+  .lang-toggle a { padding: 4px 10px; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; font-weight: 700; letter-spacing: 1px; text-decoration: none; color: #4a5568; transition: all 0.2s; }
+  .lang-toggle a.active { background: #00d4aa; color: #0a0e17; }
+  .lang-toggle a:not(.active):hover { color: #00d4aa; background: #00d4aa33; }
+
+  .deep-hero { padding: 120px 2rem 60px; text-align: center; position: relative; }
+  .deep-hero::before { content: ''; position: absolute; top: 60px; left: 50%; transform: translateX(-50%); width: 600px; height: 600px; background: radial-gradient(circle, rgba(0,212,170,0.1) 0%, transparent 70%); pointer-events: none; }
+  .deep-hero h1 { font-size: 2.6rem; font-weight: 700; line-height: 1.2; margin: 1rem 0; background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .deep-hero p { font-size: 1.1rem; color: var(--text-secondary); max-width: 700px; margin: 0 auto; font-weight: 300; }
+
+  .content { max-width: 900px; margin: 0 auto; padding: 0 2rem 4rem; }
+
+  .section-block { margin-bottom: 3rem; }
+  .section-block h2 { font-size: 1.4rem; font-weight: 700; color: var(--accent); margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); font-family: 'JetBrains Mono', monospace; letter-spacing: 1px; }
+  .section-block h3 { font-size: 1.1rem; font-weight: 600; color: var(--text-primary); margin: 1.5rem 0 0.5rem; }
+  .section-block p { color: var(--text-secondary); font-size: 0.92rem; margin-bottom: 1rem; }
+
+  .highlight-box { background: var(--bg-card); border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0; padding: 1.2rem 1.5rem; margin: 1rem 0; }
+  .highlight-box strong { color: var(--text-primary); }
+  .highlight-box p { margin-bottom: 0.3rem; color: var(--text-secondary); font-size: 0.88rem; }
+
+  .contact-block { background: var(--bg-card); border: 1px solid var(--border-accent); border-radius: 8px; padding: 1.5rem; margin: 2rem 0; }
+  .contact-block h3 { margin-top: 0; color: var(--accent); }
+  .contact-block a { color: var(--accent); text-decoration: none; font-family: 'JetBrains Mono', monospace; }
+  .contact-block a:hover { text-decoration: underline; }
+
+  .feature-list { list-style: none; margin: 1.5rem 0; }
+  .feature-list li { padding: 0.8rem 0; border-bottom: 1px solid var(--border); color: var(--text-secondary); font-size: 0.92rem; }
+  .feature-list li:last-child { border-bottom: none; }
+  .feature-list strong { color: var(--text-primary); }
+
+  footer { text-align: center; padding: 3rem 2rem; border-top: 1px solid var(--border); color: var(--text-muted); font-size: 0.8rem; }
+
+  @media (max-width: 768px) {
+    .deep-hero h1 { font-size: 1.8rem; }
+    .nav-links { display: none; }
+  }
+</style>
+<meta name="description" content="Sobre SIGIL: quem somos, missão e metodologia de investigação em contratações públicas.">
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-brand">
+      <span class="logo">SIGIL</span>
+      <span class="tagline">Signal Intelligence Lab</span>
+    </a>
+    <div style="display: flex; align-items: center; flex: 1;">
+      <ul class="nav-links">
+        <li><a href="index.html" class="back-link">← Voltar às Investigações</a></li>
+      </ul>
+      <div class="lang-toggle"><a href="about.html">EN</a><a href="sobre.html" class="active">PT</a></div>
+    </div>
+  </div>
+</nav>
+
+<div class="deep-hero">
+  <h1>Sobre SIGIL</h1>
+  <p>Signal Intelligence Lab — Transparência através de dados abertos e análise inteligente.</p>
+</div>
+
+<div class="content">
+
+  <!-- SECTION: Mission -->
+  <div class="section-block">
+    <h2>01 &mdash; Missão</h2>
+    <p>SIGIL (Signal Intelligence Lab) utiliza inteligência artificial e dados abertos para trazer transparência às despesas públicas portuguesas. O nosso objetivo: identificar padrões de potencial corrupção em contratos públicos e responsabilizar as instituições que gerem fundos de todos.</p>
+    <p>Portugal gasta bilhões de euros em aprovisionamento público todos os anos. Este é dinheiro que poderia estar em escolas, hospitais ou infraestruturas. Quando esse dinheiro é desviado através de esquemas de corrupção — divisão de contratos, adjudicações sem concorrência, subsidiárias fantasma — o impacto é direto: menos recursos para o bem público.</p>
+    <p>SIGIL trabalha para trazer à superfície as anomalias que sistemas de supervisão tradicionais deixam passar.</p>
+  </div>
+
+  <!-- SECTION: What We Do -->
+  <div class="section-block">
+    <h2>02 &mdash; O Que Fazemos</h2>
+    <p>SIGIL processa dados de aprovisionamento público português de múltiplas fontes, nomeadamente:</p>
+    <ul class="feature-list">
+      <li><strong>BASE.gov.pt:</strong> Base de dados oficial de contratos públicos. Analisamos padrões de adjudicação, estruturas de entidades, e comportamentos anómalos.</li>
+      <li><strong>Tribunais de Contas:</strong> Relatórios de auditoria pública. Cruzamos achados com dados de contratos para contextualizar descobertas.</li>
+      <li><strong>Registos oficiais:</strong> Composição de órgãos, registos de empresas, e documentação regulatória que revela relacionamentos ocultos.</li>
+    </ul>
+    <p>Procuramos padrões que indicam risco elevado de corrupção:</p>
+    <div class="highlight-box">
+      <strong>Divisão de contratos:</strong> Um contrato grande é dividido em contratos menores para evitar licitação obrigatória.
+    </div>
+    <div class="highlight-box">
+      <strong>Padrão de único licitante:</strong> A mesma empresa ganha repetidamente em concursos públicos sem concorrência.
+    </div>
+    <div class="highlight-box">
+      <strong>Adjudicações diretas excessivas:</strong> Contratos acima de limiares normais são adjudicados sem concurso.
+    </div>
+    <div class="highlight-box">
+      <strong>Estruturas fantasma:</strong> Subsidiárias de capital zero ou mínimo a gerir dinheiro público.
+    </div>
+    <div class="highlight-box">
+      <strong>Expansões não justificadas:</strong> Contratos expandem muito além do seu valor original através de modificações.
+    </div>
+  </div>
+
+  <!-- SECTION: Why It Matters -->
+  <div class="section-block">
+    <h2>03 &mdash; Porque Importa</h2>
+    <p>A corrupção em contratos públicos é um problema estrutural em muitas democracias. Em Portugal, a falta de supervisão robusta permite que esquemas sofisticados prosparem:</p>
+    <ul class="feature-list">
+      <li><strong>Desvio de recursos:</strong> Dinheiro destinado a saúde, educação e infraestruturas é desviado para intermediários privados.</li>
+      <li><strong>Impunidade institucional:</strong> Entidades públicas e funcionários envolvidos em corrupção frequentemente nunca enfrentam sanções proporcionais.</li>
+      <li><strong>Degradação democrática:</strong> Quando cidadãos veem sistemicamente que as instituições não funcionam, a confiança pública erode.</li>
+      <li><strong>Precedente normalizador:</strong> Corrupção não punida normaliza-se. Outras entidades começam a copiar os mesmos esquemas.</li>
+    </ul>
+    <p>Supervisão cidadã é essencial. SIGIL torna dados públicos acessíveis e compreensíveis — permitindo jornalistas, pesquisadores, e cidadãos participarem na accountability.</p>
+  </div>
+
+  <!-- SECTION: Open Source -->
+  <div class="section-block">
+    <h2>04 &mdash; Código Aberto e Transparência</h2>
+    <p>SIGIL opera com transparência radical. Todo o código, metodologia e dados estão publicados no GitHub:</p>
+    <div class="highlight-box">
+      <strong><a href="https://github.com/pjcorreia/sigil" target="_blank" style="color: var(--accent);">github.com/pjcorreia/sigil</a></strong>
+      <p>Qualquer pessoa pode auditar o nosso código, reproduzir as nossas análises, e contribuir com melhorias.</p>
+    </div>
+    <p>Porque é que isto importa? Porque análise automatizada pode conter erros. Porque dados públicos podem ter qualidade variável. Porque não queremos que as pessoas nos aceitem cegamente — queremos que verifiquem.</p>
+    <p>A filosofia de SIGIL: <strong>dados abertos + metodologia transparente + disclaimer claro = accountability</strong></p>
+  </div>
+
+  <!-- SECTION: AI Transparency -->
+  <div class="section-block">
+    <h2>05 &mdash; Transparência sobre IA</h2>
+    <p>As análises de SIGIL são geradas por modelos de linguagem de IA. Isto significa:</p>
+    <ul class="feature-list">
+      <li><strong>Conteúdo é sintetizado, não escrito manualmente:</strong> IA processa dados e gera narrativas. Isto permite escalar análise — mas introduz risco de alucinação e imprecisão.</li>
+      <li><strong>Viés é possível:</strong> Modelos de IA refletem viés presente nos dados de treino. Mesmo com precauções, há sempre risco de conclusões enviesadas.</li>
+      <li><strong>Verificação independente é obrigatória:</strong> Cada alegação deve ser verificada contra as fontes fornecidas. Não confiem em SIGIL sozinho.</li>
+    </ul>
+    <p>SIGIL é uma ferramenta para trazer atenção a anomalias potenciais — não é um tribunal. Jornalistas, investigadores e autoridades devem sempre verificar independentemente antes de actuar sobre achados SIGIL.</p>
+  </div>
+
+  <!-- SECTION: Contact -->
+  <div class="section-block">
+    <h2>06 &mdash; Contactos</h2>
+    <div class="contact-block">
+      <h3>Denúncias, Correções e Colaboração</h3>
+      <p><strong>Email:</strong> <a href="mailto:denuncia@sigil.pt">denuncia@sigil.pt</a></p>
+      <p style="margin-top: 1rem;">Envie:</p>
+      <ul class="feature-list" style="margin: 0.5rem 0 0;">
+        <li>Informações sobre contratos suspeitos ou corrupção</li>
+        <li>Erros factuais que encontrou nas nossas análises</li>
+        <li>Solicitações de investigação de casos específicos</li>
+        <li>Oportunidades de colaboração</li>
+      </ul>
+    </div>
+    <div class="contact-block">
+      <h3>Correções Técnicas</h3>
+      <p><strong>GitHub Issues:</strong> <a href="https://github.com/pjcorreia/sigil/issues" target="_blank">github.com/pjcorreia/sigil/issues</a></p>
+      <p style="margin-top: 1rem;">Para erros factuais específicos encontrados em investigações, abra uma issue no GitHub com:</p>
+      <ul class="feature-list" style="margin: 0.5rem 0 0;">
+        <li>Qual investigação contém o erro</li>
+        <li>Que informação está incorreta</li>
+        <li>Qual é a informação correta (com fontes)</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<!-- AI DISCLAIMER & REPORT -->
+<div style="max-width:900px;margin:0 auto 2rem;padding:0 2rem;">
+  <div style="background:linear-gradient(135deg,rgba(255,71,87,0.12),rgba(255,165,2,0.08));border:1px solid rgba(255,71,87,0.3);border-radius:10px;padding:1.2rem 1.5rem;display:flex;align-items:flex-start;gap:1rem;">
+    <div style="font-size:1.4rem;flex-shrink:0;">&#9888;&#65039;</div>
+    <div style="font-size:0.82rem;color:#8892a8;line-height:1.6;">
+      <strong style="color:#ffa502;font-family:JetBrains Mono,monospace;font-size:0.75rem;letter-spacing:1px;">CONTEÚDO GERADO POR IA</strong><br>
+      Esta página foi gerada por IA e pode conter inexatidões. Todas as alegações devem ser independentemente verificadas usando as fontes fornecidas.
+      <br><br>
+      <a href="https://github.com/pjcorreia/sigil/issues/new?labels=correction&amp;title=%5BCorrection%5D+" target="_blank" style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border:1px solid #ff4757;border-radius:4px;color:#ff4757;font-family:JetBrains Mono,monospace;font-size:0.6rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;text-decoration:none;">&#9873; Reportar Erro no GitHub</a>
+      &nbsp;
+      <a href="mailto:denuncia@sigil.pt?subject=%5BSIGIL%20Correction%5D" style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border:1px solid #00d4aa;border-radius:4px;color:#00d4aa;font-family:JetBrains Mono,monospace;font-size:0.6rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;text-decoration:none;">&#9993; Correção por Email</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p style="color:var(--accent); font-family:'JetBrains Mono', monospace; letter-spacing: 2px; margin-bottom: 0.5rem;">SIGIL</p>
+  <p>Signal Intelligence Lab &mdash; Análise de Aprovisionamento Público Português</p>
+  <p style="margin-top: 0.5rem;"><a href="index.html" style="color:var(--accent); text-decoration:none;">← Voltar a todas as investigações</a></p>
+</footer>
+</body>
+</html>

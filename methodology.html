@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIGIL | Methodology</title>
+<meta property="og:title" content="Methodology — SIGIL">
+<meta property="og:description" content="How we investigate: sources, methods, and limitations of our public procurement analysis">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://sigil.pt/methodology.html">
+<meta property="og:site_name" content="SIGIL">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Methodology — SIGIL">
+<meta name="twitter:description" content="How we investigate: sources, methods, and limitations of our public procurement analysis">
+
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+  :root {
+    --bg-primary: #0a0e17; --bg-secondary: #111827; --bg-card: #1a2235; --bg-card-hover: #1f2a40;
+    --accent: #00d4aa; --accent-dim: #00d4aa33; --accent-glow: #00d4aa22;
+    --red: #ff4757; --red-dim: #ff475722; --orange: #ffa502; --orange-dim: #ffa50222; --yellow: #eccc68;
+    --text-primary: #e8eaf0; --text-secondary: #8892a8; --text-muted: #4a5568;
+    --border: #1e2a3a; --border-accent: #00d4aa44;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg-primary); color: var(--text-primary); line-height: 1.7; overflow-x: hidden; }
+  body::before { content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,212,170,0.015) 2px, rgba(0,212,170,0.015) 4px); pointer-events: none; z-index: 9999; }
+
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: rgba(10,14,23,0.92); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); padding: 0 2rem; }
+  .nav-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 60px; }
+  .nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .nav-brand .logo { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 1.3rem; color: var(--accent); letter-spacing: 3px; }
+  .nav-brand .tagline { font-size: 0.7rem; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a { color: var(--text-secondary); text-decoration: none; font-size: 0.85rem; font-weight: 500; letter-spacing: 0.5px; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--accent); }
+  .back-link { color: var(--accent) !important; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem !important; }
+  .lang-toggle { display: flex; gap: 0; border: 1px solid #1e2a3a; border-radius: 4px; overflow: hidden; margin-left: 1rem; }
+  .lang-toggle a { padding: 4px 10px; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; font-weight: 700; letter-spacing: 1px; text-decoration: none; color: #4a5568; transition: all 0.2s; }
+  .lang-toggle a.active { background: #00d4aa; color: #0a0e17; }
+  .lang-toggle a:not(.active):hover { color: #00d4aa; background: #00d4aa33; }
+
+  .deep-hero { padding: 120px 2rem 60px; text-align: center; position: relative; }
+  .deep-hero::before { content: ''; position: absolute; top: 60px; left: 50%; transform: translateX(-50%); width: 600px; height: 600px; background: radial-gradient(circle, var(--accent-dim) 0%, transparent 70%); pointer-events: none; }
+  .deep-hero h1 { font-size: 2.6rem; font-weight: 700; line-height: 1.2; margin: 1rem 0; background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .deep-hero p { font-size: 1.1rem; color: var(--text-secondary); max-width: 700px; margin: 0 auto; font-weight: 300; }
+
+  .content { max-width: 900px; margin: 0 auto; padding: 0 2rem 4rem; }
+
+  .section-block { margin-bottom: 3rem; }
+  .section-block h2 { font-size: 1.4rem; font-weight: 700; color: var(--accent); margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); font-family: 'JetBrains Mono', monospace; letter-spacing: 1px; }
+  .section-block h3 { font-size: 1.1rem; font-weight: 600; color: var(--text-primary); margin: 1.5rem 0 0.5rem; }
+  .section-block p { color: var(--text-secondary); font-size: 0.92rem; margin-bottom: 1rem; }
+  .section-block li { color: var(--text-secondary); font-size: 0.92rem; margin-bottom: 0.5rem; margin-left: 1.5rem; }
+
+  .evidence-box { background: var(--bg-card); border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0; padding: 1.2rem 1.5rem; margin: 1rem 0; }
+  .evidence-box.red { border-left-color: var(--red); }
+  .evidence-box.orange { border-left-color: var(--orange); }
+  .evidence-box strong { color: var(--text-primary); }
+  .evidence-box p { margin-bottom: 0.3rem; color: var(--text-secondary); font-size: 0.88rem; }
+
+  .data-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.85rem; }
+  .data-table th { text-align: left; padding: 10px 14px; background: rgba(0,212,170,0.08); color: var(--accent); font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; letter-spacing: 1px; text-transform: uppercase; border-bottom: 1px solid var(--border); }
+  .data-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--text-secondary); }
+  .data-table tr:hover td { background: rgba(0,212,170,0.03); }
+
+  .source-list { list-style: none; margin: 1rem 0; }
+  .source-list li { padding: 0.5rem 0; border-bottom: 1px solid var(--border); }
+  .source-list a { color: var(--accent); text-decoration: none; font-size: 0.85rem; }
+  .source-list a:hover { text-decoration: underline; }
+  .source-list .source-type { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; margin-left: 0.5rem; }
+
+  footer { text-align: center; padding: 3rem 2rem; border-top: 1px solid var(--border); color: var(--text-muted); font-size: 0.8rem; }
+
+  @media (max-width: 768px) {
+    .deep-hero h1 { font-size: 1.8rem; }
+    .nav-links { display: none; }
+  }
+</style>
+<meta name="description" content="SIGIL methodology: how we collect data, verify information, and document patterns.">
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <a href="en.html" class="nav-brand">
+      <span class="logo">SIGIL</span>
+      <span class="tagline">Signal Intelligence Lab</span>
+    </a>
+    <div style="display: flex; align-items: center; flex: 1;">
+      <ul class="nav-links">
+        <li><a href="en.html" class="back-link">← Back to Investigations</a></li>
+      </ul>
+      <div class="lang-toggle"><a href="methodology.html" class="active">EN</a><a href="metodologia.html">PT</a></div>
+    </div>
+  </div>
+</nav>
+
+<div class="deep-hero">
+  <h1>Methodology</h1>
+  <p>How SIGIL collects data, identifies corruption patterns, and classifies procurement fraud risk in Portuguese public contracts.</p>
+</div>
+
+<div class="content">
+
+  <!-- SECTION: Data Sources -->
+  <div class="section-block">
+    <h2>01 &mdash; Data Sources</h2>
+    <p>SIGIL analysis relies on four complementary public data sources:</p>
+
+    <h3>BASE.gov.pt — Portuguese Public Procurement Data Portal</h3>
+    <p>The primary database. BASE.gov.pt publishes all public contracts above €5,000 (Law 19/2012), including:</p>
+    <ul>
+      <li>Procurement procedure type (open, restricted, negotiated, direct)</li>
+      <li>Initial and final contract value</li>
+      <li>Publication, award, and completion dates</li>
+      <li>Awarding and awarded entities</li>
+      <li>Number of competitors</li>
+    </ul>
+    <p>Inclusion in BASE is mandatory and data is structured — enabling automated mass analysis of 100,000s of contracts.</p>
+
+    <h3>Tribunal de Contas — Court of Auditors Reports</h3>
+    <p>The Tribunal de Contas (TdC) publishes periodic audit reports on public entities and public utilities. These reports contain:</p>
+    <ul>
+      <li>Findings on financial mismanagement</li>
+      <li>Irregular spending patterns</li>
+      <li>Compliance recommendations</li>
+      <li>Penalties and sanctions imposed</li>
+    </ul>
+    <p>TdC reports are authoritative documents — they often identify suspicious behavior years before criminal action.</p>
+
+    <h3>DGRM — Directorate-General for Administrative Reform</h3>
+    <p>DGRM maintains records of organizational structure of public entities, administrative reforms, restructurings, and legislative milestones. Critical for:</p>
+    <ul>
+      <li>Tracking parent entities and subsidiaries</li>
+      <li>Identifying when structures are created/dissolved</li>
+      <li>Understanding governance architecture</li>
+    </ul>
+
+    <h3>TED (Tenders Electronic Daily) — EU Database</h3>
+    <p>TED publishes EU public contracts above €140,000. For cross-border Portuguese contracts and EU co-funded projects, TED provides additional visibility and independent timestamps.</p>
+  </div>
+
+  <!-- SECTION: Analysis Methodology -->
+  <div class="section-block">
+    <h2>02 &mdash; Analysis Methodology</h2>
+
+    <h3>Data Extraction and Cleaning</h3>
+    <p>BASE.gov.pt is crawled periodically. Data is:</p>
+    <ul>
+      <li>Downloaded in structured JSON/CSV format</li>
+      <li>Normalized (entity names harmonized, currency values in EUR, dates in ISO format)</li>
+      <li>Duplicates identified and removed</li>
+      <li>Missing fields marked; incomplete records flagged</li>
+    </ul>
+
+    <h3>Identification of Suspicious Entities</h3>
+    <p>Analysis begins by identifying entities with anomalous procurement patterns:</p>
+    <ul>
+      <li><strong>Lack of Competition:</strong> Contracts with 0–1 competitors (expected &lt;5% in "open" procedures; &gt;50% suggests biased selection)</li>
+      <li><strong>Price Jumps:</strong> Contracts where final value is 200%+ of initial (indicator of expansion without renewed competition)</li>
+      <li><strong>Low-Capital Entities:</strong> Awarded with registered capital &lt;€50,000 but win €1M+ contracts (shell company flag)</li>
+      <li><strong>Relationship Pattern:</strong> Companies that only win contracts from one specific entity (anomalous subordination)</li>
+      <li><strong>Suspicious Timing:</strong> Companies created days before winning a contract, or dissolved days after</li>
+    </ul>
+
+    <h3>Thresholds Used</h3>
+    <table class="data-table">
+      <thead>
+        <tr><th>Criterion</th><th>Threshold</th><th>Interpretation</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Competitors in "Open" Procedure</td><td>&lt;1</td><td>CRITICAL RISK</td></tr>
+        <tr><td>Price Variation (Initial → Final)</td><td>&gt;300%</td><td>HIGH RISK</td></tr>
+        <tr><td>Monopoly Rate (% contracts from 1 awardee)</td><td>&gt;80%</td><td>CRITICAL RISK</td></tr>
+        <tr><td>Company Age vs Contract Date</td><td>&lt;90 days</td><td>MEDIUM RISK</td></tr>
+        <tr><td>Company Capital / Contract Value</td><td>&lt;1%</td><td>MEDIUM RISK</td></tr>
+        <tr><td>Court Database Mention</td><td>Yes</td><td>Audit context</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Pattern Detection</h3>
+    <p>After identifying suspicious entities, analysis searches for structural patterns:</p>
+    <ul>
+      <li><strong>Subsidiary Networks:</strong> Search for entities that function jointly (same shareholders, same addresses, overlapping board members)</li>
+      <li><strong>Legal Fronts:</strong> Companies registered in opaque jurisdictions, with management distant from "home country"</li>
+      <li><strong>Money Flow Cycles:</strong> Tracking how money flows from public entity → awarded company → other entities (indicator of laundering or evasion)</li>
+      <li><strong>Governance Overlap:</strong> Board members, shareholders, or administrators appearing simultaneously across multiple entities</li>
+    </ul>
+  </div>
+
+  <!-- SECTION: Classification System -->
+  <div class="section-block">
+    <h2>03 &mdash; Classification System</h2>
+    <p>Each investigation is classified into one of three states:</p>
+
+    <div class="evidence-box">
+      <strong>UNREPORTED</strong>
+      <p>Corruption patterns identified through public data, but never investigated by authorities. Suspicious behavior is evident (lack of competition, massive contract expansion, shell entities, governance links), but remains publicly uninvestigated — suggests gaps in oversight.</p>
+    </div>
+
+    <div class="evidence-box orange">
+      <strong>REPORTED</strong>
+      <p>Authorities have initiated formal investigation. May be ongoing (PJ, DCIAP, TdC). Investigation is confirmed via press releases, official reports, or public legal action.</p>
+    </div>
+
+    <div class="evidence-box red">
+      <strong>ENFORCED</strong>
+      <p>Conviction, penalty, or sanction imposed. Rests on final court judgment, administrative act, or audit report with executed fine. Evidence of accountability.</p>
+    </div>
+
+    <h3>Note on Presumption of Innocence</h3>
+    <p>No classification implies guilt. UNREPORTED means "not publicly investigated," not "guilty." Listed entities have the right to contest data and correct records — see "How to Contribute Corrections" section below.</p>
+  </div>
+
+  <!-- SECTION: Limitations -->
+  <div class="section-block">
+    <h2>04 &mdash; Limitations and Caveats</h2>
+
+    <h3>AI-Generated Analysis</h3>
+    <p>Investigation pages are generated by large language models (LLMs). While based on reliable public data, summaries, analyses, and conclusions may contain:</p>
+    <ul>
+      <li><strong>Factual Inaccuracies:</strong> LLMs occasionally distort dates, numbers, or event sequences</li>
+      <li><strong>Exaggerated Inferences:</strong> Models may suggest connections that are speculative rather than direct</li>
+      <li><strong>Lost Context:</strong> Explanations may be oversimplified</li>
+    </ul>
+    <p><strong>All numbers, dates, and claims should be independently verified using the sources provided.</strong></p>
+
+    <h3>Potential Errors</h3>
+    <ul>
+      <li><strong>BASE.gov.pt Defects:</strong> If the public data platform contains errors or incomplete records, analysis is affected</li>
+      <li><strong>Name Confusion:</strong> May be confusion between companies with similar names, especially if addresses differ slightly</li>
+      <li><strong>Incomplete Governance Context:</strong> Complex ownership structures (trusts, foundations, intermediaries) may be hidden from Portuguese public records</li>
+      <li><strong>Data Timing:</strong> BASE.gov.pt has publication delays; very recent contracts may not yet be registered</li>
+    </ul>
+
+    <h3>Need for Human Verification</h3>
+    <p>This platform is an <strong>initial investigation tool</strong>, not a conclusion. Journalists, researchers, and regulators should:</p>
+    <ul>
+      <li>Validate all numbers against original sources</li>
+      <li>Seek corroborating documentation (emails, memos, official decisions)</li>
+      <li>Give entities opportunity to respond before publication</li>
+      <li>Be aware that correlation does not imply causation</li>
+    </ul>
+
+    <h3>Not Covered</h3>
+    <p>This analysis focuses on <strong>quantitative data patterns</strong>. Does not cover:</p>
+    <ul>
+      <li>Technical quality of work delivered (a contract may lack competition but the company may be doing good work)</li>
+      <li>Legitimate reasons for negotiated procedures (e.g., unique expertise, system compatibility)</li>
+      <li>Private transactions between companies (only public data are visible)</li>
+      <li>Motivation or intent — only external behavior is analyzed</li>
+    </ul>
+  </div>
+
+  <!-- SECTION: How to Contribute Corrections -->
+  <div class="section-block">
+    <h2>05 &mdash; How to Contribute Corrections</h2>
+    <p>If you identify an error, important missing context, or disagree with the analysis, there are two paths to report:</p>
+
+    <h3>Option 1: GitHub Issues (Public)</h3>
+    <p>Open an issue in the SIGIL GitHub repository. Creates a public, traceable record. Perfect for:</p>
+    <ul>
+      <li>Factual errors (wrong date, incorrect number)</li>
+      <li>Entities disagreeing with analysis</li>
+      <li>Lost context or confusing explanations</li>
+      <li>Methodological improvement suggestions</li>
+    </ul>
+    <p><a href="https://github.com/pjcorreia/sigil/issues" target="_blank" style="color: var(--accent); text-decoration: none;">SIGIL GitHub Issues</a></p>
+
+    <h3>Option 2: Direct Email (Private)</h3>
+    <p>If the matter is sensitive or requires confidential discussion before publication:</p>
+    <p><a href="mailto:denuncia@sigil.pt?subject=%5BSIGIL%20Correction%5D" style="color: var(--accent); text-decoration: none;">denuncia@sigil.pt</a></p>
+    <p>Include:</p>
+    <ul>
+      <li>Link to the specific page or section</li>
+      <li>The claim or number in question</li>
+      <li>Verification source (link to BASE.gov.pt, official report, etc.)</li>
+      <li>Your name and context (optional, but helpful for context)</li>
+    </ul>
+  </div>
+
+  <!-- SECTION: Technical References -->
+  <div class="section-block">
+    <h2>06 &mdash; Technical References</h2>
+    <ul class="source-list">
+      <li><a href="https://base.gov.pt" target="_blank">BASE.gov.pt — Public Procurement Platform</a> <span class="source-type">Public Data</span></li>
+      <li><a href="https://www.tcontas.pt/pt-pt/ProdutosTC/Relatorios/" target="_blank">Tribunal de Contas — Reports Library</a> <span class="source-type">Public Audit</span></li>
+      <li><a href="https://ted.europa.eu/en/" target="_blank">TED (Tenders Electronic Daily)</a> <span class="source-type">EU Database</span></li>
+      <li><a href="https://dre.pt" target="_blank">Diário da República Eletrônico — Portuguese Legislation</a> <span class="source-type">Legislation</span></li>
+      <li><a href="https://www.portaldasfinancas.gov.pt" target="_blank">Finance Portal — Public Entities</a> <span class="source-type">Records</span></li>
+    </ul>
+  </div>
+
+</div>
+
+<!-- AI DISCLAIMER & REPORT -->
+<div style="max-width:900px;margin:0 auto 2rem;padding:0 2rem;">
+  <div style="background:linear-gradient(135deg,rgba(255,71,87,0.12),rgba(255,165,2,0.08));border:1px solid rgba(255,71,87,0.3);border-radius:10px;padding:1.2rem 1.5rem;display:flex;align-items:flex-start;gap:1rem;">
+    <div style="font-size:1.4rem;flex-shrink:0;">&#9888;&#65039;</div>
+    <div style="font-size:0.82rem;color:#8892a8;line-height:1.6;">
+      <strong style="color:#ffa502;font-family:JetBrains Mono,monospace;font-size:0.75rem;letter-spacing:1px;">AI-GENERATED CONTENT</strong><br>
+      This page was generated by AI and may contain inaccuracies. All claims should be independently verified using the sources provided.
+      <br><br>
+      <a href="https://github.com/pjcorreia/sigil/issues/new?labels=correction&amp;title=%5BCorrection%5D+" target="_blank" style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border:1px solid #ff4757;border-radius:4px;color:#ff4757;font-family:JetBrains Mono,monospace;font-size:0.6rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;text-decoration:none;">&#9873; Report Error on GitHub</a>
+      &nbsp;
+      <a href="mailto:denuncia@sigil.pt?subject=%5BSIGIL%20Correction%5D" style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border:1px solid #00d4aa;border-radius:4px;color:#00d4aa;font-family:JetBrains Mono,monospace;font-size:0.6rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;text-decoration:none;">&#9993; Submit Correction via Email</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p style="color:var(--accent); font-family:'JetBrains Mono', monospace; letter-spacing: 2px; margin-bottom: 0.5rem;">SIGIL</p>
+  <p>Signal Intelligence Lab — Analysis of Portuguese Public Procurement</p>
+  <p style="margin-top: 0.5rem;"><a href="en.html" style="color:var(--accent); text-decoration:none;">← Back to all investigations</a></p>
+</footer>
+</body>
+</html>

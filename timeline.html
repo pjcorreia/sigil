@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIGIL | Investigation Timeline</title>
+<meta property="og:title" content="Timeline — SIGIL">
+<meta property="og:description" content="Timeline of our findings and research updates on public procurement patterns">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://sigil.pt/timeline.html">
+<meta property="og:site_name" content="SIGIL">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Timeline — SIGIL">
+<meta name="twitter:description" content="Timeline of our findings and research updates on public procurement patterns">
+
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+  :root {
+    --bg-primary: #0a0f1a;
+    --bg-secondary: #111827;
+    --bg-card: #1a2235;
+    --bg-card-hover: #1f2a40;
+    --accent: #00ff88;
+    --accent-dim: rgba(0, 255, 136, 0.15);
+    --accent-glow: rgba(0, 255, 136, 0.1);
+    --red: #ff4757;
+    --red-dim: rgba(255, 71, 87, 0.15);
+    --orange: #ffa502;
+    --orange-dim: rgba(255, 165, 2, 0.15);
+    --yellow: #eccc68;
+    --text-primary: #e8eaf0;
+    --text-secondary: #8892a8;
+    --text-muted: #4a5568;
+    --border: #1e2a3a;
+    --border-accent: rgba(0, 255, 136, 0.2);
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 255, 136, 0.015) 2px,
+      rgba(0, 255, 136, 0.015) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* === NAVIGATION === */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: rgba(10, 15, 26, 0.92);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+  }
+
+  .nav-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+  }
+
+  .nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    flex-shrink: 0;
+  }
+
+  .nav-brand .logo {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: var(--accent);
+    letter-spacing: 3px;
+  }
+
+  .nav-brand .tagline {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .nav-center {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    flex: 1;
+    margin-left: 3rem;
+  }
+
+  .back-link {
+    color: var(--accent);
+    text-decoration: none;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: opacity 0.2s;
+  }
+
+  .back-link:hover {
+    opacity: 0.8;
+  }
+
+  .lang-toggle {
+    display: flex;
+    gap: 0;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-left: auto;
+  }
+
+  .lang-toggle a {
+    padding: 4px 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-decoration: none;
+    color: var(--text-muted);
+    transition: all 0.2s;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+  }
+
+  .lang-toggle a.active {
+    background: var(--accent);
+    color: var(--bg-primary);
+  }
+
+  .lang-toggle a:not(.active):hover {
+    color: var(--accent);
+    background: var(--accent-dim);
+  }
+
+  /* === HERO SECTION === */
+  .hero {
+    padding: 120px 2rem 60px;
+    max-width: 1400px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-content {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .hero h1 {
+    font-size: 2.4rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, var(--accent), #00cc77);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero p {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+  }
+
+  /* === FILTER BAR === */
+  .filter-section {
+    max-width: 1400px;
+    margin: 2rem auto 3rem;
+    padding: 0 2rem;
+  }
+
+  .filter-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--accent);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  .filter-buttons {
+    display: flex;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+  }
+
+  .filter-btn {
+    padding: 8px 16px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-secondary);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+  }
+
+  .filter-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .filter-btn.active {
+    background: var(--accent);
+    color: var(--bg-primary);
+    border-color: var(--accent);
+  }
+
+  .filter-btn.unreported.active {
+    background: var(--red);
+    border-color: var(--red);
+  }
+
+  .filter-btn.reported.active {
+    background: var(--orange);
+    border-color: var(--orange);
+  }
+
+  .filter-btn.enforced.active {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  /* === TIMELINE CONTAINER === */
+  .timeline-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem 4rem;
+    position: relative;
+  }
+
+  .timeline-axis {
+    position: relative;
+    padding: 2rem 0;
+  }
+
+  /* Central vertical line */
+  .timeline-axis::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--accent), var(--orange), var(--red));
+    transform: translateX(-50%);
+    z-index: 0;
+  }
+
+  .timeline-item {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-bottom: 3rem;
+    opacity: 0;
+    animation: fadeInItem 0.8s ease forwards;
+    position: relative;
+    z-index: 1;
+  }
+
+  .timeline-item.hidden {
+    display: none;
+  }
+
+  .timeline-item.right {
+    direction: rtl;
+  }
+
+  .timeline-item.right > * {
+    direction: ltr;
+  }
+
+  /* Timeline dot */
+  .timeline-item::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 30px;
+    width: 16px;
+    height: 16px;
+    background: var(--bg-primary);
+    border: 3px solid var(--accent);
+    border-radius: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+  }
+
+  .timeline-item.unreported::after {
+    border-color: var(--red);
+  }
+
+  .timeline-item.reported::after {
+    border-color: var(--orange);
+  }
+
+  .timeline-item.enforced::after {
+    border-color: var(--accent);
+  }
+
+  /* Card styling */
+  .timeline-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .timeline-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+  }
+
+  .timeline-item.unreported .timeline-card::before {
+    background: var(--red);
+  }
+
+  .timeline-item.reported .timeline-card::before {
+    background: var(--orange);
+  }
+
+  .timeline-item.enforced .timeline-card::before {
+    background: var(--accent);
+  }
+
+  .timeline-card:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--border-accent);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0, 255, 136, 0.1);
+  }
+
+  .card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    gap: 1rem;
+  }
+
+  .card-header h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    flex: 1;
+  }
+
+  .card-date {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--accent);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  .status-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .status-badge.unreported {
+    background: var(--red-dim);
+    color: var(--red);
+    border: 1px solid var(--red);
+  }
+
+  .status-badge.reported {
+    background: var(--orange-dim);
+    color: var(--orange);
+    border: 1px solid var(--orange);
+  }
+
+  .status-badge.enforced {
+    background: var(--accent-dim);
+    color: var(--accent);
+    border: 1px solid var(--accent);
+  }
+
+  .card-description {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 1.2rem;
+  }
+
+  .card-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .meta-item {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .meta-item .label {
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  .meta-item .value {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .meta-item.entity .value {
+    color: var(--text-primary);
+  }
+
+  /* Link styling */
+  .timeline-card {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .timeline-card a {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    text-decoration: none;
+    z-index: 1;
+  }
+
+  .card-content {
+    position: relative;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  /* === ANIMATIONS === */
+  @keyframes fadeInItem {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .timeline-item:nth-child(1) {
+    animation-delay: 0.1s;
+  }
+
+  .timeline-item:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+
+  .timeline-item:nth-child(3) {
+    animation-delay: 0.3s;
+  }
+
+  .timeline-item:nth-child(4) {
+    animation-delay: 0.4s;
+  }
+
+  .timeline-item:nth-child(5) {
+    animation-delay: 0.5s;
+  }
+
+  .timeline-item:nth-child(6) {
+    animation-delay: 0.6s;
+  }
+
+  .timeline-item:nth-child(7) {
+    animation-delay: 0.7s;
+  }
+
+  .timeline-item:nth-child(8) {
+    animation-delay: 0.8s;
+  }
+
+  /* === RESPONSIVE DESIGN === */
+  @media (max-width: 1024px) {
+    .timeline-item {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    .timeline-axis::before {
+      left: 20px;
+    }
+
+    .timeline-item::after {
+      left: 20px;
+    }
+
+    .timeline-card {
+      margin-left: 50px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .hero h1 {
+      font-size: 1.8rem;
+    }
+
+    .hero p {
+      font-size: 0.95rem;
+    }
+
+    .nav-center {
+      display: none;
+    }
+
+    .nav-inner {
+      justify-content: space-between;
+    }
+
+    .filter-buttons {
+      flex-direction: column;
+    }
+
+    .filter-btn {
+      width: 100%;
+      text-align: center;
+    }
+
+    .timeline-item {
+      grid-template-columns: 1fr;
+      margin-bottom: 2.5rem;
+    }
+
+    .timeline-item.right {
+      direction: ltr;
+    }
+
+    .timeline-axis::before {
+      left: 20px;
+    }
+
+    .timeline-item::after {
+      left: 20px;
+    }
+
+    .timeline-card {
+      margin-left: 50px;
+    }
+
+    .card-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .status-badge {
+      align-self: flex-start;
+    }
+
+    .card-header h3 {
+      font-size: 1rem;
+    }
+
+    .timeline-container {
+      padding: 0 1.5rem 3rem;
+    }
+
+    .hero {
+      padding: 100px 1.5rem 40px;
+    }
+
+    nav {
+      padding: 0 1rem;
+    }
+
+    .nav-inner {
+      height: 50px;
+    }
+
+    .nav-brand .logo {
+      font-size: 1rem;
+    }
+
+    .nav-brand .tagline {
+      display: none;
+    }
+  }
+
+  /* === FOOTER === */
+  footer {
+    max-width: 1400px;
+    margin: 3rem auto 0;
+    padding: 2rem;
+    border-top: 1px solid var(--border);
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+  }
+</style>
+<meta name="description" content="SIGIL timeline: history of findings, updates, and milestones of our investigation.">
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="en.html" class="nav-brand">
+      <span class="logo">SIGIL</span>
+      <span class="tagline">Signal Intelligence Lab</span>
+    </a>
+    <div class="nav-center">
+      <a href="en.html" class="back-link">← Back</a>
+    </div>
+    <div class="lang-toggle">
+      <a href="timeline.html" class="active">EN</a>
+      <a href="cronologia.html">PT</a>
+    </div>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-content">
+    <h1>Investigation Timeline</h1>
+    <p>An interactive timeline of Portuguese public procurement corruption cases, organized chronologically with status and severity filters.</p>
+  </div>
+</div>
+
+<div class="filter-section">
+  <label class="filter-label">Filter by Status</label>
+  <div class="filter-buttons">
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn unreported" data-filter="unreported">Unreported</button>
+    <button class="filter-btn reported" data-filter="reported">Reported</button>
+    <button class="filter-btn enforced" data-filter="enforced">Enforced</button>
+  </div>
+</div>
+
+<div class="timeline-container">
+  <div class="timeline-axis">
+    <!-- Timeline items will be rendered here -->
+    <div class="timeline-item unreported" data-status="unreported">
+      <div class="timeline-card">
+        <div class="card-date">2008 - 2024</div>
+        <div class="card-header">
+          <h3>SUCH Hospital Services: 11,000% Contract Expansions</h3>
+          <span class="status-badge unreported">UNREPORTED</span>
+        </div>
+        <div class="card-content">
+          <p class="card-description">Hospital support service contracts awarded via direct award grew from millions to hundreds of millions through post-award modifications, entirely circumventing competitive thresholds.</p>
+          <div class="card-meta">
+            <div class="meta-item entity">
+              <span class="label">Entity:</span>
+              <span class="value">SUCH</span>
+            </div>
+            <div class="meta-item">
+              <span class="label">Max expansion:</span>
+              <span class="value">+11,373%</span>
+            </div>
+            <div class="meta-item">
+              <span class="label">Amount:</span>
+              <span class="value">€45.5M concealed</span>
+            </div>
+          </div>
+        </div>
+        <a href="such-deep-dive.html"></a>
+      </div>
+    </div>
+
+    <div class="timeline-item unreported right" data-status="unreported">
+      <div class="timeline-card">
+        <div class="card-date">2002 - 2024</div>
+        <div class="card-header">
+          <h3>Siemens / Infraestruturas de Portugal: 109 Direct Awards</h3>
+          <span class="status-badge unreported">UNREPORTED</span>
+        </div>
+        <div class="card-content">
+          <p class="card-description">Portugal's rail infrastructure manager awarded 109 direct contracts to Siemens for signaling and maintenance, creating systematic supplier lock-in without competitive bidding.</p>
+          <div class="card-meta">
+            <div class="meta-item entity">
+              <span class="label">Entity:</span>
+              <span class="value">Infraestruturas de Portugal</span>
+            </div>
+            <div class="meta-item">
+              <span class="label">Contracts:</span>
+              <span class="value">109</span>
+            </div>
+            <div class="meta-item">
+              <span class="label">Type:</span>
+              <span class="value">Supplier Lock-in</span>
+            </div>
+          </div>
+        </div>
+        <a href="siemens-deep-dive.html"></a>
+      </div>
+    </div>
+
+    <div class="timeline-item unreported" data-status="unreported">
+      <div class="timeline-card">
+        <div class="card-date">2007 - 2025</div>
+        <div class="card-header">
+          <h3>Elsevier / FCT: 15-Year €120M+ Monopoly</h3>
+          <span class="status-badge unreported">UNREPORTED</span>
+        </div>
+        <div class="card-content">
+          <p class="card-description">Portugal's science agency awarded 137 contracts to Elsevier for academic library access over 15+ years, all via direct award, with steadily escalating prices from €17.6M to €24M per cycle.</p>
+          <div class="card-meta">
+            <div class="meta-item entity">
+              <span class="label">Entity:</span>
+              <span class="value">FCT - Foundation for Science & Technology</span>
+            </div>
+            <div class="meta-item">
+              <span class="label">Contracts:</span>
+              <span class="value">137</span>
+            </div>
+            <div class="meta-item">
+              <span class="label">Latest (2025):</span>
+              <span class="value">€24M</span>
+            </div>
+          </div>
+        </div>
+        <a href="elsevier-deep-dive.html"></a>
+      </div>
+    </div>
+
+    <div class="timeline-item unreported right" data-status="unreported">
+      <div class="timeline-card">
+        <div class="card-date">2013 - 2024</div>
+        <div class="card-header">
+          <h3>Dentsu / Turismo de Portugal: Incumbency Pipeline</h3>
+          <span class="status-badge unreported">UNREPORTED</span>
+        </div>
+        <div class="card-content">
+          <p class="card-description">€20M in direct award contracts to Dentsu for tourism marketing preceded a €40M competitive tender for the same services. Classic incumbency advantage pattern.</p>
+          <div class="card-meta">
+            <div class="meta-item entity">
+              <span class="label">Entity:</span>
+              <span class="value">Turismo de Portugal</span>
+            </div>
+            <div class="meta-item">
+              <span class="label">Direct awards:</span>
+              <span class="value">~€20M</span>
+            </div>
+            <div class="meta-item">
+              <span class="label">Pattern:</span>
+              <span class="value">Seed → Tender</span>
+            </div>
+          </div>
+        </div>
+        <a href="dentsu-deep-dive.html"></a>
+      </div>
+    </div>
+
+    <div class="timeline-item unreported" data-status="unreported">
+      <div class="timeline-card">
+        <div class="card-date">2010 - 2024</div>
+        <div class="card-header">
+          <h3>Cleaning & Security: 397 Direct Awards Above Threshold</h3>
+          <span class="status-badge unreported">UNREPORTED</span>
+        </div>
+        <div class="card-content">
+          <p class="card-description">Commoditized facility services with many qualified providers are being awarded via direct award above €500k. Fine Facility alone holds 871 government contracts.</p>
+          <div class="card-meta">
+            <div class="meta-item entity">
+              <span class="label">Sector:</span>
+              <span class="value">Facilities & Services</span>
+            </div>
+            <div class="meta-item">
+              <span class="label">Direct awards:</span>
+              <span class="value">397</span>
+            </div>
+            <div class="meta-item">
+              <span class="label">Lead supplier:</span>
+              <span class="value">Fine Facility (871)</span>
+            </div>
+          </div>
+        </div>
+        <a href="cleaning-deep-dive.html"></a>
+      </div>
+    </div>
+
+    <div class="timeline-item unreported right" data-status="unreported">
+      <div class="timeline-card">
+        <div class="card-date">2015 - 2025</div>
+        <div class="card-header">
+          <h3>Contract Modifications: Systematic Price Jumps</h3>
+          <span class="status-badge unreported">UNREPORTED</span>
+        </div>
+        <div class="card-content">
+          <p class="card-description">25,672 contract modifications since January 2025. CP Comboios (+€318M), Metro do Porto (+74%), and multiple infrastructure projects show repeated expansions suggesting systematic cost underestimation.</p>
+          <div class="card-meta">
+            <div class="meta-item entity">
+              <span class="label">Type:</span>
+              <span class="value">Systematic Modifications</span>
+            </div>
+            <div class="meta-item">
+              <span class="label">Total mods:</span>
+              <span class="value">25,672</span>
+            </div>
+            <div class="meta-item">
+              <span class="label">Largest increase:</span>
+              <span class="value">+€318M (CP)</span>
+            </div>
+          </div>
+        </div>
+        <a href="modifications-deep-dive.html"></a>
+      </div>
+    </div>
+
+    <div class="timeline-item reported" data-status="reported">
+      <div class="timeline-card">
+        <div class="card-date">2022 - 2024</div>
+        <div class="card-header">
+          <h3>EU-Wide Pattern: €110B+ Flagged, 80% Direct Awards</h3>
+          <span class="status-badge reported">REPORTED</span>
+        </div>
+        <div class="card-content">
+          <p class="card-description">Cross-referencing Portuguese procurement on EU TED portal reveals systemic issues: over 80% direct awards, 20% single-bidder tenders, deliberate contract value manipulation to stay below competitive thresholds.</p>
+          <div class="card-meta">
+            <div class="meta-item entity">
+              <span class="label">Source:</span>
+              <span class="value">TED / Open Tender Watch</span>
+            </div>
+            <div class="meta-item">
+              <span class="label">Single-bidder rate:</span>
+              <span class="value">20%</span>
+            </div>
+            <div class="meta-item">
+              <span class="label">Price premium:</span>
+              <span class="value">18-28%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="timeline-item unreported right" data-status="unreported">
+      <div class="timeline-card">
+        <div class="card-date">2010 - 2024</div>
+        <div class="card-header">
+          <h3>Corporate Networks: Director Interlocks & Shell Indicators</h3>
+          <span class="status-badge unreported">UNREPORTED</span>
+        </div>
+        <div class="card-content">
+          <p class="card-description">Corporate registry analysis of flagged BASE suppliers reveals director interlocks across major Portuguese companies, shell company structures at shared addresses, and opacity in beneficial ownership.</p>
+          <div class="card-meta">
+            <div class="meta-item entity">
+              <span class="label">Source:</span>
+              <span class="value">OpenCorporates / Racius</span>
+            </div>
+            <div class="meta-item">
+              <span class="label">Key figure:</span>
+              <span class="value">José L. Arnaut</span>
+            </div>
+            <div class="meta-item">
+              <span class="label">Linked entities:</span>
+              <span class="value">6+</span>
+            </div>
+          </div>
+        </div>
+        <a href="corporate-networks-deep-dive.html"></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>SIGIL — Signal Intelligence Lab | Analysis of Portuguese public procurement corruption</p>
+  <p style="margin-top: 1rem; font-size: 0.75rem; color: var(--text-muted);">Data extracted from: BASE, TED, DADOS.gov.pt, public corporate registries. Analysis as of 2025.</p>
+</footer>
+
+<script>
+  // Filter functionality with IntersectionObserver for scroll animations
+  const filterButtons = document.querySelectorAll('.filter-btn');
+  const timelineItems = document.querySelectorAll('.timeline-item');
+
+  filterButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const filter = button.dataset.filter;
+
+      // Update active button
+      filterButtons.forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+
+      // Update timeline items visibility
+      timelineItems.forEach(item => {
+        if (filter === 'all' || item.dataset.status === filter) {
+          item.classList.remove('hidden');
+        } else {
+          item.classList.add('hidden');
+        }
+      });
+    });
+  });
+
+  // Scroll animation with IntersectionObserver
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, {
+    threshold: 0.1,
+    rootMargin: '0px 0px -100px 0px'
+  });
+
+  timelineItems.forEach(item => {
+    if (!item.classList.contains('hidden')) {
+      observer.observe(item);
+    }
+  });
+</script>
+
+</body>
+</html>

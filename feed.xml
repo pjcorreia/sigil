@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>SIGIL — Signal Intelligence Lab</title>
+    <link>https://sigil.pt</link>
+    <description>Investigative analysis of Portuguese public procurement patterns</description>
+    <language>pt-PT</language>
+    <lastBuildDate>Wed, 09 Apr 2026 00:00:00 GMT</lastBuildDate>
+
+    <item>
+      <title>SUCH Serviços Hospitalares: Expansões de Contrato de 11.000%</title>
+      <link>https://sigil.pt/such-deep-dive-pt.html</link>
+      <description>Contratos de serviços de suporte hospitalar atribuídos por ajuste direto aumentaram de alguns milhões para centenas de milhões de euros através de modificações pós-contratação, contornando completamente os limiares competitivos.</description>
+      <pubDate>Wed, 09 Apr 2026 00:00:00 GMT</pubDate>
+      <category>Contratação Pública</category>
+      <category>Ajuste Direto</category>
+      <category>Serviços Hospitalares</category>
+      <category>Fraude</category>
+    </item>
+
+    <item>
+      <title>Siemens / Infraestruturas de Portugal: 109 Ajustes Diretos</title>
+      <link>https://sigil.pt/siemens-deep-dive-pt.html</link>
+      <description>O gestor de infraestruturas ferroviárias de Portugal atribuiu 109 contratos em ajuste direto à Siemens para sinalização e manutenção, criando um bloqueio de fornecedor sistemático sem licitações competitivas na relação.</description>
+      <pubDate>Wed, 09 Apr 2026 00:00:00 GMT</pubDate>
+      <category>Contratação Pública</category>
+      <category>Bloqueio de Fornecedor</category>
+      <category>Ferroviário</category>
+      <category>Siemens</category>
+    </item>
+
+    <item>
+      <title>Elsevier / FCT: 15-Year, €120M+ Monopoly</title>
+      <link>https://sigil.pt/elsevier-deep-dive-pt.html</link>
+      <description>Portugal's science agency has awarded 137 contracts to Elsevier for academic library access over 15+ years, all via direct award, with steadily escalating prices from €17.6M to €24M per cycle.</description>
+      <pubDate>Wed, 09 Apr 2026 00:00:00 GMT</pubDate>
+      <category>Contratação Pública</category>
+      <category>Monopólio</category>
+      <category>Educação</category>
+      <category>Elsevier</category>
+    </item>
+
+    <item>
+      <title>Dentsu / Turismo de Portugal: Pipeline de Incumbência</title>
+      <link>https://sigil.pt/dentsu-deep-dive-pt.html</link>
+      <description>€20M in direct award contracts to Dentsu for tourism marketing preceded a €40M competitive tender for the same services, raising questions about incumbency advantages.</description>
+      <pubDate>Wed, 09 Apr 2026 00:00:00 GMT</pubDate>
+      <category>Contratação Pública</category>
+      <category>Incumbência</category>
+      <category>Marketing</category>
+      <category>Dentsu</category>
+    </item>
+
+    <item>
+      <title>Cleaning &amp; Security Services: 397 Direct Awards Above Threshold</title>
+      <link>https://sigil.pt/cleaning-deep-dive-pt.html</link>
+      <description>Commoditized facility services with many qualified providers are being awarded via direct award above €500k. Fine Facility alone holds 871 government contracts.</description>
+      <pubDate>Wed, 09 Apr 2026 00:00:00 GMT</pubDate>
+      <category>Contratação Pública</category>
+      <category>Serviços de Instalações</category>
+      <category>Fine Facility</category>
+      <category>Corrupção</category>
+    </item>
+
+    <item>
+      <title>Contrato Modifications: Systematic Price Jumps</title>
+      <link>https://sigil.pt/modifications-deep-dive-pt.html</link>
+      <description>25,672 contract modifications since January 2025. CP Comboios (+€318M), Metro do Porto (+74%), and multiple Infraestruturas de Portugal projects show repeated expansions suggesting systematic cost underestimation.</description>
+      <pubDate>Wed, 09 Apr 2026 00:00:00 GMT</pubDate>
+      <category>Contratação Pública</category>
+      <category>Modificações Contratuais</category>
+      <category>Infraestruturas</category>
+      <category>Transportes</category>
+    </item>
+
+    <item>
+      <title>EU-Wide Pattern: €110B+ Flagged, 80% Direct Awards</title>
+      <link>https://sigil.pt/corporate-networks-deep-dive-pt.html</link>
+      <description>Cross-referencing Portuguese procurement on the EU TED portal reveals systemic issues: over 80% of procedures are direct awards, 20% have single bidders, and academic research confirms deliberate contract value manipulation to stay below competitive thresholds.</description>
+      <pubDate>Wed, 09 Apr 2026 00:00:00 GMT</pubDate>
+      <category>Contratação Pública</category>
+      <category>Padrões Sistémicos</category>
+      <category>Manipulação de Valores</category>
+      <category>União Europeia</category>
+    </item>
+
+    <item>
+      <title>Corporate Networks: Director Interlocks &amp; Shell Indicators</title>
+      <link>https://sigil.pt/corporate-networks-deep-dive-pt.html</link>
+      <description>Corporate registry analysis of flagged BASE suppliers reveals director interlocks across major Portuguese companies, shell company structures at shared addresses, and opacity in beneficial ownership — classic red flags for procurement collusion.</description>
+      <pubDate>Wed, 09 Apr 2026 00:00:00 GMT</pubDate>
+      <category>Redes Corporativas</category>
+      <category>Interlocks</category>
+      <category>Entidades Fantasma</category>
+      <category>Colusão</category>
+    </item>
+  </channel>
+</rss>

@@ -1,0 +1,92 @@
+{
+  "project": "SIGIL - Signal Intelligence Lab",
+  "type": "Deep Dive Investigation Reports",
+  "generated": "2026-04-09",
+  "language": "Portuguese (Português)",
+  "output_format": "PDF/A",
+  "total_reports": 7,
+  "reports": [
+    {
+      "filename": "sigil-such-report.pdf",
+      "investigation": "SUCH Serviços Hospitalares",
+      "risk_level": "CRÍTICO",
+      "status": "NÃO DIVULGADO",
+      "key_finding": "€45.5M hidden debt, €21M non-competitive consulting, active fraud investigation",
+      "pages": 3
+    },
+    {
+      "filename": "sigil-siemens-report.pdf",
+      "investigation": "Siemens / Infraestruturas de Portugal",
+      "risk_level": "ALTO",
+      "status": "NÃO REPORTADO",
+      "key_finding": "109 direct awards, €1.6B global bribery settlement, documented corruption history",
+      "pages": 3
+    },
+    {
+      "filename": "sigil-elsevier-report.pdf",
+      "investigation": "Elsevier / FCT - O Monopólio Académico",
+      "risk_level": "ALTO",
+      "status": "NÃO REPORTADO",
+      "key_finding": "€120M+ spending without competition, 37% profit margins, NDA-hidden costs",
+      "pages": 3
+    },
+    {
+      "filename": "sigil-dentsu-report.pdf",
+      "investigation": "Dentsu / Turismo de Portugal",
+      "risk_level": "MÉDIO-ALTO",
+      "status": "NÃO REPORTADO",
+      "key_finding": "€20M+ contracts, 80% direct award economy, incumbent advantage consolidation",
+      "pages": 3
+    },
+    {
+      "filename": "sigil-cleaning-report.pdf",
+      "investigation": "Serviços de Limpeza e Segurança",
+      "risk_level": "MÉDIO-ALTO",
+      "status": "NÃO DIVULGADO",
+      "key_finding": "397 direct awards above thresholds, €13.6M in 3-year 'urgent' contracts, hidden directors",
+      "pages": 3
+    },
+    {
+      "filename": "sigil-modifications-report.pdf",
+      "investigation": "Modificações Contratuais",
+      "risk_level": "ALTO",
+      "status": "NÃO DIVULGADO",
+      "key_finding": "33% contract failure rate, systematic price inflation, weak oversight mechanisms",
+      "pages": 3
+    },
+    {
+      "filename": "sigil-corporate-networks-report.pdf",
+      "investigation": "Redes Empresariais e Interligações",
+      "risk_level": "ALTO",
+      "status": "NÃO DIVULGADO",
+      "key_finding": "Director interlocks allowed, 102 shell companies (Op. Ambrosia), restricted beneficial ownership",
+      "pages": 3
+    }
+  ],
+  "report_structure": {
+    "page_1": "Title page with SIGIL branding, investigation title, risk level, status, and date (April 2026)",
+    "page_2": "Executive summary with 4 key statistics and detailed investigation overview",
+    "page_3": "Key findings (4 conclusions per report) and classification/disclaimer section"
+  },
+  "formatting": {
+    "page_size": "A4 (210 x 297mm)",
+    "margin": "1.5cm all sides",
+    "font": "Helvetica (standard PDF safe font)",
+    "colors": {
+      "accent": "#00d4aa (SIGIL teal)",
+      "warning": "#ffa502 (orange)",
+      "critical": "#ff4757 (red)",
+      "background": "#0a0e17 (dark)",
+      "text_primary": "#e8eaf0 (light)",
+      "text_secondary": "#8892a8 (gray)"
+    }
+  },
+  "content_language": "Portuguese (pt-PT)",
+  "ai_disclaimer": "All reports contain AI-generated content disclaimers and are based on analysis of public data sources",
+  "verification": {
+    "total_size": "56KB",
+    "files_created": 7,
+    "all_valid": true,
+    "timestamp": "2026-04-09T17:23:00Z"
+  }
+}

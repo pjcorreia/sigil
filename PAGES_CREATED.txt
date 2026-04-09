@@ -1,0 +1,112 @@
+SIGIL METHODOLOGY PAGES - CREATION SUMMARY
+===========================================
+
+Two methodology pages created successfully:
+
+1. /tmp/sigil/metodologia.html (Portuguese)
+   - Language: pt-PT
+   - Size: 21KB
+   - Title: SIGIL | Metodologia
+   - Navigation: Links to index.html (PT) with EN/PT toggle
+   - Favicon: favicon.svg included
+
+2. /tmp/sigil/methodology.html (English)
+   - Language: en
+   - Size: 20KB
+   - Title: SIGIL | Methodology
+   - Navigation: Links to en.html (EN) with EN/PT toggle
+   - Favicon: favicon.svg included
+
+STRUCTURE (Both Pages):
+=======================
+
+1. Navigation Bar (Fixed)
+   - SIGIL Logo + "Signal Intelligence Lab" tagline
+   - Back link to home
+   - Language toggle (PT <-> EN)
+
+2. Hero Section
+   - Main heading
+   - Subtitle describing the page purpose
+
+3. Content Sections:
+   01 - Data Sources
+        - BASE.gov.pt
+        - Tribunal de Contas
+        - DGRM
+        - TED (EU Database)
+   
+   02 - Analysis Methodology
+        - Data extraction and cleaning
+        - Suspicious entity identification
+        - Thresholds table
+        - Pattern detection
+   
+   03 - Classification System
+        - UNREPORTED (green accent box)
+        - REPORTED (orange accent box)
+        - ENFORCED (red accent box)
+        - Note on presumption of innocence
+   
+   04 - Limitations and Caveats
+        - AI-generated content notice
+        - Potential errors
+        - Human verification requirements
+        - What's not covered
+   
+   05 - How to Contribute Corrections
+        - GitHub Issues (public)
+        - Email option (private)
+        - Instructions for reporting
+   
+   06 - Technical References
+        - Source links to all major databases
+
+4. AI Disclaimer Box
+   - Warning about AI-generated content
+   - Links to GitHub issues
+   - Email contact: denuncia@sigil.pt
+   - Styled with warning gradient
+
+5. Footer
+   - SIGIL branding
+   - Tagline (Portuguese/English)
+   - Link back to home
+
+STYLING:
+========
+- Colors match existing SIGIL site:
+  * Background: #0a0e17 (dark blue)
+  * Accent: #00d4aa (green)
+  * Text: #e8eaf0 (light gray)
+  * Borders: #1e2a3a (dark)
+  
+- Typography:
+  * Headlines: JetBrains Mono (green accent)
+  * Body: Inter font family
+  * Responsive design with mobile breakpoint
+
+- Components:
+  * Evidence boxes with colored left borders
+  * Data table with hover effects
+  * Source list with styling
+  * Consistent spacing and padding
+
+LANGUAGE TOGGLE ROUTING:
+=========================
+Portuguese page (metodologia.html):
+  - PT button: metodologia.html (active/highlighted)
+  - EN button: methodology.html
+  - Back link: index.html
+
+English page (methodology.html):
+  - EN button: methodology.html (active/highlighted)
+  - PT button: metodologia.html
+  - Back link: en.html
+
+CONTACT INFORMATION INCLUDED:
+==============================
+- GitHub Issues: https://github.com/pjcorreia/sigil/issues
+- Email: denuncia@sigil.pt
+
+All content follows the SIGIL visual identity from the existing deep-dive pages.

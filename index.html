@@ -1,9 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SIGIL | Laboratório de Inteligência de Sinais</title>
+<meta property="og:title" content="SIGIL — Signal Intelligence Lab">
+<meta property="og:description" content="Análise investigativa de padrões na contratação pública portuguesa">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://sigil.pt/">
+<meta property="og:site_name" content="SIGIL">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SIGIL — Signal Intelligence Lab">
+<meta name="twitter:description" content="Análise investigativa de padrões na contratação pública portuguesa">
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
@@ -938,12 +947,179 @@
     opacity: 1;
     transform: translateY(0);
   }
-</style>
+
+  /* === MOBILE RESPONSIVENESS === */
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    gap: 5px;
+  }
+  
+  .hamburger span {
+    width: 25px;
+    height: 3px;
+    background: var(--accent);
+    border-radius: 2px;
+    transition: 0.3s;
+  }
+  
+  .hamburger.active span:nth-child(1) {
+    transform: rotate(45deg) translate(10px, 10px);
+  }
+  
+  .hamburger.active span:nth-child(2) {
+    opacity: 0;
+  }
+  
+  .hamburger.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -7px);
+  }
+  
+  @media (max-width: 768px) {
+    nav {
+      padding: 0 1rem;
+    }
+    
+    .nav-inner {
+      height: 50px;
+    }
+    
+    .nav-brand .tagline {
+      display: none;
+    }
+    
+    .hamburger {
+      display: flex;
+    }
+    
+    .nav-links {
+      position: absolute;
+      top: 50px;
+      left: 0;
+      right: 0;
+      flex-direction: column;
+      background: rgba(10, 14, 23, 0.98);
+      border-bottom: 1px solid var(--border);
+      gap: 0;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+    
+    .nav-links.active {
+      max-height: 300px;
+    }
+    
+    .nav-links a {
+      padding: 1rem;
+      display: block;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .nav-status {
+      display: none;
+    }
+    
+    .hero {
+      padding: 100px 1.5rem 50px;
+    }
+    
+    .hero h1 {
+      font-size: 2rem;
+    }
+    
+    .hero p {
+      font-size: 0.95rem;
+    }
+    
+    .hero::before {
+      width: 300px;
+      height: 300px;
+    }
+    
+    .hero-stats {
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    
+    .hero-stat .number {
+      font-size: 2rem;
+    }
+    
+    .inv-card {
+      padding: 1.2rem;
+    }
+    
+    .card-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+    
+    .chart-container {
+      padding: 1rem;
+    }
+    
+    canvas {
+      max-height: 250px !important;
+    }
+    
+    .sources-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .findings {
+      padding: 2rem 1rem;
+    }
+    
+    section {
+      padding: 2rem 1rem;
+    }
+    
+    .timeline-item {
+      padding: 1rem;
+      margin-left: 0;
+      border-left: none;
+      border-top: 2px solid var(--border-accent);
+    }
+    
+    .download-card {
+      padding: 1rem;
+    }
+  }
+  
+  /* Skip to content link */
+  .skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--accent);
+    color: var(--bg-primary);
+    padding: 8px;
+    z-index: 9999;
+    transition: top 0.3s;
+    text-decoration: none;
+    font-weight: 700;
+  }
+  
+  .skip-link:focus {
+    top: 0;
+  }
+
+  </style>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="description" content="SIGIL: Investigação de padrões nas contratações públicas portuguesas. Análise de dados, deep dives e cronologia.">
+<link rel="alternate" type="application/rss+xml" title="SIGIL RSS Feed" href="feed.xml">
 </head>
 <body>
+<a href="#main-content" class="skip-link">Ir para conteúdo principal</a>
 
 <!-- NAV -->
-<nav>
+<nav role="navigation" aria-label="Navegação principal">
   <div class="nav-inner">
     <a href="#" class="nav-brand">
       <div>
@@ -951,7 +1127,7 @@
         <div class="tagline">Laboratório de Inteligência de Sinais</div>
       </div>
     </a>
-    <ul class="nav-links">
+    <ul class="nav-links" id="nav-links">
       <li><a href="#investigations">Investigações</a></li>
       <li><a href="#promises">Promessas</a></li>
       <li><a href="#data">Dados</a></li>
@@ -959,7 +1135,15 @@
       <li><a href="#downloads">Transferências</a></li>
       <li><a href="#sources">Fontes</a></li>
       <li><a href="#corrections" style="color:var(--red)">Reportar Erro</a></li>
-    </ul>
+<li><a href="sobre.html">Sobre</a></li>
+<li><a href="metodologia.html">Metodologia</a></li>
+<li><a href="cronologia.html">Cronologia</a></li>
+<li style="margin-left:1rem"><a href="feed.xml" style="color:var(--accent);">&#128275; RSS</a></li></ul>
+    <button class="hamburger" aria-label="Abrir menu" id="hamburger-menu" aria-expanded="false" aria-controls="nav-links">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
     <div style="display:flex;align-items:center;gap:1rem;">
       <div class="lang-toggle">
         <a href="en.html">EN</a>
@@ -985,7 +1169,7 @@
 </div>
 
 <!-- HERO -->
-<div class="hero">
+<div class="hero" role="banner">
   <div class="hero-label">// Relatórios de Investigação 001&ndash;003 &bull; Investigações Profundas Ativas</div>
   <h1>Contratação Pública Portuguesa<br>Sob o Microscópio</h1>
   <p>Análise multi-fonte de dados de contratação de BASE.gov.pt, portal TED da UE e registos corporativos — revelando padrões em 110B+ € de contratos marcados.</p>
@@ -1010,7 +1194,7 @@
 </div>
 
 <!-- INVESTIGATIONS -->
-<section id="investigations">
+<section id="investigations" role="main" aria-label="Investigações">
   <div class="section-header">
     <div class="section-label">// Descobertas</div>
     <div class="section-title">Linhas de Investigação</div>
@@ -2010,6 +2194,13 @@
 </section>
 
 <!-- FOOTER -->
+<section id="newsletter" style="max-width:900px;margin:3rem auto;padding:2rem;text-align:center">
+  <h2 style="color:#00d4aa;font-family:'JetBrains Mono',monospace;margin-bottom:1rem">📡 Subscrever Atualizações</h2>
+  <p style="color:#94a3b8;margin-bottom:1.5rem">Receba notificações sobre novas investigações e atualizações do SIGIL.</p>
+  <a href="mailto:denuncia@sigil.pt?subject=Subscrever%20SIGIL&body=Quero%20receber%20atualizações%20do%20SIGIL." style="display:inline-block;background:#00d4aa;color:#0a0f1a;padding:0.8rem 2rem;border-radius:8px;text-decoration:none;font-weight:700;font-size:1rem">Subscrever por Email</a>
+  <p style="color:#64748b;font-size:0.8rem;margin-top:1rem">Também disponível via <a href="feed.xml" style="color:#00d4aa">RSS Feed</a></p>
+</section>
+
 <footer>
   <p><span class="footer-brand">SIGIL</span> &mdash; Signal Intelligence Lab</p>
   <p style="margin-top: 0.5rem; font-size: 0.7rem;">Dados sources: base.gov.pt &bull; ted.europa.eu &bull; opencorporates.com &bull; racius.com &bull; opentenderwatch.com &bull; Analysis: April 7&ndash;9, 2026 &bull; All data publicly available</p>
@@ -2274,7 +2465,28 @@ document.addEventListener('DOMContentLoaded', function() {
     observer.observe(el);
   });
 });
+
+// Mobile hamburger menu
+document.getElementById('hamburger-menu').addEventListener('click', function() {
+  this.classList.toggle('active');
+  const navLinks = document.getElementById('nav-links');
+  navLinks.classList.toggle('active');
+  this.setAttribute('aria-expanded', this.getAttribute('aria-expanded') === 'false' ? 'true' : 'false');
+});
+
+// Close menu when a link is clicked
+document.querySelectorAll('.nav-links a').forEach(link => {
+  link.addEventListener('click', function() {
+    const hamburger = document.getElementById('hamburger-menu');
+    const navLinks = document.getElementById('nav-links');
+    hamburger.classList.remove('active');
+    navLinks.classList.remove('active');
+    hamburger.setAttribute('aria-expanded', 'false');
+  });
+});
 </script>
+
+<script data-goatcounter="https://sigil.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 
 </body>
 </html>
