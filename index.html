@@ -556,6 +556,49 @@
     .data-table th, .data-table td { padding: 8px 6px; }
   }
 
+  /* === STATUS TAGS === */
+  .status-tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 3px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+  .status-tag.unreported {
+    background: var(--red-dim);
+    color: var(--red);
+    border: 1px solid var(--red);
+  }
+  .status-tag.reported {
+    background: var(--orange-dim);
+    color: var(--orange);
+    border: 1px solid var(--orange);
+  }
+  .status-tag.enforced {
+    background: var(--accent-dim);
+    color: var(--accent);
+    border: 1px solid var(--accent);
+  }
+
+  .tag-legend {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .tag-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+  }
+
   /* === SCROLL REVEAL === */
   .reveal {
     opacity: 0;
@@ -624,12 +667,19 @@
     <div class="section-title">Investigation Threads</div>
   </div>
 
+  <div class="tag-legend">
+    <div class="tag-legend-item"><span class="status-tag unreported">UNREPORTED</span> Scandalous pattern — no media coverage found</div>
+    <div class="tag-legend-item"><span class="status-tag reported">REPORTED</span> Covered in media or audit reports</div>
+    <div class="tag-legend-item"><span class="status-tag enforced">ENFORCED</span> Active investigation or enforcement action</div>
+  </div>
+
   <div class="investigations-grid">
 
     <!-- FINDING 1: SUCH -->
     <div class="inv-card" data-risk="critical" onclick="toggleDetail('such')">
       <div class="inv-card-header">
         <h3>SUCH Hospital Services: Contract Expansions of 11,000%</h3>
+        <span class="status-tag unreported">UNREPORTED</span>
         <span class="risk-badge critical">CRITICAL</span>
       </div>
       <p>Hospital support service contracts awarded via direct award ballooned from single-digit millions to hundreds of millions of euros through post-award modifications, completely bypassing competitive thresholds.</p>
@@ -675,11 +725,11 @@
           <tr><th>Finding</th><th>Detail</th><th>Source</th></tr>
         </thead>
         <tbody>
-          <tr><td style="color:var(--red)"><strong>President charged with EU fraud</strong></td><td>Paulo Sousa (president since 2013) constituted as defendant in Operation Inovar (May 2019) &mdash; &euro;15M EU subsidy fraud, 73 defendants total</td><td>ECO / P&Uacute;BLICO 2019</td></tr>
-          <tr><td style="color:var(--red)"><strong>Concealed &euro;45.5M debt</strong></td><td>Tribunal de Contas Audit 30/2015: SUCH hid &euro;45.5M in liabilities to conceal technical bankruptcy (negative equity of &euro;36.3M). Fine: &euro;510.</td><td>Tribunal de Contas 2015</td></tr>
-          <tr><td style="color:var(--orange)"><strong>&euro;21M consulting without tender</strong></td><td>Accenture (&euro;9.4M), Deloitte/SGG (&euro;7.6M), CapGemini (&euro;4.3M) hired for &ldquo;Somos&rdquo; shared-services project without competitive bidding. Project failed to reduce NHS deficit.</td><td>P&Uacute;BLICO 2010</td></tr>
-          <tr><td style="color:var(--orange)"><strong>Shell subsidiaries</strong></td><td>Operated through Somos Pessoas (capital: &euro;9), Somos Compras (capital: &euro;0), Somos Contas &mdash; ACE entities with minimal capitalization hiding &euro;17.6M in debt</td><td>Racius / DRE</td></tr>
-          <tr><td style="color:var(--orange)"><strong>Hospital refectory fraud</strong></td><td>&ldquo;Pratos Limpos&rdquo; scheme: &euro;1.2M losses from SUCH-network hospitals. ACSS Vice-President Carlos Galamba appointed while under investigation.</td><td>CNN Portugal 2026</td></tr>
+          <tr><td style="color:var(--red)"><strong>President charged with EU fraud</strong></td><td>Paulo Sousa (president since 2013) constituted as defendant in Operation Inovar (May 2019) &mdash; &euro;15M EU subsidy fraud, 73 defendants total</td><td><span class="status-tag enforced" style="font-size:0.6rem">ENFORCED</span></td></tr>
+          <tr><td style="color:var(--red)"><strong>Concealed &euro;45.5M debt</strong></td><td>Tribunal de Contas Audit 30/2015: SUCH hid &euro;45.5M in liabilities to conceal technical bankruptcy (negative equity of &euro;36.3M). Fine: &euro;510.</td><td><span class="status-tag reported" style="font-size:0.6rem">REPORTED</span></td></tr>
+          <tr><td style="color:var(--orange)"><strong>&euro;21M consulting without tender</strong></td><td>Accenture (&euro;9.4M), Deloitte/SGG (&euro;7.6M), CapGemini (&euro;4.3M) hired for &ldquo;Somos&rdquo; shared-services project without competitive bidding. Project failed to reduce NHS deficit.</td><td><span class="status-tag reported" style="font-size:0.6rem">REPORTED</span></td></tr>
+          <tr><td style="color:var(--orange)"><strong>Shell subsidiaries</strong></td><td>Operated through Somos Pessoas (capital: &euro;9), Somos Compras (capital: &euro;0), Somos Contas &mdash; ACE entities with minimal capitalization hiding &euro;17.6M in debt</td><td><span class="status-tag unreported" style="font-size:0.6rem">UNREPORTED</span></td></tr>
+          <tr><td style="color:var(--orange)"><strong>Hospital refectory fraud</strong></td><td>&ldquo;Pratos Limpos&rdquo; scheme: &euro;1.2M losses from SUCH-network hospitals. ACSS Vice-President Carlos Galamba appointed while under investigation.</td><td><span class="status-tag enforced" style="font-size:0.6rem">ENFORCED</span></td></tr>
         </tbody>
       </table>
       <p style="margin-top:0.8rem;">SUCH's legal structure as a &ldquo;non-profit private association with administrative public utility status&rdquo; enables it to operate in a regulatory grey zone: quasi-governmental authority without full transparency requirements, receiving &euro;588M in contracts while its president faces criminal charges.</p>
@@ -689,6 +739,7 @@
     <div class="inv-card" data-risk="high" onclick="toggleDetail('siemens')">
       <div class="inv-card-header">
         <h3>Siemens / Infraestruturas de Portugal: 109 Direct Awards</h3>
+        <span class="status-tag unreported">UNREPORTED</span>
         <span class="risk-badge high">HIGH</span>
       </div>
       <p>Portugal's railway infrastructure manager has awarded 109 direct award contracts to Siemens for signaling and maintenance, creating a systematic vendor lock-in with no competitive tenders in the relationship.</p>
@@ -719,6 +770,7 @@
     <div class="inv-card" data-risk="high" onclick="toggleDetail('elsevier')">
       <div class="inv-card-header">
         <h3>Elsevier / FCT: 15-Year, &euro;120M+ Monopoly</h3>
+        <span class="status-tag unreported">UNREPORTED</span>
         <span class="risk-badge high">HIGH</span>
       </div>
       <p>Portugal's science agency has awarded 137 contracts to Elsevier for academic library access over 15+ years, all via direct award, with steadily escalating prices from &euro;17.6M to &euro;24M per cycle.</p>
@@ -755,6 +807,7 @@
     <div class="inv-card" data-risk="medium" onclick="toggleDetail('dentsu')">
       <div class="inv-card-header">
         <h3>Dentsu / Turismo de Portugal: Incumbency Pipeline</h3>
+        <span class="status-tag unreported">UNREPORTED</span>
         <span class="risk-badge medium">MEDIUM-HIGH</span>
       </div>
       <p>&euro;20M in direct award contracts to Dentsu for tourism marketing preceded a &euro;40M competitive tender for the same services, raising questions about incumbency advantages.</p>
@@ -774,6 +827,7 @@
     <div class="inv-card" data-risk="medium" onclick="toggleDetail('cleaning')">
       <div class="inv-card-header">
         <h3>Cleaning &amp; Security Services: 397 Direct Awards Above Threshold</h3>
+        <span class="status-tag unreported">UNREPORTED</span>
         <span class="risk-badge medium">MEDIUM-HIGH</span>
       </div>
       <p>Commoditized facility services with many qualified providers are being awarded via direct award above &euro;500k. Fine Facility alone holds 871 government contracts.</p>
@@ -794,10 +848,10 @@
           <tr><th>Finding</th><th>Detail</th><th>Source</th></tr>
         </thead>
         <tbody>
-          <tr><td style="color:var(--red)"><strong>GNR: &euro;13.6M without written contracts</strong></td><td>GNR (military police) awarded Fine Facility &euro;13.6M in cleaning contracts (Oct 2022&ndash;Apr 2025) via direct adjustment &mdash; repeatedly invoking &ldquo;urgent imperative necessity&rdquo; over 3 years. Legal experts: &ldquo;clearly illegal.&rdquo;</td><td>P&aacute;gina Um 2023 / Nascer do SOL 2025</td></tr>
-          <tr><td style="color:var(--orange)"><strong>Name change: F&eacute;nix &rarr; Fine</strong></td><td>Company operated as F&eacute;nix Facility Services before rebranding. Multiple F&eacute;nix-branded entities (F&eacute;nix Cleaning, F&eacute;nix Intersegur) share same address: Rua Rosa Damasceno, 11.</td><td>Racius / Iberinform</td></tr>
-          <tr><td style="color:var(--orange)"><strong>Directors deliberately hidden</strong></td><td>Manager/shareholder names absent from all free public sources &mdash; unusual for company with 871 government contracts and &euro;1M share capital.</td><td>OpenCorporates / Racius</td></tr>
-          <tr><td style="color:var(--orange)"><strong>Network of entities at same address</strong></td><td>Fine Facility, F&eacute;nix Cleaning (manager: Jos&eacute; Ribeiro Da Costa), F&eacute;nix Intersegur (security) &mdash; and Fine &amp; Fine Norte/Sul/II subsidiaries suggest compartmentalization.</td><td>Racius / eInforma</td></tr>
+          <tr><td style="color:var(--red)"><strong>GNR: &euro;13.6M without written contracts</strong></td><td>GNR (military police) awarded Fine Facility &euro;13.6M in cleaning contracts (Oct 2022&ndash;Apr 2025) via direct adjustment &mdash; repeatedly invoking &ldquo;urgent imperative necessity&rdquo; over 3 years. Legal experts: &ldquo;clearly illegal.&rdquo;</td><td><span class="status-tag reported" style="font-size:0.6rem">REPORTED</span></td></tr>
+          <tr><td style="color:var(--orange)"><strong>Name change: F&eacute;nix &rarr; Fine</strong></td><td>Company operated as F&eacute;nix Facility Services before rebranding. Multiple F&eacute;nix-branded entities (F&eacute;nix Cleaning, F&eacute;nix Intersegur) share same address: Rua Rosa Damasceno, 11.</td><td><span class="status-tag unreported" style="font-size:0.6rem">UNREPORTED</span></td></tr>
+          <tr><td style="color:var(--orange)"><strong>Directors deliberately hidden</strong></td><td>Manager/shareholder names absent from all free public sources &mdash; unusual for company with 871 government contracts and &euro;1M share capital.</td><td><span class="status-tag unreported" style="font-size:0.6rem">UNREPORTED</span></td></tr>
+          <tr><td style="color:var(--orange)"><strong>Network of entities at same address</strong></td><td>Fine Facility, F&eacute;nix Cleaning (manager: Jos&eacute; Ribeiro Da Costa), F&eacute;nix Intersegur (security) &mdash; and Fine &amp; Fine Norte/Sul/II subsidiaries suggest compartmentalization.</td><td><span class="status-tag unreported" style="font-size:0.6rem">UNREPORTED</span></td></tr>
         </tbody>
       </table>
       <p style="margin-top:0.8rem;"><strong>Context:</strong> In a separate case, a Portuguese cleaning company defrauded the state of &euro;13M+ using fictitious companies, inflated tenders, and insolvency cycling across hospitals (PJ investigation, 2013-2021). The modus operandi &mdash; winning contracts, accumulating debts, creating new entities &mdash; mirrors patterns visible in the F&eacute;nix/Fine network.</p>
@@ -807,6 +861,7 @@
     <div class="inv-card" data-risk="high" onclick="toggleDetail('mods')">
       <div class="inv-card-header">
         <h3>Contract Modifications: Systematic Price Jumps</h3>
+        <span class="status-tag unreported">UNREPORTED</span>
         <span class="risk-badge high">HIGH</span>
       </div>
       <p>25,672 contract modifications since January 2025. CP Comboios (+&euro;318M), Metro do Porto (+74%), and multiple Infraestruturas de Portugal projects show repeated expansions suggesting systematic cost underestimation.</p>
@@ -865,9 +920,10 @@
     <div class="inv-card" data-risk="critical" onclick="toggleDetail('ted')">
       <div class="inv-card-header">
         <h3>EU-Wide Pattern: &euro;110B+ Flagged, 80% Direct Awards</h3>
+        <span class="status-tag reported">REPORTED</span>
         <span class="risk-badge critical">CRITICAL</span>
       </div>
-      <p>Cross-referencing Portuguese procurement on the EU TED portal reveals systemic issues: over 80% of procedures are direct awards, 20% have single bidders, and academic research confirms deliberate contract value manipulation to stay below competitive thresholds.</p>
+      <p>Cross-referencing Portuguese procurement on the EU TED portal reveals systemic issues: over 80% of procedures are direct awards, 20% have single bidders, and academic research confirms deliberate contract value manipulation to stay below competitive thresholds. <em>Systemic pattern widely documented but political response inadequate.</em></p>
       <div class="inv-meta">
         <div class="inv-meta-item">Source: <span class="val">TED / Open Tender Watch</span></div>
         <div class="inv-meta-item">Single-bidder rate: <span class="val">20%</span></div>
@@ -903,11 +959,11 @@
           <tr><th>Case</th><th>Fine</th><th>Companies</th><th>Scheme</th></tr>
         </thead>
         <tbody>
-          <tr><td style="color:var(--red)"><strong>Teleradiology Cartel (2024)</strong></td><td>&euro;6.9M</td><td>Dr. Campos Costa/Unilabs (&euro;5M), ITM, Affidea, Lifefocus, GS24/Lifeplus</td><td>Pre-selected winners, coordinated bid prices for hospital services</td></tr>
-          <tr><td style="color:var(--red)"><strong>Laboratory Cartel &mdash; COVID (2024)</strong></td><td>&euro;49M</td><td>Germano de Sousa, Redelab/Unilabs, Joaquim Chaves, J. Leit&atilde;o Santos, Labeto</td><td>Price-fixed COVID tests; threatened to boycott NHS if prices reduced</td></tr>
-          <tr><td style="color:var(--orange)"><strong>SIBS Dominance Abuse (2024)</strong></td><td>&euro;13.9M</td><td>SIBS SGPS, FPS, MB, Cart&otilde;es (&gt;90% market share)</td><td>Forced bundling of payment scheme access with processing services</td></tr>
-          <tr><td style="color:var(--orange)"><strong>Tech No-Poach (2024-25)</strong></td><td>&euro;7.2M</td><td>Inetum (&euro;3.1M) + 3 multinationals</td><td>Non-hiring agreements restricting labor mobility</td></tr>
-          <tr><td><strong>APEGAC Price-Fixing (2024)</strong></td><td>&euro;1.2M</td><td>Condominium management association &mdash; 8 years of minimum fee coordination</td><td>Fixed minimum prices, disclosed to members</td></tr>
+          <tr><td style="color:var(--red)"><strong>Teleradiology Cartel (2024)</strong></td><td>&euro;6.9M</td><td>Dr. Campos Costa/Unilabs (&euro;5M), ITM, Affidea, Lifefocus, GS24/Lifeplus</td><td><span class="status-tag enforced" style="font-size:0.55rem">ENFORCED</span></td></tr>
+          <tr><td style="color:var(--red)"><strong>Laboratory Cartel &mdash; COVID (2024)</strong></td><td>&euro;49M</td><td>Germano de Sousa, Redelab/Unilabs, Joaquim Chaves, J. Leit&atilde;o Santos, Labeto</td><td><span class="status-tag enforced" style="font-size:0.55rem">ENFORCED</span></td></tr>
+          <tr><td style="color:var(--orange)"><strong>SIBS Dominance Abuse (2024)</strong></td><td>&euro;13.9M</td><td>SIBS SGPS, FPS, MB, Cart&otilde;es (&gt;90% market share)</td><td><span class="status-tag enforced" style="font-size:0.55rem">ENFORCED</span></td></tr>
+          <tr><td style="color:var(--orange)"><strong>Tech No-Poach (2024-25)</strong></td><td>&euro;7.2M</td><td>Inetum (&euro;3.1M) + 3 multinationals</td><td><span class="status-tag enforced" style="font-size:0.55rem">ENFORCED</span></td></tr>
+          <tr><td><strong>APEGAC Price-Fixing (2024)</strong></td><td>&euro;1.2M</td><td>Condominium management association &mdash; 8 years of minimum fee coordination</td><td><span class="status-tag enforced" style="font-size:0.55rem">ENFORCED</span></td></tr>
         </tbody>
       </table>
       <p style="margin-top:0.8rem;"><strong>Decree-Law 108/2024:</strong> Controversially, the Portuguese government passed legislation exempting EU-funded contracts (PRR) from prior Tribunal de Contas review. MP Marisa Matias called it &ldquo;an open door to complete discretion in PRR spending.&rdquo; The Tribunal identified 20+ irregular PRR contracts with specifications deliberately narrowed to a single bidder.</p>
@@ -917,9 +973,10 @@
     <div class="inv-card" data-risk="high" onclick="toggleDetail('networks')">
       <div class="inv-card-header">
         <h3>Corporate Networks: Director Interlocks &amp; Shell Indicators</h3>
+        <span class="status-tag unreported">UNREPORTED</span>
         <span class="risk-badge high">HIGH</span>
       </div>
-      <p>Corporate registry analysis of flagged BASE suppliers reveals director interlocks across major Portuguese companies, shell company structures at shared addresses, and opacity in beneficial ownership &mdash; classic red flags for procurement collusion.</p>
+      <p>Corporate registry analysis of flagged BASE suppliers reveals director interlocks across major Portuguese companies, shell company structures at shared addresses, and opacity in beneficial ownership &mdash; classic red flags for procurement collusion. <em>The procurement conflict angle of Arnaut&rsquo;s network has not been covered.</em></p>
       <div class="inv-meta">
         <div class="inv-meta-item">Source: <span class="val">OpenCorporates / Racius</span></div>
         <div class="inv-meta-item">Key figure: <span class="val">Jos&eacute; L. Arnaut</span></div>
@@ -949,7 +1006,7 @@
           <tr><th>Person</th><th>Positions Held</th><th>Significance</th></tr>
         </thead>
         <tbody>
-          <tr><td><strong>Jos&eacute; Lu&iacute;s Arnaut</strong></td><td>Chairman: Siemens PT, ANA Airports, Tabaqueira II, Super Bock, Vista Alegre, REN (energy). Managing Partner: CMS Portugal. Goldman Sachs Intl Advisory Board. Former Deputy PM &amp; PSD Secretary-General (1999-2005).</td><td style="color:var(--red)">9 active positions. CMS advised Vinci on ANA privatization &mdash; then Arnaut became ANA Chairman. OCCRP investigated Belgrade airport scandal: business partner of Serbian figure with organized crime ties via Luxembourg shell company. REN paid &euro;500k to his law firm while he sits on its board.</td></tr>
+          <tr><td><strong>Jos&eacute; Lu&iacute;s Arnaut</strong><br><span class="status-tag reported" style="font-size:0.55rem">BELGRADE: REPORTED</span><br><span class="status-tag unreported" style="font-size:0.55rem">PROCUREMENT CONFLICTS: UNREPORTED</span></td><td>Chairman: Siemens PT, ANA Airports, Tabaqueira II, Super Bock, Vista Alegre, REN (energy). Managing Partner: CMS Portugal. Goldman Sachs Intl Advisory Board. Former Deputy PM &amp; PSD Secretary-General (1999-2005).</td><td style="color:var(--red)">9 active positions. CMS advised Vinci on ANA privatization &mdash; then Arnaut became ANA Chairman <span class="status-tag unreported" style="font-size:0.5rem">UNREPORTED</span>. OCCRP investigated Belgrade airport scandal <span class="status-tag reported" style="font-size:0.5rem">REPORTED</span>. REN paid &euro;500k to his law firm while he sits on its board <span class="status-tag reported" style="font-size:0.5rem">REPORTED</span>.</td></tr>
           <tr><td><strong>Miguel &Aacute;. L&oacute;pez Borrego</strong></td><td>President: Siemens PT, Siemens Belgium, Siemens Rail Automation, Siemens Gamesa, NORMA Group</td><td style="color:var(--orange)">Pan-European board presence enables cross-subsidiary coordination.</td></tr>
           <tr><td><strong>Maria A. F. Loureiro</strong></td><td>Manager: Siemens Energy PT, Siemens Gamesa PT, ANIMEE Board</td><td style="color:var(--orange)">Subsidiary concentration &mdash; single person controls multiple procurement entities.</td></tr>
         </tbody>
