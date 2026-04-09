@@ -398,6 +398,94 @@
     font-weight: 600;
   }
 
+  /* === AI DISCLAIMER BANNER === */
+  .ai-disclaimer {
+    background: linear-gradient(135deg, rgba(255,71,87,0.12) 0%, rgba(255,165,2,0.08) 100%);
+    border: 1px solid rgba(255,71,87,0.3);
+    border-radius: 10px;
+    padding: 1.2rem 1.5rem;
+    margin: 80px auto 0;
+    max-width: 1200px;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  .ai-disclaimer-icon {
+    font-size: 1.4rem;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .ai-disclaimer-text {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+  .ai-disclaimer-text strong {
+    color: var(--orange);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+  }
+  .ai-disclaimer-text a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .ai-disclaimer-text a:hover {
+    text-decoration: underline;
+  }
+
+  /* === SOURCES SECTION === */
+  .sources-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  .source-group {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem;
+  }
+  .source-group h3 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--accent);
+    letter-spacing: 1px;
+    margin-bottom: 0.8rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .source-group ul {
+    list-style: none;
+  }
+  .source-group li {
+    padding: 0.35rem 0;
+    font-size: 0.82rem;
+    border-bottom: 1px solid rgba(30,42,58,0.5);
+  }
+  .source-group li:last-child {
+    border-bottom: none;
+  }
+  .source-group a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .source-group a:hover {
+    color: var(--accent);
+  }
+  .source-type-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.55rem;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-left: 0.5rem;
+    background: var(--bg-secondary);
+    padding: 1px 6px;
+    border-radius: 3px;
+  }
+
   .deep-dive-link {
     display: inline-block;
     margin-top: 1.2rem;
@@ -757,6 +845,7 @@
       <li><a href="#data">Data</a></li>
       <li><a href="#timeline">Timeline</a></li>
       <li><a href="#downloads">Downloads</a></li>
+      <li><a href="#sources">Sources</a></li>
     </ul>
     <div class="nav-status">
       <div class="dot"></div>
@@ -764,6 +853,15 @@
     </div>
   </div>
 </nav>
+
+<!-- AI DISCLAIMER -->
+<div class="ai-disclaimer" style="padding-left:2rem; padding-right:2rem;">
+  <div class="ai-disclaimer-icon">&#9888;&#65039;</div>
+  <div class="ai-disclaimer-text">
+    <strong>AI-GENERATED CONTENT &mdash; VERIFY ALL CLAIMS</strong><br>
+    This entire website was generated using artificial intelligence (Claude, by Anthropic). While every effort was made to reference real, publicly available sources, <strong style="color:var(--red)">AI can produce inaccuracies, hallucinations, and errors</strong>. All findings, data points, and conclusions presented here should be independently verified before being cited, shared, or acted upon. The <a href="#sources">full list of sources</a> is provided below for cross-checking. This site does not constitute legal advice, formal accusation, or definitive proof of wrongdoing. Patterns identified are indicators warranting further investigation &mdash; not conclusions.
+  </div>
+</div>
 
 <!-- HERO -->
 <div class="hero">
@@ -1598,6 +1696,150 @@
   </div>
 </section>
 
+<!-- SOURCES -->
+<section id="sources">
+  <div class="section-header">
+    <div class="section-label">// Verify Everything</div>
+    <div class="section-title">Sources &amp; References</div>
+  </div>
+
+  <div class="ai-disclaimer" style="margin:0 0 2rem 0; max-width:100%;">
+    <div class="ai-disclaimer-icon">&#9888;&#65039;</div>
+    <div class="ai-disclaimer-text">
+      <strong>IMPORTANT DISCLAIMER</strong><br>
+      This website is <strong style="color:var(--red)">entirely AI-generated</strong> using Claude by Anthropic. While sources listed below are believed to be real and publicly accessible, AI can hallucinate URLs, misattribute facts, or produce inaccurate data. <strong style="color:var(--red)">Every claim on this site should be independently verified</strong> before being cited or shared. The presence of a source link does not guarantee the linked content supports the claim made. Always check the original source yourself.
+    </div>
+  </div>
+
+  <div class="sources-grid">
+
+    <!-- SUCH Sources -->
+    <div class="source-group">
+      <h3>SUCH Hospital Services</h3>
+      <ul>
+        <li><a href="https://www.tcontas.pt/pt-pt/ProdutosTC/Relatorios/RelatoriosAuditoria/Documents/2015/rel030-2015-2s.pdf" target="_blank">Tribunal de Contas &mdash; Report No. 30/2015 (2nd Section): SUCH audit revealing &euro;45.5M concealed debt</a> <span class="source-type-tag">Audit</span></li>
+        <li><a href="https://www.jornaldenegocios.pt/economia/saude/detalhe/servico_de_utilizacao_comum_dos_hospitais_ocultou_passivo_de_455_milhoes" target="_blank">Jornal de Neg&oacute;cios &mdash; SUCH hid &euro;45.5M in liabilities</a> <span class="source-type-tag">News</span></li>
+        <li><a href="https://observador.pt/2016/01/12/auditoria-servico-fornece-hospitais-ocultou-divida-455-milhoes/" target="_blank">Observador &mdash; Audit reveals concealed hospital service debt</a> <span class="source-type-tag">News</span></li>
+        <li><a href="https://www.publico.pt/2019/05/03/sociedade/noticia/presidente-such-arguido-fraude-fundos-comunitarios-1871304" target="_blank">P&uacute;blico &mdash; SUCH president charged in EU fraud (Operation Inovar)</a> <span class="source-type-tag">News</span></li>
+        <li><a href="https://www.sabado.pt/portugal/detalhe/presidente-do-such-e-arguido-no-caso-de-fraude-com-fundos-europeus" target="_blank">S&aacute;bado &mdash; President of SUCH defendant in EU funds fraud case</a> <span class="source-type-tag">News</span></li>
+        <li><a href="https://www.dn.pt/pais/fraude-de-milhoes-na-obtencao-de-fundos-comunitarios-pj-lanca-operacao-nacional-10854724.html" target="_blank">Di&aacute;rio de Not&iacute;cias &mdash; Million-euro EU fund fraud, national PJ operation</a> <span class="source-type-tag">News</span></li>
+        <li><a href="https://diariodarepublica.pt/dr/detalhe/decreto-lei/209-2015-70386136" target="_blank">Decreto-Lei 209/2015 &mdash; SUCH restructuring framework</a> <span class="source-type-tag">Legislation</span></li>
+        <li><a href="https://www.such.pt/" target="_blank">SUCH Official Website</a> <span class="source-type-tag">Official</span></li>
+        <li><a href="https://www.such.pt/orgaos-sociais/" target="_blank">SUCH &mdash; Board of Directors / &Oacute;rg&atilde;os Sociais</a> <span class="source-type-tag">Official</span></li>
+        <li><a href="https://www.racius.com/servico-de-utilizacao-comum-dos-hospitais-s-u-c-h/" target="_blank">Racius &mdash; SUCH company registry entry</a> <span class="source-type-tag">Registry</span></li>
+        <li><a href="https://www.sns.gov.pt/entidades-de-saude/servico-de-utilizacao-comum-dos-hospitais-such/" target="_blank">SNS &mdash; SUCH entity portal page</a> <span class="source-type-tag">Official</span></li>
+      </ul>
+    </div>
+
+    <!-- Siemens Sources -->
+    <div class="source-group">
+      <h3>Siemens / Infraestruturas de Portugal</h3>
+      <ul>
+        <li><a href="https://www.base.gov.pt" target="_blank">BASE.gov.pt &mdash; Portuguese Public Procurement Portal (contract search)</a> <span class="source-type-tag">Database</span></li>
+        <li><a href="https://www.sec.gov/litigation/litreleases/2008/lr20829.htm" target="_blank">SEC &mdash; Siemens AG settles FCPA charges ($800M, 2008)</a> <span class="source-type-tag">Legal</span></li>
+        <li><a href="https://www.justice.gov/archive/opa/pr/2008/December/08-crm-1105.html" target="_blank">US DOJ &mdash; Siemens AG plea agreement (2008)</a> <span class="source-type-tag">Legal</span></li>
+        <li><a href="https://www.era.europa.eu/domains/infrastructure/european-rail-traffic-management-system-ertms_en" target="_blank">ERA &mdash; European Rail Traffic Management System (ERTMS)</a> <span class="source-type-tag">EU Official</span></li>
+        <li><a href="https://www.infraestruturasdeportugal.pt/" target="_blank">Infraestruturas de Portugal &mdash; Official website</a> <span class="source-type-tag">Official</span></li>
+      </ul>
+    </div>
+
+    <!-- Elsevier Sources -->
+    <div class="source-group">
+      <h3>Elsevier / FCT Academic Monopoly</h3>
+      <ul>
+        <li><a href="https://www.elsevier.com/about/press-releases/portugal-national-funder-fct-agrees-transformative-agreement-with-elsevier" target="_blank">Elsevier &mdash; Portugal FCT transformative agreement announcement</a> <span class="source-type-tag">Official</span></li>
+        <li><a href="https://www.fct.pt/en/nova-politica-sobre-acesso-aberto-a-publicacoes-cientificas-da-fct-promove-a-visibilidade-da-producao-cientifica/" target="_blank">FCT &mdash; New Open Access policy (February 2025)</a> <span class="source-type-tag">Official</span></li>
+        <li><a href="https://www.timeshighereducation.com/news/sweden-cancels-elsevier-contract-open-access-dispute-spreads" target="_blank">Times Higher Education &mdash; Sweden cancels Elsevier contract</a> <span class="source-type-tag">News</span></li>
+        <li><a href="https://www.insidehighered.com/news/2019/03/01/university-california-cancels-deal-elsevier-after-months-negotiations" target="_blank">Inside Higher Ed &mdash; UC System cancels Elsevier deal (2019)</a> <span class="source-type-tag">News</span></li>
+        <li><a href="https://www.lieffcabraser.com/antitrust/academic-journals/" target="_blank">Lieff Cabraser &mdash; Antitrust lawsuit against academic publishers (2024)</a> <span class="source-type-tag">Legal</span></li>
+        <li><a href="https://direct.mit.edu/qss/article/4/4/778/118070/" target="_blank">MIT Press / QSS &mdash; The oligopoly's shift to open access (Big Five analysis)</a> <span class="source-type-tag">Academic</span></li>
+        <li><a href="https://www.chemistryworld.com/news/75-of-european-spending-on-scientific-journals-goes-to-big-five-publishers/4010616.article" target="_blank">Chemistry World &mdash; 75% of EU journal spending goes to Big Five</a> <span class="source-type-tag">Analysis</span></li>
+      </ul>
+    </div>
+
+    <!-- Dentsu Sources -->
+    <div class="source-group">
+      <h3>Dentsu / Turismo de Portugal</h3>
+      <ul>
+        <li><a href="https://www.dentsu.com/news-releases/partners-portugals-largest-creative-agency-joins-dentsu-aegis-network" target="_blank">Dentsu &mdash; Partners acquisition announcement (2018)</a> <span class="source-type-tag">Official</span></li>
+        <li><a href="https://www.meiosepublicidade.pt/2019/07/partners-vence-novo-concurso-do-turismo-portugal/" target="_blank">Meios &amp; Publicidade &mdash; Partners wins Turismo de Portugal tender (&euro;2.5M)</a> <span class="source-type-tag">Trade Press</span></li>
+        <li><a href="https://www.meiosepublicidade.pt/2019/12/turismo-portugal-adjudica-investimento-94-milhoes-ao-omnicom-media-group/" target="_blank">Meios &amp; Publicidade &mdash; Omnicom wins &euro;9.4M media contract</a> <span class="source-type-tag">Trade Press</span></li>
+        <li><a href="https://www.publituris.pt/2019/08/22/turismo-de-portugal-com-verba-de-10me-para-publicidade-digital-ate-2021/" target="_blank">Publituris &mdash; &euro;10M digital advertising budget (2020&ndash;2021)</a> <span class="source-type-tag">Trade Press</span></li>
+        <li><a href="https://eco.sapo.pt/2022/01/14/turismo-pode-gastar-10-milhoes-a-promover-portugal-como-destino-ate-2023/" target="_blank">ECO &mdash; &euro;10M tourism promotion budget (2022&ndash;2023)</a> <span class="source-type-tag">Business News</span></li>
+        <li><a href="https://eco.sapo.pt/2024/02/15/vai-nascer-a-dentsu-creative-iberia-nova-estrutura-e-liderada-por-tomas-froes-e-lourenco-thomaz-fica-responsavel-pelo-trabalho-criativo/" target="_blank">ECO &mdash; Dentsu Creative Iberia formation (2024)</a> <span class="source-type-tag">Business News</span></li>
+        <li><a href="https://www.adsoftheworld.com/campaigns/can-t-skip-hope" target="_blank">Ads of the World &mdash; "Can't Skip Hope" campaign</a> <span class="source-type-tag">Industry</span></li>
+      </ul>
+    </div>
+
+    <!-- Cleaning & Security Sources -->
+    <div class="source-group">
+      <h3>Cleaning &amp; Security Services / Fine Facility</h3>
+      <ul>
+        <li><a href="https://www.base.gov.pt" target="_blank">BASE.gov.pt &mdash; Fine Facility contract records (search: "Fine Facility")</a> <span class="source-type-tag">Database</span></li>
+        <li><a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32014L0024" target="_blank">EU Directive 2014/24/EU &mdash; Public Procurement (threshold rules)</a> <span class="source-type-tag">EU Law</span></li>
+        <li><a href="https://www.impic.pt" target="_blank">IMPIC &mdash; Portuguese public procurement regulator</a> <span class="source-type-tag">Official</span></li>
+      </ul>
+    </div>
+
+    <!-- Contract Modifications Sources -->
+    <div class="source-group">
+      <h3>Contract Modifications</h3>
+      <ul>
+        <li><a href="https://www.base.gov.pt" target="_blank">BASE.gov.pt &mdash; Contract modification records</a> <span class="source-type-tag">Database</span></li>
+        <li><a href="https://www.tcontas.pt" target="_blank">Tribunal de Contas &mdash; Court of Auditors reports on procurement</a> <span class="source-type-tag">Audit</span></li>
+        <li><a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32014L0024" target="_blank">EU Directive 2014/24/EU &mdash; Modification safe harbors (Art. 72)</a> <span class="source-type-tag">EU Law</span></li>
+        <li><a href="https://www.oecd.org/governance/public-procurement/" target="_blank">OECD &mdash; Public Procurement recommendations for Portugal</a> <span class="source-type-tag">International</span></li>
+      </ul>
+    </div>
+
+    <!-- Corporate Networks Sources -->
+    <div class="source-group">
+      <h3>Corporate Networks &amp; Director Interlocks</h3>
+      <ul>
+        <li><a href="https://www.concorrencia.pt" target="_blank">Autoridade da Concorr&ecirc;ncia &mdash; Portuguese Competition Authority</a> <span class="source-type-tag">Official</span></li>
+        <li><a href="https://www.transparency.org/en/cpi/2024" target="_blank">Transparency International &mdash; Corruption Perceptions Index 2024 (Portugal: 57/100)</a> <span class="source-type-tag">International</span></li>
+        <li><a href="https://rcbe.justica.gov.pt" target="_blank">RCBE &mdash; Central Beneficial Ownership Register (access restricted Oct 2025)</a> <span class="source-type-tag">Official</span></li>
+        <li><a href="https://curia.europa.eu/juris/liste.jsf?num=C-37/20" target="_blank">CJEU &mdash; Cases C-37/20 and C-601/20 (beneficial ownership access ruling)</a> <span class="source-type-tag">EU Court</span></li>
+        <li><a href="https://www.opencorporates.com" target="_blank">OpenCorporates &mdash; Corporate registry data (director search)</a> <span class="source-type-tag">Database</span></li>
+        <li><a href="https://www.racius.com" target="_blank">Racius &mdash; Portuguese company information</a> <span class="source-type-tag">Database</span></li>
+      </ul>
+    </div>
+
+    <!-- Confirmed Cartels Sources -->
+    <div class="source-group">
+      <h3>Confirmed Cartels &amp; Enforcement</h3>
+      <ul>
+        <li><a href="https://www.concorrencia.pt" target="_blank">Autoridade da Concorr&ecirc;ncia &mdash; Cartel decisions and fines</a> <span class="source-type-tag">Official</span></li>
+        <li><a href="https://www.base.gov.pt" target="_blank">BASE.gov.pt &mdash; Contract records for sanctioned entities</a> <span class="source-type-tag">Database</span></li>
+        <li><a href="https://www.legal500.com/guides/chapter/portugal-public-procurement/" target="_blank">Legal500 &mdash; Portugal public procurement analysis (80% direct award rate)</a> <span class="source-type-tag">Legal Analysis</span></li>
+      </ul>
+    </div>
+
+    <!-- EU / TED Sources -->
+    <div class="source-group">
+      <h3>EU-Wide Procurement Data</h3>
+      <ul>
+        <li><a href="https://ted.europa.eu" target="_blank">TED (Tenders Electronic Daily) &mdash; EU procurement notices</a> <span class="source-type-tag">EU Database</span></li>
+        <li><a href="https://opentender.eu" target="_blank">OpenTender &mdash; EU procurement analytics and red-flag indicators</a> <span class="source-type-tag">Database</span></li>
+        <li><a href="https://single-market-scoreboard.ec.europa.eu/policy-areas/public-procurement_en" target="_blank">EU Single Market Scoreboard &mdash; Public Procurement indicators</a> <span class="source-type-tag">EU Official</span></li>
+      </ul>
+    </div>
+
+    <!-- General / Methodology Sources -->
+    <div class="source-group">
+      <h3>Methodology &amp; General</h3>
+      <ul>
+        <li><a href="https://www.base.gov.pt/base4" target="_blank">BASE.gov.pt (Base4) &mdash; Primary Portuguese procurement database</a> <span class="source-type-tag">Database</span></li>
+        <li><a href="https://ted.europa.eu/en/search" target="_blank">TED Search API v3 &mdash; EU-wide procurement data</a> <span class="source-type-tag">API</span></li>
+        <li><a href="https://www.opencorporates.com" target="_blank">OpenCorporates API &mdash; Corporate network analysis</a> <span class="source-type-tag">API</span></li>
+        <li><a href="https://www.racius.com" target="_blank">Racius.com &mdash; Portuguese company director/shareholder data</a> <span class="source-type-tag">Database</span></li>
+        <li><a href="https://opentender.eu" target="_blank">Open Tender / opentenderwatch.com &mdash; Red-flag indicators (OECD methodology)</a> <span class="source-type-tag">Methodology</span></li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
 <!-- METHODOLOGY NOTE -->
 <section>
   <div class="section-header">
@@ -1613,7 +1855,8 @@
 <!-- FOOTER -->
 <footer>
   <p><span class="footer-brand">SIGIL</span> &mdash; Signal Intelligence Lab</p>
-  <p style="margin-top: 0.5rem; font-size: 0.7rem;">Data sources: base.gov.pt &bull; ted.europa.eu &bull; opencorporates.com &bull; racius.com &bull; opentenderwatch.com &bull; Analysis: April 7&ndash;8, 2026 &bull; All data publicly available</p>
+  <p style="margin-top: 0.5rem; font-size: 0.7rem;">Data sources: base.gov.pt &bull; ted.europa.eu &bull; opencorporates.com &bull; racius.com &bull; opentenderwatch.com &bull; Analysis: April 7&ndash;9, 2026 &bull; All data publicly available</p>
+  <p style="margin-top: 0.8rem; font-size: 0.7rem; color: var(--red); max-width: 700px; margin-left: auto; margin-right: auto;">&#9888;&#65039; This website is entirely AI-generated. All content, analysis, and conclusions should be independently verified. See <a href="#sources" style="color:var(--accent)">Sources</a> for reference links. AI can produce inaccuracies.</p>
 </footer>
 
 <script>
