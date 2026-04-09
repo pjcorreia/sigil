@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIGIL | Mapa de Rede</title>
+<meta property="og:title" content="SIGIL — Mapa de Rede">
+<meta property="og:description" content="Visualização interativa das ligações entre entidades na contratação pública portuguesa">
+<meta property="og:image" content="https://sigil.pt/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="SIGIL — Mapa de Rede">
+<meta name="twitter:description" content="Visualização interativa das ligações entre entidades na contratação pública portuguesa">
+<meta name="twitter:image" content="https://sigil.pt/og-image.png">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="description" content="Visualização interativa das redes de contratação pública em Portugal">
+
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-WZQVKM51B7"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-WZQVKM51B7');
+</script>
+
+<!-- D3.js from CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+  :root {
+    --bg-primary: #0a0e17;
+    --bg-secondary: #111827;
+    --bg-card: #1a2235;
+    --bg-card-hover: #1f2a40;
+    --accent: #00d4aa;
+    --accent-dim: #00d4aa33;
+    --accent-glow: #00d4aa22;
+    --blue: #3b82f6;
+    --amber: #f59e0b;
+    --purple: #8b5cf6;
+    --red: #ff4757;
+    --red-dim: #ff475722;
+    --orange: #ffa502;
+    --text-primary: #e8eaf0;
+    --text-secondary: #8892a8;
+    --text-muted: #4a5568;
+    --border: #1e2a3a;
+    --border-accent: #00d4aa44;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    overflow: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 212, 170, 0.015) 2px,
+      rgba(0, 212, 170, 0.015) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* === NAVIGATION === */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(10, 14, 23, 0.92);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    height: 60px;
+  }
+
+  .nav-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+  }
+
+  .nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+  }
+
+  .nav-brand .logo {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: var(--accent);
+    letter-spacing: 3px;
+  }
+
+  .nav-brand .tagline {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+    margin-left: auto;
+  }
+
+  .nav-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--accent); }
+
+  .lang-toggle {
+    display: flex;
+    gap: 0;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-left: 1.5rem;
+  }
+
+  .lang-toggle a {
+    padding: 4px 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-decoration: none;
+    color: var(--text-muted);
+    transition: all 0.2s;
+  }
+
+  .lang-toggle a.active {
+    background: var(--accent);
+    color: var(--bg-primary);
+  }
+
+  .lang-toggle a:not(.active):hover {
+    color: var(--accent);
+    background: var(--accent-dim);
+  }
+
+  /* === GRAPH CONTAINER === */
+  #graph-container {
+    position: absolute;
+    top: 60px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: calc(100vh - 60px);
+    background: var(--bg-primary);
+  }
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* === SEARCH BAR === */
+  .search-container {
+    position: fixed;
+    top: 90px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 200;
+    width: 100%;
+    max-width: 500px;
+    padding: 0 2rem;
+  }
+
+  .search-box {
+    position: relative;
+    width: 100%;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 10px 16px 10px 40px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    background: rgba(26, 34, 53, 0.8);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-primary);
+    backdrop-filter: blur(10px);
+    transition: all 0.2s;
+  }
+
+  .search-input:focus {
+    outline: none;
+    border-color: var(--accent);
+    background: rgba(26, 34, 53, 0.95);
+    box-shadow: 0 0 20px rgba(0, 212, 170, 0.2);
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    font-size: 0.9rem;
+  }
+
+  /* === FILTER BUTTONS === */
+  .filter-container {
+    position: fixed;
+    top: 90px;
+    left: 2rem;
+    z-index: 200;
+    display: flex;
+    gap: 0.5rem;
+    flex-direction: column;
+  }
+
+  .filter-btn {
+    padding: 6px 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    background: rgba(26, 34, 53, 0.8);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    backdrop-filter: blur(10px);
+  }
+
+  .filter-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .filter-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--bg-primary);
+  }
+
+  /* === LEGEND === */
+  .legend-container {
+    position: fixed;
+    bottom: 2rem;
+    left: 2rem;
+    z-index: 200;
+    background: rgba(26, 34, 53, 0.9);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.2rem;
+    backdrop-filter: blur(10px);
+    max-width: 250px;
+    font-size: 0.75rem;
+  }
+
+  .legend-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.8rem;
+    display: block;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 0.6rem;
+    color: var(--text-secondary);
+  }
+
+  .legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .legend-item.edge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .legend-line {
+    width: 20px;
+    height: 2px;
+    flex-shrink: 0;
+  }
+
+  /* === INFO PANEL === */
+  .info-panel {
+    position: fixed;
+    right: -400px;
+    top: 60px;
+    width: 400px;
+    height: calc(100vh - 60px);
+    background: rgba(26, 34, 53, 0.95);
+    border-left: 1px solid var(--border);
+    backdrop-filter: blur(20px);
+    z-index: 150;
+    transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow-y: auto;
+    padding: 2rem;
+  }
+
+  .info-panel.open {
+    right: 0;
+  }
+
+  .info-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+  }
+
+  .close-panel {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 1.5rem;
+    transition: color 0.2s;
+  }
+
+  .close-panel:hover {
+    color: var(--accent);
+  }
+
+  .info-entity-type {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    padding: 4px 8px;
+    background: var(--accent-dim);
+    color: var(--accent);
+    border-radius: 4px;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  .info-entity-name {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+  }
+
+  .info-stat {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .info-stat-item {
+    background: rgba(0, 212, 170, 0.05);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.8rem;
+  }
+
+  .info-stat-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 0.3rem;
+  }
+
+  .info-stat-label {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .info-connections {
+    margin-bottom: 1.5rem;
+  }
+
+  .info-connections-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.8rem;
+    display: block;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.8rem;
+  }
+
+  .connection-item {
+    padding: 0.6rem;
+    margin-bottom: 0.5rem;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    font-size: 0.75rem;
+    border-left: 3px solid var(--accent);
+  }
+
+  .connection-item.red {
+    border-left-color: var(--red);
+  }
+
+  .connection-item.orange {
+    border-left-color: var(--orange);
+  }
+
+  .connection-target {
+    color: var(--text-primary);
+    font-weight: 600;
+    display: block;
+    margin-bottom: 0.2rem;
+  }
+
+  .connection-value {
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+  }
+
+  .info-risk {
+    margin-bottom: 1.5rem;
+  }
+
+  .info-risk-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+
+  .risk-level {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 700;
+  }
+
+  .risk-level.high {
+    background: var(--red-dim);
+    color: var(--red);
+    border: 1px solid var(--red);
+  }
+
+  .risk-level.medium {
+    background: rgba(255, 165, 2, 0.15);
+    color: var(--orange);
+    border: 1px solid var(--orange);
+  }
+
+  .risk-level.low {
+    background: rgba(61, 130, 246, 0.15);
+    color: var(--blue);
+    border: 1px solid var(--blue);
+  }
+
+  .info-footer {
+    border-top: 1px solid var(--border);
+    padding-top: 1.5rem;
+    margin-top: 1.5rem;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+  }
+
+  .info-footer a {
+    color: var(--accent);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .info-footer a:hover {
+    text-decoration: underline;
+  }
+
+  /* === TOOLTIPS === */
+  .tooltip {
+    position: absolute;
+    background: rgba(10, 14, 23, 0.95);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.8rem;
+    font-size: 0.75rem;
+    color: var(--text-primary);
+    pointer-events: none;
+    z-index: 300;
+    max-width: 200px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0, 212, 170, 0.1);
+  }
+
+  .tooltip-title {
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 0.3rem;
+  }
+
+  .tooltip-value {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--red);
+  }
+
+  /* === FOOTER === */
+  footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: auto;
+    background: rgba(10, 14, 23, 0.9);
+    border-top: 1px solid var(--border);
+    padding: 0.8rem 2rem;
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    z-index: 50;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+  }
+
+  footer a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  footer a:hover {
+    text-decoration: underline;
+  }
+
+  /* === RESPONSIVE === */
+  @media (max-width: 768px) {
+    .filter-container { display: none; }
+    .legend-container { bottom: 80px; left: 1rem; max-width: 200px; }
+    .search-container { max-width: calc(100% - 2rem); }
+    .info-panel { width: 100%; right: -100%; }
+    footer { flex-wrap: wrap; padding: 1rem; }
+  }
+
+  /* === NODE STYLES === */
+  .node {
+    stroke: var(--bg-primary);
+    stroke-width: 2px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .node:hover {
+    stroke-width: 3px;
+    filter: brightness(1.3);
+  }
+
+  .node.selected {
+    stroke-width: 4px;
+    filter: drop-shadow(0 0 12px currentColor);
+  }
+
+  .node.dimmed {
+    opacity: 0.2;
+  }
+
+  .node.highlighted {
+    opacity: 1;
+  }
+
+  /* === LINK STYLES === */
+  .link {
+    stroke-width: 2px;
+    opacity: 0.6;
+    transition: all 0.2s;
+  }
+
+  .link.dimmed {
+    opacity: 0.1;
+  }
+
+  .link.red { stroke: var(--red); }
+  .link.orange { stroke: var(--orange); }
+  .link.accent { stroke: var(--accent); }
+
+  /* === LABELS === */
+  .node-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.7rem;
+    fill: var(--text-primary);
+    pointer-events: none;
+    text-anchor: middle;
+    dominant-baseline: middle;
+    font-weight: 500;
+  }
+
+  .node-label.dimmed {
+    opacity: 0.2;
+  }
+</style>
+
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-brand">
+      <span class="logo">SIGIL</span>
+      <span class="tagline">Signal Intelligence Lab</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">← Voltar ao Índice</a></li>
+      <li><a href="index.html#investigations">Investigações</a></li>
+    </ul>
+    <div class="lang-toggle">
+      <a href="network.html">EN</a>
+      <a href="rede.html" class="active">PT</a>
+    </div>
+  </div>
+</nav>
+
+<div id="graph-container"></div>
+
+<div class="search-container">
+  <div class="search-box">
+    <span class="search-icon">🔍</span>
+    <input type="text" class="search-input" id="search-input" placeholder="Procurar entidade...">
+  </div>
+</div>
+
+<div class="filter-container">
+  <button class="filter-btn active" data-filter="all">Todos</button>
+  <button class="filter-btn" data-filter="public">Públicas</button>
+  <button class="filter-btn" data-filter="private">Privadas</button>
+  <button class="filter-btn" data-filter="people">Pessoas</button>
+  <button class="filter-btn" data-filter="findings">Achados</button>
+</div>
+
+<div class="legend-container">
+  <span class="legend-title">Tipo de Entidade</span>
+
+  <div class="legend-item">
+    <div class="legend-dot" style="background: var(--blue);"></div>
+    <span>Entidades Públicas</span>
+  </div>
+
+  <div class="legend-item">
+    <div class="legend-dot" style="background: var(--amber);"></div>
+    <span>Empresas Privadas</span>
+  </div>
+
+  <div class="legend-item">
+    <div class="legend-dot" style="background: var(--purple);"></div>
+    <span>Pessoas / Diretores</span>
+  </div>
+
+  <div class="legend-item">
+    <div class="legend-dot" style="background: var(--red);"></div>
+    <span>Achados Críticos</span>
+  </div>
+
+  <span class="legend-title" style="margin-top: 1rem;">Tipo de Ligação</span>
+
+  <div class="legend-item edge">
+    <div class="legend-line" style="background: var(--red);"></div>
+    <span>Não Reportado</span>
+  </div>
+
+  <div class="legend-item edge">
+    <div class="legend-line" style="background: var(--orange);"></div>
+    <span>Alto Risco</span>
+  </div>
+
+  <div class="legend-item edge">
+    <div class="legend-line" style="background: var(--accent);"></div>
+    <span>Normal</span>
+  </div>
+</div>
+
+<div class="info-panel" id="info-panel">
+  <div class="info-panel-header">
+    <div></div>
+    <button class="close-panel" onclick="closePanel()">&times;</button>
+  </div>
+  <div id="panel-content"></div>
+</div>
+
+<footer>
+  <span>Dúvidas ou correções? Contacte <a href="mailto:denuncia@sigil.pt">denuncia@sigil.pt</a></span>
+  <span>|</span>
+  <span>⚠ Análise de inteligência artificial sobre dados públicos — <a href="index.html#disclaimer">Isenção de responsabilidade</a></span>
+</footer>
+
+<script>
+// Network data structure
+const networkData = {
+  nodes: [
+    // Public Entities (Blue)
+    { id: 'such', name: 'SUCH', type: 'public', category: 'entity', contracts: 45500000, connections: 8, risk: 'critical' },
+    { id: 'ip', name: 'Infraestruturas de Portugal', type: 'public', category: 'entity', contracts: 89000000, connections: 4, risk: 'high' },
+    { id: 'espap', name: 'eSPap', type: 'public', category: 'entity', contracts: 12000000, connections: 3, risk: 'high' },
+    { id: 'fct', name: 'FCT', type: 'public', category: 'entity', contracts: 120000000, connections: 2, risk: 'high' },
+    { id: 'turismo', name: 'Turismo de Portugal', type: 'public', category: 'entity', contracts: 20000000, connections: 2, risk: 'medium' },
+    { id: 'spms', name: 'SPMS', type: 'public', category: 'entity', contracts: 35000000, connections: 4, risk: 'medium' },
+    { id: 'saude', name: 'Ministério da Saúde', type: 'public', category: 'entity', contracts: 200000000, connections: 6, risk: 'medium' },
+    { id: 'hsj', name: 'Hospital de São José', type: 'public', category: 'entity', contracts: 15000000, connections: 3, risk: 'low' },
+    { id: 'chlc', name: 'CHLC (Centro Hospitalar Lisboa Central)', type: 'public', category: 'entity', contracts: 25000000, connections: 3, risk: 'low' },
+
+    // Private Companies (Amber)
+    { id: 'siemens', name: 'Siemens', type: 'private', category: 'entity', contracts: 180000000, connections: 3, risk: 'high' },
+    { id: 'elsevier', name: 'Elsevier', type: 'private', category: 'entity', contracts: 120000000, connections: 2, risk: 'critical' },
+    { id: 'dentsu', name: 'Dentsu', type: 'private', category: 'entity', contracts: 20000000, connections: 2, risk: 'medium' },
+    { id: 'autoeuropa', name: 'Autoeuropa (Volkswagen)', type: 'private', category: 'entity', contracts: 45500000, connections: 2, risk: 'critical' },
+    { id: 'fine', name: 'Fine Facility Services', type: 'private', category: 'entity', contracts: 8000000, connections: 2, risk: 'medium' },
+    { id: '2ss', name: '2SS - Soluções de Segurança', type: 'private', category: 'entity', contracts: 5000000, connections: 2, risk: 'high' },
+    { id: 'securitas', name: 'Securitas', type: 'private', category: 'entity', contracts: 12000000, connections: 3, risk: 'medium' },
+    { id: 'prosegur', name: 'Prosegur', type: 'private', category: 'entity', contracts: 8000000, connections: 2, risk: 'medium' },
+
+    // People (Purple)
+    { id: 'paulosousa', name: 'Paulo Jorge Rendeiro Correia de Sousa', type: 'people', category: 'person', connections: 2, risk: 'critical' },
+    { id: 'adelino', name: 'Adelino Gonçalves Mendes', type: 'people', category: 'person', connections: 2, risk: 'critical' },
+
+    // Critical Findings (Red)
+    { id: 'finding-45m', name: '€45,5M Dívida Ocultada', type: 'findings', category: 'finding', value: 45500000, risk: 'critical' },
+    { id: 'finding-21m', name: '€21M Consultoria Sem Concurso', type: 'findings', category: 'finding', value: 21000000, risk: 'critical' },
+    { id: 'finding-fraud', name: 'Acusações Fraude Comunitária', type: 'findings', category: 'finding', risk: 'critical' },
+    { id: 'finding-expansion', name: '11.373% Expansão de Contrato', type: 'findings', category: 'finding', risk: 'critical' },
+  ],
+
+  links: [
+    // SUCH connections
+    { source: 'such', target: 'autoeuropa', value: 45500000, description: '€45,5M contrato, 11.373% expansão', risk: 'critical', type: 'red' },
+    { source: 'such', target: 'hsj', value: 5000000, description: 'Serviços hospitalares', risk: 'medium', type: 'accent' },
+    { source: 'such', target: 'chlc', value: 8000000, description: 'Serviços hospitalares partilhados', risk: 'medium', type: 'accent' },
+    { source: 'such', target: 'saude', value: 35000000, description: 'Supervisão e alocação de orçamento', risk: 'medium', type: 'accent' },
+    { source: 'such', target: 'paulosousa', value: null, description: 'Presidente acusado de fraude', risk: 'critical', type: 'red' },
+    { source: 'such', target: 'finding-45m', value: 45500000, description: 'Dívida ocultada (Tribunal de Contas)', risk: 'critical', type: 'red' },
+    { source: 'such', target: 'finding-21m', value: 21000000, description: 'Contratos sem concurso (Accenture, Deloitte, CapGemini)', risk: 'critical', type: 'red' },
+    { source: 'such', target: 'finding-fraud', value: null, description: 'Envolvimento Operação Inovar', risk: 'critical', type: 'red' },
+
+    // Siemens connections
+    { source: 'siemens', target: 'ip', value: 89000000, description: '109 adjudicações diretas', risk: 'high', type: 'orange' },
+    { source: 'siemens', target: 'espap', value: 12000000, description: 'Sistemas de TI', risk: 'high', type: 'orange' },
+    { source: 'siemens', target: 'saude', value: 45000000, description: 'Equipamentos médicos e IT', risk: 'high', type: 'orange' },
+
+    // Elsevier connections
+    { source: 'elsevier', target: 'fct', value: 120000000, description: '€120M+ monopólio 15 anos', risk: 'critical', type: 'red' },
+    { source: 'elsevier', target: 'finding-45m', value: null, description: 'Parte de investigação de subsídios públicos', risk: 'critical', type: 'red' },
+
+    // Dentsu connections
+    { source: 'dentsu', target: 'turismo', value: 20000000, description: '€20M+ pipeline de contratos', risk: 'medium', type: 'orange' },
+
+    // Fine Facility connections
+    { source: 'fine', target: 'spms', value: 8000000, description: 'Contratos de limpeza', risk: 'medium', type: 'accent' },
+
+    // 2SS connections
+    { source: '2ss', target: 'spms', value: 5000000, description: 'Contratos de segurança', risk: 'high', type: 'orange' },
+    { source: '2ss', target: 'hsj', value: 1500000, description: 'Serviços de segurança', risk: 'medium', type: 'accent' },
+
+    // Securitas connections
+    { source: 'securitas', target: 'spms', value: 6000000, description: 'Serviços de segurança', risk: 'medium', type: 'accent' },
+    { source: 'securitas', target: 'saude', value: 4000000, description: 'Contratos de segurança hospitalar', risk: 'medium', type: 'accent' },
+
+    // Prosegur connections
+    { source: 'prosegur', target: 'chlc', value: 4000000, description: 'Serviços de segurança', risk: 'medium', type: 'accent' },
+    { source: 'prosegur', target: 'hsj', value: 3000000, description: 'Serviços de vigilância', risk: 'medium', type: 'accent' },
+
+    // People connections
+    { source: 'paulosousa', target: 'such', value: null, description: 'Presidente', risk: 'critical', type: 'red' },
+    { source: 'paulosousa', target: 'finding-fraud', value: null, description: 'Arguido em Operação Inovar', risk: 'critical', type: 'red' },
+    { source: 'adelino', target: 'spms', value: null, description: 'Antigas responsabilidades', risk: 'critical', type: 'red' },
+    { source: 'adelino', target: 'finding-fraud', value: null, description: 'Arguido em Operação Inovar', risk: 'critical', type: 'red' },
+
+    // Critical findings cross-references
+    { source: 'finding-45m', target: 'finding-21m', value: null, description: 'Padrão de má gestão financeira', risk: 'critical', type: 'red' },
+    { source: 'finding-45m', target: 'finding-fraud', value: null, description: 'Parte de investigação mais ampla', risk: 'critical', type: 'red' },
+    { source: 'finding-21m', target: 'finding-expansion', value: null, description: 'Contratos sem fiscalização adequada', risk: 'critical', type: 'red' },
+  ]
+};
+
+// D3 Force Simulation
+let simulation;
+let svg, g, nodes, links, labels, tooltips;
+let selectedNode = null;
+let currentFilter = 'all';
+let searchTerm = '';
+
+function initializeGraph() {
+  const container = document.getElementById('graph-container');
+  const width = container.clientWidth;
+  const height = container.clientHeight;
+
+  // SVG Setup
+  svg = d3.select('#graph-container')
+    .append('svg')
+    .attr('width', width)
+    .attr('height', height);
+
+  // Add zoom behavior
+  const zoom = d3.zoom()
+    .on('zoom', (event) => {
+      g.attr('transform', event.transform);
+    });
+
+  svg.call(zoom);
+
+  g = svg.append('g');
+
+  // Force simulation
+  simulation = d3.forceSimulation(networkData.nodes)
+    .force('link', d3.forceLink(networkData.links)
+      .id(d => d.id)
+      .distance(d => {
+        const value = d.value || 30000000;
+        return Math.max(80, Math.min(300, value / 500000));
+      })
+      .strength(0.3))
+    .force('charge', d3.forceManyBody()
+      .strength(-400)
+      .distanceMax(800))
+    .force('center', d3.forceCenter(width / 2, height / 2))
+    .force('collision', d3.forceCollide()
+      .radius(d => getNodeRadius(d) + 10))
+    .alpha(1)
+    .alphaDecay(0.005);
+
+  // Draw links
+  links = g.selectAll('.link')
+    .data(networkData.links)
+    .enter()
+    .append('line')
+    .attr('class', d => `link ${d.type}`)
+    .attr('stroke-width', d => Math.max(1, Math.min(6, (d.value || 1000000) / 8000000)));
+
+  // Draw nodes
+  nodes = g.selectAll('.node')
+    .data(networkData.nodes)
+    .enter()
+    .append('circle')
+    .attr('class', 'node')
+    .attr('r', d => getNodeRadius(d))
+    .attr('fill', d => getNodeColor(d))
+    .on('click', selectNode)
+    .on('mouseover', mouseoverNode)
+    .on('mouseout', mouseoutNode)
+    .call(d3.drag()
+      .on('start', dragstarted)
+      .on('drag', dragged)
+      .on('end', dragended));
+
+  // Draw labels
+  labels = g.selectAll('.node-label')
+    .data(networkData.nodes)
+    .enter()
+    .append('text')
+    .attr('class', 'node-label')
+    .text(d => d.name)
+    .attr('font-size', d => d.type === 'people' ? '0.6rem' : '0.7rem');
+
+  // Update positions on tick
+  simulation.on('tick', () => {
+    links
+      .attr('x1', d => d.source.x)
+      .attr('y1', d => d.source.y)
+      .attr('x2', d => d.target.x)
+      .attr('y2', d => d.target.y);
+
+    nodes
+      .attr('cx', d => d.x)
+      .attr('cy', d => d.y);
+
+    labels
+      .attr('x', d => d.x)
+      .attr('y', d => d.y);
+  });
+
+  // Event listeners
+  document.getElementById('search-input').addEventListener('input', (e) => {
+    searchTerm = e.target.value.toLowerCase();
+    highlightSearchResults();
+  });
+
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      e.target.classList.add('active');
+      currentFilter = e.target.dataset.filter;
+      updateNodeVisibility();
+    });
+  });
+
+  // Initial layout animation
+  setTimeout(() => simulation.alpha(0.3).restart(), 100);
+}
+
+function getNodeRadius(d) {
+  if (d.type === 'people') return 8;
+  if (d.type === 'findings') return 12;
+  if (d.connections > 5) return 20;
+  if (d.connections > 3) return 16;
+  return 12;
+}
+
+function getNodeColor(d) {
+  if (d.type === 'public') return 'var(--blue)';
+  if (d.type === 'private') return 'var(--amber)';
+  if (d.type === 'people') return 'var(--purple)';
+  if (d.type === 'findings') return 'var(--red)';
+  return 'var(--accent)';
+}
+
+function selectNode(event, d) {
+  selectedNode = d;
+  updateNodeSelection();
+  showNodeDetails(d);
+}
+
+function updateNodeSelection() {
+  nodes.classed('selected', n => n === selectedNode)
+    .classed('dimmed', n => selectedNode && n !== selectedNode && !isConnected(n, selectedNode))
+    .classed('highlighted', n => !selectedNode || n === selectedNode || isConnected(n, selectedNode));
+
+  links.classed('dimmed', l => selectedNode && l.source !== selectedNode && l.target !== selectedNode)
+    .classed('highlighted', l => !selectedNode || l.source === selectedNode || l.target === selectedNode);
+
+  labels.classed('dimmed', n => selectedNode && n !== selectedNode && !isConnected(n, selectedNode));
+}
+
+function isConnected(a, b) {
+  return networkData.links.some(l =>
+    (l.source.id === a.id && l.target.id === b.id) ||
+    (l.source.id === b.id && l.target.id === a.id)
+  );
+}
+
+function mouseoverNode(event, d) {
+  nodes.classed('dimmed', n => n !== d && !isConnected(n, d))
+    .classed('highlighted', n => n === d || isConnected(n, d));
+
+  links.classed('dimmed', l => l.source !== d && l.target !== d)
+    .classed('highlighted', l => l.source === d || l.target === d);
+
+  labels.classed('dimmed', n => n !== d && !isConnected(n, d));
+
+  showTooltip(event, d);
+}
+
+function mouseoutNode() {
+  if (!selectedNode) {
+    nodes.classed('dimmed', false).classed('highlighted', false);
+    links.classed('dimmed', false).classed('highlighted', false);
+    labels.classed('dimmed', false);
+  }
+  hideTooltip();
+}
+
+function showTooltip(event, d) {
+  const tooltip = document.createElement('div');
+  tooltip.className = 'tooltip';
+
+  let content = `<div class="tooltip-title">${d.name}</div>`;
+
+  if (d.contracts) {
+    content += `<div class="tooltip-value">€${(d.contracts / 1000000).toFixed(1)}M</div>`;
+  }
+  if (d.value) {
+    content += `<div class="tooltip-value">€${(d.value / 1000000).toFixed(1)}M</div>`;
+  }
+  if (d.type === 'people' && d.risk === 'critical') {
+    content += `<div style="color: var(--red); font-size: 0.65rem; margin-top: 0.3rem;">⚠ Arguido</div>`;
+  }
+
+  tooltip.innerHTML = content;
+  document.body.appendChild(tooltip);
+
+  const x = event.pageX + 10;
+  const y = event.pageY + 10;
+  tooltip.style.left = x + 'px';
+  tooltip.style.top = y + 'px';
+}
+
+function hideTooltip() {
+  const tooltip = document.querySelector('.tooltip');
+  if (tooltip) tooltip.remove();
+}
+
+function showNodeDetails(d) {
+  const panel = document.getElementById('info-panel');
+  const content = document.getElementById('panel-content');
+
+  let html = `
+    <div class="info-entity-type">${getEntityTypeLabel(d.type)}</div>
+    <div class="info-entity-name">${d.name}</div>
+
+    <div class="info-stat">
+      <div class="info-stat-item">
+        <div class="info-stat-value">${d.connections || 0}</div>
+        <div class="info-stat-label">Ligações</div>
+      </div>
+      <div class="info-stat-item">
+        <div class="info-stat-value">${d.contracts ? '€' + (d.contracts / 1000000).toFixed(1) + 'M' : 'N/A'}</div>
+        <div class="info-stat-label">Total Contratos</div>
+      </div>
+    </div>
+  `;
+
+  if (d.risk) {
+    html += `
+      <div class="info-risk">
+        <span class="info-risk-title">Nível de Risco</span>
+        <span class="risk-level ${d.risk}">${d.risk.toUpperCase()}</span>
+      </div>
+    `;
+  }
+
+  // Get connected entities
+  const connected = networkData.links.filter(l =>
+    l.source.id === d.id || l.target.id === d.id
+  );
+
+  if (connected.length > 0) {
+    html += `<span class="info-connections-title">Ligações Relevantes (${connected.length})</span><div class="info-connections">`;
+
+    connected.forEach(link => {
+      const targetNode = link.source.id === d.id ? link.target : link.source;
+      const riskClass = link.risk === 'critical' ? 'red' : (link.risk === 'high' ? 'orange' : '');
+
+      html += `
+        <div class="connection-item ${riskClass}">
+          <span class="connection-target">${targetNode.name}</span>
+          ${link.value ? `<span class="connection-value">€${(link.value / 1000000).toFixed(1)}M</span>` : ''}
+          <span class="connection-value">${link.description}</span>
+        </div>
+      `;
+    });
+
+    html += `</div>`;
+  }
+
+  html += `
+    <div class="info-footer">
+      <p>Para mais informações sobre as investigações, visite as páginas de análise detalhada.</p>
+      <p style="margin-top: 0.8rem;"><a href="index.html">Voltar ao índice</a></p>
+    </div>
+  `;
+
+  content.innerHTML = html;
+  panel.classList.add('open');
+}
+
+function closePanel() {
+  document.getElementById('info-panel').classList.remove('open');
+  selectedNode = null;
+  updateNodeSelection();
+}
+
+function getEntityTypeLabel(type) {
+  const labels = {
+    'public': 'Entidade Pública',
+    'private': 'Empresa Privada',
+    'people': 'Pessoa / Diretor',
+    'findings': 'Achado Crítico'
+  };
+  return labels[type] || type;
+}
+
+function highlightSearchResults() {
+  if (!searchTerm) {
+    nodes.classed('dimmed', false).classed('highlighted', false);
+    labels.classed('dimmed', false);
+    return;
+  }
+
+  const matches = networkData.nodes.filter(n =>
+    n.name.toLowerCase().includes(searchTerm)
+  );
+
+  nodes.classed('dimmed', n => !matches.includes(n))
+    .classed('highlighted', n => matches.includes(n));
+
+  labels.classed('dimmed', n => !matches.includes(n));
+
+  // Zoom to first match
+  if (matches.length > 0) {
+    const node = matches[0];
+    svg.transition().duration(750).call(
+      d3.zoom().transform,
+      d3.zoomIdentity
+        .translate(window.innerWidth / 2, window.innerHeight / 2)
+        .scale(2)
+        .translate(-node.x, -node.y)
+    );
+  }
+}
+
+function updateNodeVisibility() {
+  nodes.style('display', d => {
+    if (currentFilter === 'all') return 'block';
+    return d.type === currentFilter ? 'block' : 'none';
+  });
+
+  labels.style('display', d => {
+    if (currentFilter === 'all') return 'block';
+    return d.type === currentFilter ? 'block' : 'none';
+  });
+
+  links.style('display', l => {
+    if (currentFilter === 'all') return 'block';
+    const sourceVisible = l.source.type === currentFilter;
+    const targetVisible = l.target.type === currentFilter;
+    return sourceVisible || targetVisible ? 'block' : 'none';
+  });
+}
+
+function dragstarted(event, d) {
+  if (!event.active) simulation.alphaTarget(0.3).restart();
+  d.fx = d.x;
+  d.fy = d.y;
+}
+
+function dragged(event, d) {
+  d.fx = event.x;
+  d.fy = event.y;
+}
+
+function dragended(event, d) {
+  if (!event.active) simulation.alphaTarget(0);
+  d.fx = null;
+  d.fy = null;
+}
+
+// Initialize on load
+window.addEventListener('load', () => {
+  setTimeout(initializeGraph, 100);
+});
+
+// Handle window resize
+window.addEventListener('resize', () => {
+  // Restart simulation with new bounds
+  const container = document.getElementById('graph-container');
+  svg.attr('width', container.clientWidth)
+    .attr('height', container.clientHeight);
+
+  simulation.force('center', d3.forceCenter(
+    container.clientWidth / 2,
+    container.clientHeight / 2
+  ));
+});
+</script>
+
+</body>
+</html>

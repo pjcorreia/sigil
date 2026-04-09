@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIGIL | Network Map</title>
+<meta property="og:title" content="SIGIL — Network Map">
+<meta property="og:description" content="Interactive visualization of connections between entities in Portuguese public procurement">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://sigil.pt/og-image.png">
+<meta property="og:url" content="https://sigil.pt/network.html">
+<meta property="og:site_name" content="SIGIL">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="SIGIL — Network Map">
+<meta name="twitter:description" content="Interactive visualization of connections between entities in Portuguese public procurement">
+<meta name="twitter:image" content="https://sigil.pt/og-image.png">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+  :root {
+    --bg-primary: #0a0f1a;
+    --bg-secondary: #111827;
+    --bg-card: #1a2235;
+    --bg-card-hover: #1f2a40;
+    --accent: #00ff88;
+    --accent-dim: #00ff8833;
+    --accent-glow: #00ff8822;
+    --red: #ff4757;
+    --red-dim: #ff475722;
+    --blue: #3b82f6;
+    --amber: #f59e0b;
+    --purple: #8b5cf6;
+    --text-primary: #e8eaf0;
+    --text-secondary: #8892a8;
+    --text-muted: #4a5568;
+    --border: #1e2a3a;
+    --border-accent: #00ff8844;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    overflow: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 255, 136, 0.015) 2px,
+      rgba(0, 255, 136, 0.015) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* === NAVIGATION === */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(10, 15, 26, 0.95);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+  }
+
+  .nav-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+  }
+
+  .nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+  }
+
+  .nav-brand .logo {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: var(--accent);
+    letter-spacing: 3px;
+  }
+
+  .nav-brand .tagline {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+    flex: 1;
+    margin-left: 3rem;
+  }
+
+  .nav-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--accent); }
+
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .lang-toggle {
+    display: flex;
+    gap: 0;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .lang-toggle a {
+    padding: 4px 10px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-decoration: none;
+    color: var(--text-muted);
+    transition: all 0.2s;
+  }
+
+  .lang-toggle a.active {
+    background: var(--accent);
+    color: var(--bg-primary);
+  }
+
+  .lang-toggle a:not(.active):hover {
+    color: var(--accent);
+    background: var(--accent-dim);
+  }
+
+  /* === MAIN CONTENT === */
+  #graph {
+    position: fixed;
+    top: 60px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: calc(100vh - 60px);
+  }
+
+  svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .node {
+    stroke: var(--text-primary);
+    stroke-width: 2px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .node:hover {
+    stroke-width: 3px;
+    filter: drop-shadow(0 0 12px rgba(0, 255, 136, 0.6));
+  }
+
+  .node.public-entity {
+    fill: var(--blue);
+  }
+
+  .node.private-company {
+    fill: var(--amber);
+  }
+
+  .node.person {
+    fill: var(--purple);
+  }
+
+  .node.finding {
+    fill: var(--red);
+  }
+
+  .link {
+    stroke: var(--border);
+    stroke-opacity: 0.6;
+    transition: all 0.2s;
+  }
+
+  .link.unreported {
+    stroke: var(--red);
+    stroke-opacity: 0.8;
+    stroke-dasharray: 5,5;
+  }
+
+  .link.active {
+    stroke: var(--accent);
+    stroke-opacity: 1;
+    stroke-width: 3px;
+    filter: drop-shadow(0 0 8px rgba(0, 255, 136, 0.5));
+  }
+
+  .node-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    pointer-events: none;
+    fill: var(--text-primary);
+    text-anchor: middle;
+    dominant-baseline: middle;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .node.selected .node-label,
+  .node:hover .node-label {
+    opacity: 1;
+  }
+
+  /* === SEARCH BAR === */
+  .search-container {
+    position: fixed;
+    top: 80px;
+    left: 20px;
+    z-index: 50;
+  }
+
+  .search-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    color: var(--text-primary);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    width: 220px;
+    transition: all 0.2s;
+  }
+
+  .search-box:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 12px rgba(0, 255, 136, 0.3);
+  }
+
+  /* === FILTER BUTTONS === */
+  .filter-container {
+    position: fixed;
+    top: 135px;
+    left: 20px;
+    z-index: 50;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .filter-btn {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .filter-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .filter-btn.active {
+    background: var(--accent);
+    color: var(--bg-primary);
+    border-color: var(--accent);
+  }
+
+  /* === LEGEND === */
+  .legend {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background: rgba(26, 34, 53, 0.95);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    z-index: 50;
+    backdrop-filter: blur(10px);
+    max-width: 250px;
+  }
+
+  .legend-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--accent);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    display: block;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    font-size: 0.85rem;
+  }
+
+  .legend-item:last-child {
+    margin-bottom: 0;
+  }
+
+  .legend-swatch {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid var(--text-primary);
+    flex-shrink: 0;
+  }
+
+  .legend-swatch.diamond {
+    border-radius: 0;
+    transform: rotate(45deg);
+  }
+
+  .legend-label {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+  }
+
+  /* === TOOLTIP === */
+  .tooltip {
+    position: fixed;
+    background: rgba(26, 34, 53, 0.98);
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    padding: 12px 16px;
+    pointer-events: none;
+    z-index: 60;
+    display: none;
+    backdrop-filter: blur(10px);
+    max-width: 300px;
+    box-shadow: 0 8px 32px rgba(0, 255, 136, 0.2);
+  }
+
+  .tooltip.visible {
+    display: block;
+  }
+
+  .tooltip-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    color: var(--accent);
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+  }
+
+  .tooltip-type {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+  }
+
+  .tooltip-info {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+  }
+
+  /* === INFO PANEL === */
+  .info-panel {
+    position: fixed;
+    top: 60px;
+    right: 0;
+    width: 0;
+    height: calc(100vh - 60px);
+    background: rgba(26, 34, 53, 0.98);
+    border-left: 1px solid var(--border);
+    overflow-y: auto;
+    z-index: 40;
+    transition: width 0.3s ease;
+    backdrop-filter: blur(10px);
+  }
+
+  .info-panel.open {
+    width: 380px;
+  }
+
+  .panel-header {
+    padding: 20px;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: rgba(26, 34, 53, 0.95);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .panel-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 1px;
+  }
+
+  .panel-close {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+
+  .panel-close:hover {
+    color: var(--accent);
+  }
+
+  .panel-content {
+    padding: 20px;
+  }
+
+  .panel-item {
+    margin-bottom: 20px;
+  }
+
+  .panel-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--accent);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  .panel-value {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  .panel-value strong {
+    color: var(--text-primary);
+  }
+
+  .panel-links {
+    border-top: 1px solid var(--border);
+    margin-top: 20px;
+    padding-top: 20px;
+  }
+
+  .panel-link {
+    display: inline-block;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--accent);
+    padding: 8px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-family: 'JetBrains Mono', monospace;
+    transition: all 0.2s;
+    margin-right: 8px;
+    margin-bottom: 8px;
+  }
+
+  .panel-link:hover {
+    background: var(--accent);
+    color: var(--bg-primary);
+    border-color: var(--accent);
+  }
+
+  /* === RESPONSIVE === */
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .info-panel.open { width: 100%; }
+    .search-box { width: 180px; }
+    .legend { bottom: auto; top: 80px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="en.html" class="nav-brand">
+      <span class="logo">SIGIL</span>
+      <span class="tagline">Signal Intelligence Lab</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="en.html">← Back to Investigations</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="mailto:denuncia@sigil.pt">Report</a></li>
+    </ul>
+    <div class="nav-right">
+      <div class="lang-toggle">
+        <a href="rede.html">PT</a>
+        <a href="network.html" class="active">EN</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div id="graph"></div>
+
+<div class="search-container">
+  <input type="text" id="search" class="search-box" placeholder="Search entities...">
+</div>
+
+<div class="filter-container">
+  <button class="filter-btn active" data-filter="all">All Entities</button>
+  <button class="filter-btn" data-filter="public">Public</button>
+  <button class="filter-btn" data-filter="private">Private</button>
+  <button class="filter-btn" data-filter="person">People</button>
+</div>
+
+<div class="legend">
+  <span class="legend-title">Entity Types</span>
+  <div class="legend-item">
+    <div class="legend-swatch" style="background: var(--blue);"></div>
+    <span class="legend-label">Public Entity</span>
+  </div>
+  <div class="legend-item">
+    <div class="legend-swatch" style="background: var(--amber);"></div>
+    <span class="legend-label">Private Company</span>
+  </div>
+  <div class="legend-item">
+    <div class="legend-swatch" style="background: var(--purple);"></div>
+    <span class="legend-label">Person / Director</span>
+  </div>
+  <div class="legend-item">
+    <div class="legend-swatch" style="background: var(--red);"></div>
+    <span class="legend-label">Finding / Issue</span>
+  </div>
+</div>
+
+<div class="tooltip" id="tooltip"></div>
+
+<div class="info-panel" id="infoPanel">
+  <div class="panel-header">
+    <div>
+      <div class="panel-title" id="panelTitle">Entity Details</div>
+    </div>
+    <button class="panel-close" id="panelClose">&times;</button>
+  </div>
+  <div class="panel-content" id="panelContent">
+    <p style="color: var(--text-muted);">Click an entity to view details</p>
+  </div>
+</div>
+
+<script>
+// Network data
+const nodes = [
+  // Public entities
+  { id: "SUCH", name: "SUCH", type: "public", category: "Hospital Shared Services", amount: "€45.5M" },
+  { id: "IP", name: "Infraestruturas de Portugal", type: "public", category: "Infrastructure", amount: "109 awards" },
+  { id: "eSPap", name: "eSPap", type: "public", category: "E-governance", amount: "IT systems" },
+  { id: "FCT", name: "FCT", type: "public", category: "Science Foundation", amount: "€120M+" },
+  { id: "Turismo", name: "Turismo de Portugal", type: "public", category: "Tourism", amount: "€20M+" },
+  { id: "SPMS", name: "SPMS", type: "public", category: "Health Shared Services", amount: "€17.2M+" },
+  { id: "MOH", name: "Ministry of Health", type: "public", category: "Government", amount: "—" },
+  { id: "HSJ", name: "Hospital de São José", type: "public", category: "Hospital", amount: "—" },
+  { id: "CHLC", name: "CHLC", type: "public", category: "Hospital", amount: "€19.3M" },
+
+  // Private companies
+  { id: "Siemens", name: "Siemens", type: "private", category: "Technology", amount: "109 direct awards" },
+  { id: "Elsevier", name: "Elsevier", type: "private", category: "Academic Publishing", amount: "€120M+ monopoly" },
+  { id: "Dentsu", name: "Dentsu", type: "private", category: "Advertising", amount: "€20M+" },
+  { id: "Autoeuropa", name: "Autoeuropa (VW)", type: "private", category: "Automotive", amount: "€45.5M" },
+  { id: "Fine", name: "Fine Facility", type: "private", category: "Cleaning", amount: "Multiple contracts" },
+  { id: "2SS", name: "2SS Security", type: "private", category: "Security", amount: "Security contracts" },
+  { id: "Securitas", name: "Securitas", type: "private", category: "Security", amount: "Contracts" },
+  { id: "Prosegur", name: "Prosegur", type: "private", category: "Security", amount: "Contracts" },
+
+  // People
+  { id: "PauloSousa", name: "Paulo Sousa", type: "person", category: "SUCH President", amount: "EU fraud suspect" },
+  { id: "AdelinoMendes", name: "Adelino Gonçalves", type: "person", category: "Somos Ambiente VP", amount: "Civil protection" },
+];
+
+const links = [
+  // SUCH connections
+  { source: "SUCH", target: "Autoeuropa", value: 45.5, unreported: true, label: "€45.5M contract" },
+  { source: "SUCH", target: "HSJ", value: 5, label: "Shared services" },
+  { source: "SUCH", target: "CHLC", value: 19.3, unreported: true, label: "€19.3M debt" },
+  { source: "SUCH", target: "MOH", value: 3, label: "Government oversight" },
+  { source: "SUCH", target: "PauloSousa", value: 2, unreported: true, label: "President" },
+  { source: "SUCH", target: "AdelinoMendes", value: 2, unreported: true, label: "VP connection" },
+
+  // Siemens connections
+  { source: "Siemens", target: "IP", value: 109, unreported: true, label: "109 direct awards" },
+  { source: "Siemens", target: "eSPap", value: 15, label: "IT systems" },
+
+  // Elsevier connections
+  { source: "Elsevier", target: "FCT", value: 120, unreported: true, label: "€120M+ monopoly" },
+
+  // Dentsu connections
+  { source: "Dentsu", target: "Turismo", value: 20, unreported: true, label: "€20M+ pipeline" },
+
+  // Facility/Security connections
+  { source: "Fine", target: "SPMS", value: 10, label: "Cleaning contracts" },
+  { source: "2SS", target: "SPMS", value: 8, label: "Security contracts" },
+  { source: "Securitas", target: "SPMS", value: 6, label: "Security" },
+  { source: "Securitas", target: "MOH", value: 4, label: "Public contracts" },
+  { source: "Prosegur", target: "MOH", value: 5, label: "Public contracts" },
+  { source: "Prosegur", target: "SPMS", value: 4, label: "Security" },
+
+  // Health connections
+  { source: "MOH", target: "HSJ", value: 2, label: "Government control" },
+  { source: "MOH", target: "CHLC", value: 2, label: "Government control" },
+  { source: "SPMS", target: "HSJ", value: 3, label: "Services" },
+  { source: "SPMS", target: "CHLC", value: 3, label: "Services" },
+];
+
+const width = window.innerWidth;
+const height = window.innerHeight - 60;
+
+const svg = d3.select("#graph").append("svg")
+  .attr("width", width)
+  .attr("height", height);
+
+const g = svg.append("g");
+
+const zoom = d3.zoom()
+  .on("zoom", (event) => {
+    g.attr("transform", event.transform);
+  });
+
+svg.call(zoom);
+
+const simulation = d3.forceSimulation(nodes)
+  .force("link", d3.forceLink(links)
+    .id(d => d.id)
+    .distance(d => 80 + (d.value / 10)))
+  .force("charge", d3.forceManyBody().strength(-300))
+  .force("center", d3.forceCenter(width / 2, height / 2))
+  .force("collide", d3.forceCollide().radius(30));
+
+const link = g.selectAll(".link")
+  .data(links)
+  .enter()
+  .append("line")
+  .attr("class", d => `link ${d.unreported ? 'unreported' : ''}`)
+  .attr("stroke-width", d => Math.sqrt(d.value / 10));
+
+const node = g.selectAll(".node")
+  .data(nodes)
+  .enter()
+  .append("circle")
+  .attr("class", d => `node ${d.type}`)
+  .attr("r", d => d.type === "person" ? 12 : 20)
+  .call(d3.drag()
+    .on("start", dragstarted)
+    .on("drag", dragged)
+    .on("end", dragended))
+  .on("click", (event, d) => showPanel(d))
+  .on("mouseover", (event, d) => showTooltip(event, d))
+  .on("mouseout", hideTooltip);
+
+const labels = g.selectAll(".node-label")
+  .data(nodes)
+  .enter()
+  .append("text")
+  .attr("class", "node-label")
+  .text(d => d.id.length > 12 ? d.id.substring(0, 10) + "..." : d.id)
+  .attr("dy", "0.3em");
+
+simulation.on("tick", () => {
+  link
+    .attr("x1", d => d.source.x)
+    .attr("y1", d => d.source.y)
+    .attr("x2", d => d.target.x)
+    .attr("y2", d => d.target.y);
+
+  node
+    .attr("cx", d => d.x)
+    .attr("cy", d => d.y);
+
+  labels
+    .attr("x", d => d.x)
+    .attr("y", d => d.y);
+});
+
+// Search functionality
+document.getElementById("search").addEventListener("input", (e) => {
+  const query = e.target.value.toLowerCase();
+  node.classed("selected", d => {
+    const match = d.name.toLowerCase().includes(query) || d.id.toLowerCase().includes(query);
+    if (match) {
+      simulation.alpha(0.3).restart();
+    }
+    return match;
+  });
+
+  link.classed("active", d => {
+    const match = (d.source.name.toLowerCase().includes(query) || d.source.id.toLowerCase().includes(query)) ||
+                  (d.target.name.toLowerCase().includes(query) || d.target.id.toLowerCase().includes(query));
+    return match;
+  });
+});
+
+// Filter functionality
+document.querySelectorAll(".filter-btn").forEach(btn => {
+  btn.addEventListener("click", (e) => {
+    document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+    e.target.classList.add("active");
+
+    const filter = e.target.dataset.filter;
+    node.style("opacity", d => {
+      if (filter === "all") return 1;
+      return d.type === filter ? 1 : 0.1;
+    });
+
+    link.style("opacity", d => {
+      if (filter === "all") return 0.6;
+      const match = d.source.type === filter || d.target.type === filter;
+      return match ? 0.6 : 0.1;
+    });
+  });
+});
+
+// Node selection and highlighting
+node.on("click", function(event, d) {
+  event.stopPropagation();
+  node.classed("selected", n => n.id === d.id);
+  link.classed("active", l => l.source.id === d.id || l.target.id === d.id);
+});
+
+svg.on("click", () => {
+  node.classed("selected", false);
+  link.classed("active", false);
+});
+
+// Tooltip
+const tooltip = document.getElementById("tooltip");
+
+function showTooltip(event, d) {
+  tooltip.classList.add("visible");
+  tooltip.innerHTML = `
+    <div class="tooltip-name">${d.name}</div>
+    <div class="tooltip-type">${d.type}</div>
+    <div class="tooltip-info">
+      <strong>${d.category}</strong><br>
+      ${d.amount}
+    </div>
+  `;
+
+  const rect = event.target.getBoundingClientRect();
+  tooltip.style.left = (rect.left + 30) + "px";
+  tooltip.style.top = (rect.top - 10) + "px";
+}
+
+function hideTooltip() {
+  tooltip.classList.remove("visible");
+}
+
+// Info panel
+const infoPanel = document.getElementById("infoPanel");
+const panelContent = document.getElementById("panelContent");
+const panelClose = document.getElementById("panelClose");
+
+function showPanel(d) {
+  const connections = links.filter(l => l.source.id === d.id || l.target.id === d.id);
+
+  let html = `
+    <div class="panel-item">
+      <span class="panel-label">Name</span>
+      <div class="panel-value">${d.name}</div>
+    </div>
+    <div class="panel-item">
+      <span class="panel-label">Type</span>
+      <div class="panel-value">${d.type.toUpperCase()}</div>
+    </div>
+    <div class="panel-item">
+      <span class="panel-label">Category</span>
+      <div class="panel-value">${d.category}</div>
+    </div>
+    <div class="panel-item">
+      <span class="panel-label">Amount / Value</span>
+      <div class="panel-value">${d.amount}</div>
+    </div>
+  `;
+
+  if (connections.length > 0) {
+    html += `
+      <div class="panel-item">
+        <span class="panel-label">Connections (${connections.length})</span>
+        <div class="panel-value">
+          ${connections.map(c => {
+            const other = c.source.id === d.id ? c.target : c.source;
+            return `<div style="margin: 6px 0;">
+              <strong>${other.name}</strong><br>
+              <span style="font-size: 0.75rem; color: var(--text-muted);">${c.label}</span>
+            </div>`;
+          }).join("")}
+        </div>
+      </div>
+    `;
+  }
+
+  // Add investigation links
+  if (d.id === "SUCH") {
+    html += `
+      <div class="panel-links">
+        <a href="such-deep-dive.html" class="panel-link">View Deep Dive</a>
+        <a href="mailto:denuncia@sigil.pt" class="panel-link">Report</a>
+      </div>
+    `;
+  }
+
+  panelContent.innerHTML = html;
+  infoPanel.classList.add("open");
+}
+
+panelClose.addEventListener("click", () => {
+  infoPanel.classList.remove("open");
+});
+
+// Initial zoom to fit
+const scale = Math.min(width, height) / 4;
+svg.transition().duration(1000).call(
+  zoom.transform,
+  d3.zoomIdentity.translate(width / 2, height / 2).scale(0.8)
+);
+
+// Drag functions
+function dragstarted(event, d) {
+  if (!event.active) simulation.alphaTarget(0.3).restart();
+  d.fx = d.x;
+  d.fy = d.y;
+}
+
+function dragged(event, d) {
+  d.fx = event.x;
+  d.fy = event.y;
+}
+
+function dragended(event, d) {
+  if (!event.active) simulation.alphaTarget(0);
+  d.fx = null;
+  d.fy = null;
+}
+
+// Responsive
+window.addEventListener("resize", () => {
+  const newWidth = window.innerWidth;
+  const newHeight = window.innerHeight - 60;
+  svg.attr("width", newWidth).attr("height", newHeight);
+  simulation.force("center", d3.forceCenter(newWidth / 2, newHeight / 2));
+});
+</script>
+
+</body>
+</html>
