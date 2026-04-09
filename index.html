@@ -486,6 +486,90 @@
     border-radius: 3px;
   }
 
+  /* === REPORT / CORRECTION SYSTEM === */
+  .report-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    background: transparent;
+    border: 1px solid var(--red);
+    border-radius: 4px;
+    color: var(--red);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    margin-top: 0.8rem;
+  }
+  .report-btn:hover {
+    background: rgba(255,71,87,0.15);
+    box-shadow: 0 0 12px rgba(255,71,87,0.2);
+  }
+  .report-btn-icon { font-size: 0.8rem; }
+
+  .correction-banner {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-top: 2rem;
+  }
+  .correction-banner h3 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    color: var(--accent);
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+  }
+  .correction-banner p {
+    color: var(--text-secondary);
+    font-size: 0.88rem;
+    margin-bottom: 1rem;
+    line-height: 1.7;
+  }
+  .correction-channels {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  .correction-channel {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.2rem;
+    text-decoration: none;
+    transition: all 0.2s;
+    display: block;
+  }
+  .correction-channel:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0,212,170,0.08);
+  }
+  .correction-channel .ch-icon {
+    font-size: 1.4rem;
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+  .correction-channel .ch-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--accent);
+    letter-spacing: 1px;
+    margin-bottom: 0.3rem;
+  }
+  .correction-channel .ch-desc {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
   .deep-dive-link {
     display: inline-block;
     margin-top: 1.2rem;
@@ -846,6 +930,7 @@
       <li><a href="#timeline">Timeline</a></li>
       <li><a href="#downloads">Downloads</a></li>
       <li><a href="#sources">Sources</a></li>
+      <li><a href="#corrections" style="color:var(--red)">Report Error</a></li>
     </ul>
     <div class="nav-status">
       <div class="dot"></div>
@@ -860,6 +945,8 @@
   <div class="ai-disclaimer-text">
     <strong>AI-GENERATED CONTENT &mdash; VERIFY ALL CLAIMS</strong><br>
     This entire website was generated using artificial intelligence (Claude, by Anthropic). While every effort was made to reference real, publicly available sources, <strong style="color:var(--red)">AI can produce inaccuracies, hallucinations, and errors</strong>. All findings, data points, and conclusions presented here should be independently verified before being cited, shared, or acted upon. The <a href="#sources">full list of sources</a> is provided below for cross-checking. This site does not constitute legal advice, formal accusation, or definitive proof of wrongdoing. Patterns identified are indicators warranting further investigation &mdash; not conclusions.
+    <br><br>
+    <strong>Found an error?</strong> &nbsp; <a href="https://github.com/pjcorreia/sigil/issues/new?labels=correction&template=correction.md&title=%5BCorrection%5D+" target="_blank" class="report-btn" style="display:inline-flex; margin-top:0;"><span class="report-btn-icon">&#9873;</span> Report on GitHub</a> &nbsp; <a href="mailto:pjcorreia@gmail.com?subject=%5BSIGIL%20Correction%5D&body=Page%3A%20%0ASection%3A%20%0AWhat%20is%20incorrect%3A%20%0ACorrect%20information%3A%20%0ASource%2Fproof%3A%20" class="report-btn" style="display:inline-flex; margin-top:0; border-color:var(--accent); color:var(--accent);"><span class="report-btn-icon">&#9993;</span> Email Correction</a>
   </div>
 </div>
 
@@ -1837,6 +1924,42 @@
       </ul>
     </div>
 
+  </div>
+</section>
+
+<!-- CORRECTIONS & REPORTING -->
+<section id="corrections">
+  <div class="section-header">
+    <div class="section-label">// Help Us Get It Right</div>
+    <div class="section-title">Report Errors &amp; Corrections</div>
+  </div>
+
+  <div class="correction-banner">
+    <h3>&#9888;&#65039; This site is AI-generated and may contain errors</h3>
+    <p>We take accuracy seriously. Because this site was built entirely by AI, some facts, figures, dates, or source links may be incorrect, outdated, or fabricated (a known AI limitation called "hallucination"). If you spot something wrong, please let us know. Every correction makes this resource more reliable for everyone.</p>
+    <p style="color:var(--text-primary)"><strong>What to report:</strong> incorrect facts or figures, broken or wrong source links, misattributed claims, outdated information, missing context that changes the meaning of a finding, or anything that is misleading.</p>
+
+    <div class="correction-channels">
+      <a href="https://github.com/pjcorreia/sigil/issues/new?labels=correction&title=%5BCorrection%5D+" target="_blank" class="correction-channel">
+        <span class="ch-icon">&#128736;</span>
+        <div class="ch-title">GitHub Issue (Preferred)</div>
+        <div class="ch-desc">Open a public issue on our repo. Your correction will be visible to everyone and tracked transparently. Include the page, section, what's wrong, and what the correct information is (with sources if possible).</div>
+      </a>
+      <a href="mailto:pjcorreia@gmail.com?subject=%5BSIGIL%20Correction%5D&body=Page%3A%20%0ASection%3A%20%0AWhat%20is%20incorrect%3A%20%0ACorrect%20information%3A%20%0ASource%2Fproof%3A%20" class="correction-channel">
+        <span class="ch-icon">&#9993;&#65039;</span>
+        <div class="ch-title">Email</div>
+        <div class="ch-desc">Send a correction to pjcorreia@gmail.com. Please include the page name, the specific claim that is wrong, what the correct information is, and a link to a source if you have one.</div>
+      </a>
+      <a href="https://github.com/pjcorreia/sigil/issues?q=label%3Acorrection" target="_blank" class="correction-channel">
+        <span class="ch-icon">&#128269;</span>
+        <div class="ch-title">View Reported Corrections</div>
+        <div class="ch-desc">See all corrections that have been reported so far, and their status. We aim to review and fix confirmed errors within 48 hours.</div>
+      </a>
+    </div>
+
+    <p style="margin-top:1.5rem; font-size:0.82rem; color:var(--text-muted); border-top: 1px solid var(--border); padding-top: 1rem;">
+      <strong style="color:var(--accent)">Transparency commitment:</strong> When corrections are confirmed, we will update the affected pages and add a visible correction note. We will not silently edit content. The GitHub commit history serves as a public record of all changes made to this site.
+    </p>
   </div>
 </section>
 
