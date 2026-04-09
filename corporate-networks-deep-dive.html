@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIGIL | Corporate Networks — Deep Dive</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+  :root{--bg-primary:#0a0e17;--bg-secondary:#111827;--bg-card:#1a2235;--bg-card-hover:#1f2a40;--accent:#00d4aa;--accent-dim:#00d4aa33;--accent-glow:#00d4aa22;--red:#ff4757;--red-dim:#ff475722;--orange:#ffa502;--orange-dim:#ffa50222;--yellow:#eccc68;--text-primary:#e8eaf0;--text-secondary:#8892a8;--text-muted:#4a5568;--border:#1e2a3a;--border-accent:#00d4aa44}
+  *{margin:0;padding:0;box-sizing:border-box}body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg-primary);color:var(--text-primary);line-height:1.7;overflow-x:hidden}body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,212,170,0.015) 2px,rgba(0,212,170,0.015) 4px);pointer-events:none;z-index:9999}
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,14,23,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 2rem}.nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:60px}.nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none}.nav-brand .logo{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.3rem;color:var(--accent);letter-spacing:3px}.nav-brand .tagline{font-size:0.7rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase}.nav-links{display:flex;gap:2rem;list-style:none}.nav-links a{color:var(--text-secondary);text-decoration:none;font-size:0.85rem;font-weight:500;transition:color 0.2s}.nav-links a:hover{color:var(--accent)}.back-link{color:var(--accent)!important;font-family:'JetBrains Mono',monospace;font-size:0.8rem!important}
+  .deep-hero{padding:120px 2rem 60px;text-align:center;position:relative}.deep-hero::before{content:'';position:absolute;top:60px;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(circle,var(--orange-dim) 0%,transparent 70%);pointer-events:none}
+  .status-tag{font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:700;letter-spacing:1.5px;padding:3px 10px;border-radius:3px;text-transform:uppercase}.status-tag.unreported{background:rgba(255,71,87,0.15);color:var(--red);border:1px solid var(--red)}.risk-badge{font-family:'JetBrains Mono',monospace;font-size:0.65rem;font-weight:700;letter-spacing:1px;padding:4px 10px;border-radius:4px}.risk-badge.high{background:var(--orange-dim);color:var(--orange);border:1px solid var(--orange)}
+  .deep-hero h1{font-size:2.6rem;font-weight:700;line-height:1.2;margin:1rem 0;background:linear-gradient(135deg,var(--text-primary) 0%,var(--text-secondary) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}.deep-hero p{font-size:1.1rem;color:var(--text-secondary);max-width:700px;margin:0 auto;font-weight:300}.hero-badges{display:flex;gap:1rem;justify-content:center;margin-bottom:1rem}
+  .content{max-width:900px;margin:0 auto;padding:0 2rem 4rem}
+  .key-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin:2rem 0 3rem}.stat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:1.5rem;text-align:center}.stat-card .number{font-family:'JetBrains Mono',monospace;font-size:1.8rem;font-weight:700;color:var(--orange)}.stat-card .label{font-size:0.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+  .section-block{margin-bottom:3rem}.section-block h2{font-size:1.4rem;font-weight:700;color:var(--accent);margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border);font-family:'JetBrains Mono',monospace;letter-spacing:1px}.section-block h3{font-size:1.1rem;font-weight:600;color:var(--text-primary);margin:1.5rem 0 0.5rem}.section-block p{color:var(--text-secondary);font-size:0.92rem;margin-bottom:1rem}
+  .evidence-box{background:var(--bg-card);border-left:3px solid var(--red);border-radius:0 8px 8px 0;padding:1.2rem 1.5rem;margin:1rem 0}.evidence-box.orange{border-left-color:var(--orange)}.evidence-box.accent{border-left-color:var(--accent)}.evidence-box strong{color:var(--text-primary)}.evidence-box p{margin-bottom:0.3rem;color:var(--text-secondary);font-size:0.88rem}
+  .data-table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:0.85rem}.data-table th{text-align:left;padding:10px 14px;background:rgba(0,212,170,0.08);color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:0.7rem;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--border)}.data-table td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text-secondary)}.data-table tr:hover td{background:rgba(0,212,170,0.03)}
+  .source-list{list-style:none;margin:1rem 0}.source-list li{padding:0.5rem 0;border-bottom:1px solid var(--border)}.source-list a{color:var(--accent);text-decoration:none;font-size:0.85rem}.source-list a:hover{text-decoration:underline}.source-list .source-type{font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-left:0.5rem}
+  footer{text-align:center;padding:3rem 2rem;border-top:1px solid var(--border);color:var(--text-muted);font-size:0.8rem}
+  @media(max-width:768px){.deep-hero h1{font-size:1.8rem}.key-stats{grid-template-columns:repeat(2,1fr)}.nav-links{display:none}}
+</style>
+</head>
+<body>
+<nav><div class="nav-inner">
+  <a href="index.html" class="nav-brand"><span class="logo">SIGIL</span><span class="tagline">Signal Intelligence Lab</span></a>
+  <ul class="nav-links"><li><a href="index.html" class="back-link">&larr; Back to Investigations</a></li><li><a href="index.html#investigations">All Cases</a></li></ul>
+</div></nav>
+
+<div class="deep-hero">
+  <div class="hero-badges">
+    <span class="status-tag unreported">UNREPORTED</span>
+    <span class="risk-badge high">HIGH</span>
+  </div>
+  <h1>Corporate Networks &amp; Director Interlocks</h1>
+  <p>Shell companies with &euro;0 capital. Directors sitting on competing boards. A beneficial ownership register locked down from public access. The infrastructure of opacity that enables Portuguese procurement corruption.</p>
+</div>
+
+<div class="content">
+  <div class="key-stats">
+    <div class="stat-card"><div class="number">57/100</div><div class="label">PT Corruption Index</div></div>
+    <div class="stat-card"><div class="number">102</div><div class="label">Shell Companies (Op. Ambrosia)</div></div>
+    <div class="stat-card"><div class="number">&euro;78M+</div><div class="label">Cartel Fines (2022–2024)</div></div>
+    <div class="stat-card"><div class="number">2025</div><div class="label">RCBE Access Restricted</div></div>
+  </div>
+
+  <div class="section-block">
+    <h2>01 &mdash; Director Interlocks: Legal But Dangerous</h2>
+    <p>Portuguese law does not explicitly prohibit directors from sitting on the boards of multiple companies — even companies that bid on the same government contracts. This creates a structural vulnerability: individuals with fiduciary duties to multiple entities can share information, coordinate strategies, and align pricing across nominally independent competitors.</p>
+
+    <div class="evidence-box orange">
+      <strong>No prohibition. No disclosure requirement. No monitoring.</strong>
+      <p>Unlike the UK (where the Competition and Markets Authority actively monitors director interlocks) or the US (where Section 8 of the Clayton Act prohibits interlocking directorates between competing companies above certain thresholds), Portugal has no regulatory framework addressing this risk. Companies bidding on government contracts can share directors — and no one is checking.</p>
+    </div>
+  </div>
+
+  <div class="section-block">
+    <h2>02 &mdash; Operation Picoas: The &euro;100M+ Scheme</h2>
+    <p><strong>Operation Picoas</strong> documented a major corruption scheme involving an estimated 60–100 companies. The investigation revealed how corporate networks were used to generate false invoices and funnel public money through shell structures.</p>
+
+    <div class="evidence-box">
+      <strong>Alexandre Fonseca: &euro;380,000+ in false invoices.</strong>
+      <p>The former CEO of Altice/MEO (Portugal's largest telco) and Siemens board member was charged after receiving &euro;380,000+ through false invoicing schemes. The case exemplifies the revolving door between major corporations, government advisory positions, and procurement-adjacent roles.</p>
+    </div>
+
+    <p>The investigation alleged fraud exceeding &euro;100 million affecting government procurement, with the network of companies used to create the appearance of legitimate commercial transactions while actually serving as conduits for corrupt payments.</p>
+  </div>
+
+  <div class="section-block">
+    <h2>03 &mdash; Operation Ambrosia: The 102-Company Network</h2>
+    <p><strong>Operation Ambrosia</strong> revealed a network of <strong>102 companies</strong> — many with minimal capitalization — used to facilitate procurement fraud. The investigation demonstrated how easy it is to create shell companies in Portugal and use them to win government contracts, subcontract between network entities, and extract public money.</p>
+
+    <div class="evidence-box orange">
+      <strong>Low capital requirements enable shell creation.</strong>
+      <p>Portuguese company formation requires minimal capital (as low as &euro;1 for some entity types). Combined with the absence of automated network analysis tools in the commercial registry, this creates an environment where shell company networks can proliferate undetected. The 102 companies in Operation Ambrosia were identified only through lengthy criminal investigation — not through routine regulatory monitoring.</p>
+    </div>
+  </div>
+
+  <div class="section-block">
+    <h2>04 &mdash; The Beneficial Ownership Black Hole</h2>
+    <p>In October 2025, Portugal shifted its RCBE (Registo Central do Benefici&aacute;rio Efetivo — Central Beneficial Ownership Register) from public access to <strong>"legitimate interest" restricted access</strong>. This means journalists, researchers, and civil society organizations can no longer freely query who ultimately owns Portuguese companies.</p>
+
+    <div class="evidence-box">
+      <strong>A step backward in transparency — at the worst possible time.</strong>
+      <p>At a time when SIGIL's analysis reveals widespread use of shell structures, hidden directors, and corporate network patterns in public procurement, Portugal made it harder — not easier — to investigate corporate ownership. The restriction was implemented following an EU Court of Justice ruling (C-37/20 and C-601/20) that found unlimited public access disproportionate — but Portugal's implementation appears to go further than required.</p>
+    </div>
+
+    <h3>Transparency Comparison</h3>
+    <table class="data-table">
+      <thead><tr><th>Country</th><th>Beneficial Ownership Access</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td><strong>UK</strong></td><td>Free public access via Companies House</td><td style="color:var(--accent)">Open</td></tr>
+        <tr><td><strong>Denmark</strong></td><td>Free public access via CVR</td><td style="color:var(--accent)">Open</td></tr>
+        <tr><td><strong>France</strong></td><td>Paid access via INPI; journalists can request</td><td style="color:var(--orange)">Semi-open</td></tr>
+        <tr><td><strong>Germany</strong></td><td>Registered access via Transparenzregister</td><td style="color:var(--orange)">Semi-open</td></tr>
+        <tr><td style="color:var(--red)"><strong>Portugal</strong></td><td style="color:var(--red)">"Legitimate interest" restriction (Oct 2025)</td><td style="color:var(--red)">Restricted</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-block">
+    <h2>05 &mdash; Documented Cartels: The Fines</h2>
+    <p>Portugal's Autoridade da Concorr&ecirc;ncia (Competition Authority) has prosecuted several procurement cartels, demonstrating that bid coordination is not theoretical — it's proven and fined.</p>
+
+    <table class="data-table">
+      <thead><tr><th>Cartel</th><th>Year</th><th>Fine</th><th>Sector</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Security Services Cartel</strong></td><td>2022</td><td style="color:var(--red);font-family:'JetBrains Mono'">&euro;41.3M</td><td>Private security</td></tr>
+        <tr><td><strong>Teleradiology Cartel</strong></td><td>2024</td><td style="color:var(--red);font-family:'JetBrains Mono'">&euro;6.9M</td><td>Healthcare</td></tr>
+        <tr><td><strong>Train Maintenance Cartel</strong></td><td>Recent</td><td style="color:var(--red);font-family:'JetBrains Mono'">&euro;3.4M</td><td>Rail</td></tr>
+        <tr><td><strong>Fire Extinguisher Cartel</strong></td><td>Recent</td><td style="color:var(--orange);font-family:'JetBrains Mono'">Under &euro;5M</td><td>Safety equipment</td></tr>
+        <tr><td><strong>Road Marking Cartel</strong></td><td>Confirmed</td><td style="color:var(--orange);font-family:'JetBrains Mono'">Pending</td><td>Infrastructure</td></tr>
+      </tbody>
+    </table>
+
+    <div class="evidence-box accent">
+      <strong>The Competition Authority is prioritizing procurement cartels in 2026.</strong>
+      <p>The Autoridade da Concorr&ecirc;ncia has publicly stated that procurement cartels are a priority for 2026 enforcement. This signals awareness of the problem — but the question remains whether enforcement can keep pace with the scale of coordination that corporate network structures enable.</p>
+    </div>
+  </div>
+
+  <div class="section-block">
+    <h2>06 &mdash; Shell Company Red Flags</h2>
+    <p>SIGIL has identified several indicators that correlate with shell company networks in Portuguese procurement:</p>
+
+    <table class="data-table">
+      <thead><tr><th>Indicator</th><th>What It Suggests</th><th>Prevalence</th></tr></thead>
+      <tbody>
+        <tr><td>Minimal capitalization (&euro;0–&euro;9)</td><td>Entity exists for liability separation, not genuine business</td><td style="color:var(--red)">Common</td></tr>
+        <tr><td>Same registered address for multiple entities</td><td>Common ownership/control not disclosed</td><td style="color:var(--red)">Common</td></tr>
+        <tr><td>Recent name change</td><td>Distancing from past performance or investigations</td><td style="color:var(--orange)">Moderate</td></tr>
+        <tr><td>Directors hidden from public sources</td><td>Deliberate opacity about control</td><td style="color:var(--orange)">Moderate</td></tr>
+        <tr><td>ACE/consortium structure for routine services</td><td>Complexity unnecessary for service type</td><td style="color:var(--orange)">Moderate</td></tr>
+        <tr><td>Regional subsidiary fragmentation (Norte/Sul/II)</td><td>Contract splitting capacity</td><td style="color:var(--red)">Common in cleaning/security</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-block">
+    <h2>07 &mdash; What Nobody Is Talking About</h2>
+    <div class="evidence-box">
+      <strong>1. No automated network detection.</strong>
+      <p>Portugal has no system that automatically identifies when multiple companies bidding on the same contract share directors, addresses, or beneficial owners. Every cartel detection requires manual investigation — reactive, slow, and expensive.</p>
+    </div>
+    <div class="evidence-box">
+      <strong>2. The RCBE restriction helps the wrong people.</strong>
+      <p>Restricting beneficial ownership access protects shell company operators more than it protects privacy. Legitimate businesses have nothing to hide from public scrutiny; entities using opaque structures to win government contracts have everything to hide.</p>
+    </div>
+    <div class="evidence-box">
+      <strong>3. Director interlock monitoring doesn't exist.</strong>
+      <p>No Portuguese institution monitors whether directors of companies bidding on the same government contracts share board seats. This information exists in commercial registries but is never cross-referenced against procurement data.</p>
+    </div>
+    <div class="evidence-box">
+      <strong>4. Portuguese investigative journalism is fragile.</strong>
+      <p>Outlets like Divergente and Fuma&ccedil;a do important work but face economic fragility. Portuguese institutions exhibit what journalists have described as "surreal" opacity in Freedom of Information requests. The infrastructure for accountability — both journalistic and institutional — is itself under-resourced.</p>
+    </div>
+  </div>
+
+  <div class="section-block">
+    <h2>08 &mdash; Sources</h2>
+    <ul class="source-list">
+      <li><a href="https://www.concorrencia.pt" target="_blank">Autoridade da Concorr&ecirc;ncia &mdash; Portuguese Competition Authority</a> <span class="source-type">Official</span></li>
+      <li><a href="https://www.transparency.org/en/cpi/2024" target="_blank">Transparency International &mdash; Corruption Perceptions Index 2024</a> <span class="source-type">International</span></li>
+      <li><a href="https://rcbe.justica.gov.pt" target="_blank">RCBE &mdash; Central Beneficial Ownership Register</a> <span class="source-type">Official</span></li>
+      <li><a href="https://curia.europa.eu/juris/liste.jsf?num=C-37/20" target="_blank">CJEU &mdash; Case C-37/20 (Beneficial Ownership Access)</a> <span class="source-type">EU Court</span></li>
+      <li><a href="https://www.base.gov.pt" target="_blank">BASE.gov.pt &mdash; Portuguese Public Procurement Portal</a> <span class="source-type">Database</span></li>
+    </ul>
+  </div>
+</div>
+
+<footer>
+  <p style="color:var(--accent);font-family:'JetBrains Mono',monospace;letter-spacing:2px;margin-bottom:0.5rem">SIGIL</p>
+  <p>Signal Intelligence Lab &mdash; Portuguese Public Procurement Analysis</p>
+  <p style="margin-top:0.5rem"><a href="index.html" style="color:var(--accent);text-decoration:none">&larr; Return to all investigations</a></p>
+</footer>
+</body>
+</html>

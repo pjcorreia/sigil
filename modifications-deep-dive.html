@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIGIL | Contract Modifications — Deep Dive</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+  :root{--bg-primary:#0a0e17;--bg-secondary:#111827;--bg-card:#1a2235;--bg-card-hover:#1f2a40;--accent:#00d4aa;--accent-dim:#00d4aa33;--accent-glow:#00d4aa22;--red:#ff4757;--red-dim:#ff475722;--orange:#ffa502;--orange-dim:#ffa50222;--yellow:#eccc68;--text-primary:#e8eaf0;--text-secondary:#8892a8;--text-muted:#4a5568;--border:#1e2a3a;--border-accent:#00d4aa44}
+  *{margin:0;padding:0;box-sizing:border-box}body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg-primary);color:var(--text-primary);line-height:1.7;overflow-x:hidden}body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,212,170,0.015) 2px,rgba(0,212,170,0.015) 4px);pointer-events:none;z-index:9999}
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,14,23,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 2rem}.nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:60px}.nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none}.nav-brand .logo{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.3rem;color:var(--accent);letter-spacing:3px}.nav-brand .tagline{font-size:0.7rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase}.nav-links{display:flex;gap:2rem;list-style:none}.nav-links a{color:var(--text-secondary);text-decoration:none;font-size:0.85rem;font-weight:500;transition:color 0.2s}.nav-links a:hover{color:var(--accent)}.back-link{color:var(--accent)!important;font-family:'JetBrains Mono',monospace;font-size:0.8rem!important}
+  .deep-hero{padding:120px 2rem 60px;text-align:center;position:relative}.deep-hero::before{content:'';position:absolute;top:60px;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(circle,var(--orange-dim) 0%,transparent 70%);pointer-events:none}
+  .status-tag{font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:700;letter-spacing:1.5px;padding:3px 10px;border-radius:3px;text-transform:uppercase}.status-tag.unreported{background:rgba(255,71,87,0.15);color:var(--red);border:1px solid var(--red)}.risk-badge{font-family:'JetBrains Mono',monospace;font-size:0.65rem;font-weight:700;letter-spacing:1px;padding:4px 10px;border-radius:4px}.risk-badge.high{background:var(--orange-dim);color:var(--orange);border:1px solid var(--orange)}
+  .deep-hero h1{font-size:2.6rem;font-weight:700;line-height:1.2;margin:1rem 0;background:linear-gradient(135deg,var(--text-primary) 0%,var(--text-secondary) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}.deep-hero p{font-size:1.1rem;color:var(--text-secondary);max-width:700px;margin:0 auto;font-weight:300}.hero-badges{display:flex;gap:1rem;justify-content:center;margin-bottom:1rem}
+  .content{max-width:900px;margin:0 auto;padding:0 2rem 4rem}
+  .key-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin:2rem 0 3rem}.stat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:1.5rem;text-align:center}.stat-card .number{font-family:'JetBrains Mono',monospace;font-size:1.8rem;font-weight:700;color:var(--orange)}.stat-card .label{font-size:0.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+  .section-block{margin-bottom:3rem}.section-block h2{font-size:1.4rem;font-weight:700;color:var(--accent);margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border);font-family:'JetBrains Mono',monospace;letter-spacing:1px}.section-block h3{font-size:1.1rem;font-weight:600;color:var(--text-primary);margin:1.5rem 0 0.5rem}.section-block p{color:var(--text-secondary);font-size:0.92rem;margin-bottom:1rem}
+  .evidence-box{background:var(--bg-card);border-left:3px solid var(--red);border-radius:0 8px 8px 0;padding:1.2rem 1.5rem;margin:1rem 0}.evidence-box.orange{border-left-color:var(--orange)}.evidence-box.accent{border-left-color:var(--accent)}.evidence-box strong{color:var(--text-primary)}.evidence-box p{margin-bottom:0.3rem;color:var(--text-secondary);font-size:0.88rem}
+  .data-table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:0.85rem}.data-table th{text-align:left;padding:10px 14px;background:rgba(0,212,170,0.08);color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:0.7rem;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--border)}.data-table td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text-secondary)}.data-table tr:hover td{background:rgba(0,212,170,0.03)}
+  .source-list{list-style:none;margin:1rem 0}.source-list li{padding:0.5rem 0;border-bottom:1px solid var(--border)}.source-list a{color:var(--accent);text-decoration:none;font-size:0.85rem}.source-list a:hover{text-decoration:underline}.source-list .source-type{font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-left:0.5rem}
+  footer{text-align:center;padding:3rem 2rem;border-top:1px solid var(--border);color:var(--text-muted);font-size:0.8rem}
+  @media(max-width:768px){.deep-hero h1{font-size:1.8rem}.key-stats{grid-template-columns:repeat(2,1fr)}.nav-links{display:none}}
+</style>
+</head>
+<body>
+<nav><div class="nav-inner">
+  <a href="index.html" class="nav-brand"><span class="logo">SIGIL</span><span class="tagline">Signal Intelligence Lab</span></a>
+  <ul class="nav-links"><li><a href="index.html" class="back-link">&larr; Back to Investigations</a></li><li><a href="index.html#investigations">All Cases</a></li></ul>
+</div></nav>
+
+<div class="deep-hero">
+  <div class="hero-badges">
+    <span class="status-tag unreported">UNREPORTED</span>
+    <span class="risk-badge high">HIGH</span>
+  </div>
+  <h1>Contract Modifications</h1>
+  <p>Win the bid low. Modify it high. The systematic pattern of Portuguese public contracts that balloon in price after award — with legal cover from vague "unforeseen circumstances" clauses and weak oversight.</p>
+</div>
+
+<div class="content">
+  <div class="key-stats">
+    <div class="stat-card"><div class="number">33%</div><div class="label">Contract Failure Rate (2022)</div></div>
+    <div class="stat-card"><div class="number">25%</div><div class="label">Max Legal Modification</div></div>
+    <div class="stat-card"><div class="number">75%&rarr;67%</div><div class="label">Contracts Meeting Price (2015&rarr;2022)</div></div>
+    <div class="stat-card"><div class="number">+45%</div><div class="label">Steel Price Inflation Cited</div></div>
+  </div>
+
+  <div class="section-block">
+    <h2>01 &mdash; How the Game Works</h2>
+    <p>Contract modification is the least visible but most costly form of procurement manipulation. The pattern is simple: bid low to win the contract, then modify the price upward once competitors have been eliminated. It is legal within limits — and those limits are systematically exploited.</p>
+
+    <h3>The Legal Framework</h3>
+    <table class="data-table">
+      <thead><tr><th>Rule</th><th>Source</th><th>Limit</th><th>Exploitation Risk</th></tr></thead>
+      <tbody>
+        <tr><td>Modification for "change of circumstances"</td><td>CCP Art. 447-A (Portuguese law)</td><td style="font-family:'JetBrains Mono'">25%</td><td style="color:var(--red)">High — "circumstances" vaguely defined</td></tr>
+        <tr><td>"Public interest" amendment</td><td>CCP (Portuguese law)</td><td style="font-family:'JetBrains Mono'">10%</td><td style="color:var(--orange)">Medium — discretionary</td></tr>
+        <tr><td>Safe harbor (services/supplies)</td><td>EU Directive 2014/24/EU</td><td style="font-family:'JetBrains Mono'">10%</td><td style="color:var(--orange)">Lower — but cumulative modifications assessed individually</td></tr>
+        <tr><td>Safe harbor (works)</td><td>EU Directive 2014/24/EU</td><td style="font-family:'JetBrains Mono'">15%</td><td style="color:var(--red)">High — construction sector most prone</td></tr>
+        <tr><td>"Imprevis&atilde;o" (unforeseen circumstances)</td><td>Civil Code Art. 437</td><td>No fixed limit</td><td style="color:var(--red)">Very high — subjective test</td></tr>
+      </tbody>
+    </table>
+
+    <div class="evidence-box">
+      <strong>The Tribunal de Contas has flagged "indeterminate concepts" as enabling abuse.</strong>
+      <p>Portugal's Court of Auditors has specifically identified that the vague language used in modification provisions — "change of circumstances," "unforeseen," "public interest" — creates exploitable ambiguity. Contractors and contracting entities can frame almost any cost increase as falling within these broad categories.</p>
+    </div>
+  </div>
+
+  <div class="section-block">
+    <h2>02 &mdash; The Numbers Tell the Story</h2>
+    <p>The data reveals a clear deterioration in contract price discipline:</p>
+
+    <div class="evidence-box orange">
+      <strong>Contracts meeting stipulated prices: from 75.3% to 67.1%.</strong>
+      <p>Between 2015–2018 and 2019–2022, the percentage of Portuguese public contracts that were completed at the originally agreed price dropped from 75.3% to 67.1%. By 2022, the contract failure rate reached 32% — meaning roughly one in three public contracts did not perform as agreed.</p>
+    </div>
+
+    <h3>The "Below Threshold Then Modify Above" Pattern</h3>
+    <p>EU transparency requirements kick in at specific thresholds: &euro;5,538,000 for works contracts and &euro;143,000 for services. A contract awarded at &euro;5 million avoids EU-wide advertising. A 15% modification brings it to &euro;5.75 million — above the threshold but already committed. The initial award price was chosen to avoid scrutiny; the modification captures the true intended price.</p>
+
+    <div class="evidence-box">
+      <strong>Multiple successive modifications are assessed cumulatively — in theory.</strong>
+      <p>EU law requires that successive modifications be assessed against the original contract value. In practice, Portuguese contracting entities often treat each modification as independent, allowing staged increases that individually fall within safe harbors but cumulatively far exceed them.</p>
+    </div>
+  </div>
+
+  <div class="section-block">
+    <h2>03 &mdash; Sectors Most Affected</h2>
+
+    <h3>Construction &amp; Infrastructure</h3>
+    <p>The construction sector is the most modification-prone, with material cost inflation providing convenient cover. Steel prices rose 45% and timber up to 60% during 2021–2022, giving contractors a legitimate basis for price increase claims. The problem: distinguishing genuine cost escalation from opportunistic price inflation when both use the same legal framework.</p>
+
+    <div class="evidence-box orange">
+      <strong>Fixed-price contracts from pre-inflation periods.</strong>
+      <p>Contracts signed in 2019–2020 at fixed prices are now being modified upward by 20–40%, with contractors citing material and labor cost increases. Some contractors have gone bankrupt; others have used the modification mechanism to capture windfall adjustments that exceed their actual cost increases.</p>
+    </div>
+
+    <h3>Healthcare PPPs</h3>
+    <p>Hospital Public-Private Partnerships in Portugal have a documented history of renegotiations that disadvantage the state. Despite this track record, 5 new hospital PPPs were approved — creating future modification risk on contracts worth hundreds of millions of euros.</p>
+
+    <h3>IT Services</h3>
+    <p>IT contracts are particularly susceptible to modification through scope creep. An initial contract for a "basic system" is modified to include additional modules, integrations, and support — each modification individually justifiable, but collectively transforming a modest contract into a major expenditure without competitive re-tendering.</p>
+  </div>
+
+  <div class="section-block">
+    <h2>04 &mdash; The "Imprevis&atilde;o" Loophole</h2>
+    <p>Article 437 of the Portuguese Civil Code allows contract revision when performance becomes "excessively onerous" due to circumstances that were not foreseeable at the time of contracting. This doctrine — <em>imprevis&atilde;o</em> — is the nuclear option for contract modification.</p>
+
+    <div class="evidence-box">
+      <strong>No fixed limit. Subjective test. Contractor-initiated.</strong>
+      <p>Unlike the statutory modification limits (10–25%), <em>imprevis&atilde;o</em> has no cap. The test is whether circumstances changed in a way that makes performance "excessively onerous" — a subjective assessment that different judges and arbitrators may evaluate differently. The contractor initiates the claim, placing the burden on the public entity to either accept the modification or face potential contract termination and costly re-procurement.</p>
+    </div>
+
+    <p>The distinction between genuine <em>imprevis&atilde;o</em> (a pandemic, a war disrupting supply chains) and ordinary business risk (material price fluctuations, labor market changes) is the critical boundary. Portuguese law does not draw this line clearly, creating systematic opportunity for contractors to reclassify normal risks as unforeseen events.</p>
+  </div>
+
+  <div class="section-block">
+    <h2>05 &mdash; The Oversight Gap</h2>
+
+    <table class="data-table">
+      <thead><tr><th>Oversight Mechanism</th><th>Status</th><th>Effectiveness</th></tr></thead>
+      <tbody>
+        <tr><td>Tribunal de Contas (Court of Auditors)</td><td>Active but under-resourced</td><td style="color:var(--orange)">Identifies problems; limited enforcement power</td></tr>
+        <tr><td>BASE portal transparency</td><td>Incomplete</td><td style="color:var(--red)">Many contracts unpublished; modifications often not tracked</td></tr>
+        <tr><td>IMPIC regulatory oversight</td><td>Active</td><td style="color:var(--orange)">Systemic monitoring limited</td></tr>
+        <tr><td>Parliamentary scrutiny</td><td>Minimal</td><td style="color:var(--red)">No dedicated procurement oversight committee</td></tr>
+        <tr><td>Abnormally low bid detection</td><td style="color:var(--red)">No systematic method</td><td style="color:var(--red)">Bids designed for modification are not flagged</td></tr>
+      </tbody>
+    </table>
+
+    <div class="evidence-box accent">
+      <strong>OECD recommends strengthened Court of Auditors oversight.</strong>
+      <p>The OECD has specifically recommended that Portugal enhance the Tribunal de Contas' capacity to audit contract modifications. The government has proposed training for 114,000 public administration officials — but without addressing the fundamental issue that modification rules are too permissive and enforcement too weak.</p>
+    </div>
+  </div>
+
+  <div class="section-block">
+    <h2>06 &mdash; What Nobody Is Talking About</h2>
+    <div class="evidence-box">
+      <strong>1. No systematic modification tracking.</strong>
+      <p>BASE.gov.pt does not consistently track contract modifications or their cumulative impact. It is currently impossible to answer the basic question: how much did Portuguese public contracts cost after modifications versus their award price?</p>
+    </div>
+    <div class="evidence-box">
+      <strong>2. The "abnormally low bid" detection gap.</strong>
+      <p>Bids designed to win low and modify high are, by definition, abnormally low at the award stage. Yet Portugal has no systematic method for detecting abnormally low bids — the very tool that would flag modification-prone contracts before they're awarded.</p>
+    </div>
+    <div class="evidence-box">
+      <strong>3. Cumulative modification impact on national budget.</strong>
+      <p>No Portuguese institution has published an estimate of the aggregate cost of contract modifications to the public purse. With a 33% contract failure rate and declining price discipline, the number is likely in the hundreds of millions annually.</p>
+    </div>
+    <div class="evidence-box">
+      <strong>4. Contractor accountability for failed bids.</strong>
+      <p>When a contractor bids low and modifies high, there are no consequences — the public entity absorbs the cost difference. In other EU countries, repeated modification patterns trigger debarment reviews. In Portugal, the same contractors continue to win new contracts.</p>
+    </div>
+  </div>
+
+  <div class="section-block">
+    <h2>07 &mdash; Sources</h2>
+    <ul class="source-list">
+      <li><a href="https://www.base.gov.pt" target="_blank">BASE.gov.pt &mdash; Portuguese Public Procurement Portal</a> <span class="source-type">Database</span></li>
+      <li><a href="https://www.tcontas.pt" target="_blank">Tribunal de Contas &mdash; Court of Auditors Reports</a> <span class="source-type">Audit</span></li>
+      <li><a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32014L0024" target="_blank">EU Directive 2014/24/EU &mdash; Public Procurement</a> <span class="source-type">EU Law</span></li>
+      <li><a href="https://www.impic.pt" target="_blank">IMPIC &mdash; Portuguese Public Procurement Regulator</a> <span class="source-type">Official</span></li>
+      <li><a href="https://www.oecd.org/governance/public-procurement/" target="_blank">OECD &mdash; Public Procurement Recommendations</a> <span class="source-type">International</span></li>
+    </ul>
+  </div>
+</div>
+
+<footer>
+  <p style="color:var(--accent);font-family:'JetBrains Mono',monospace;letter-spacing:2px;margin-bottom:0.5rem">SIGIL</p>
+  <p>Signal Intelligence Lab &mdash; Portuguese Public Procurement Analysis</p>
+  <p style="margin-top:0.5rem"><a href="index.html" style="color:var(--accent);text-decoration:none">&larr; Return to all investigations</a></p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIGIL | Siemens / Infraestruturas de Portugal — Deep Dive</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+  :root{--bg-primary:#0a0e17;--bg-secondary:#111827;--bg-card:#1a2235;--bg-card-hover:#1f2a40;--accent:#00d4aa;--accent-dim:#00d4aa33;--accent-glow:#00d4aa22;--red:#ff4757;--red-dim:#ff475722;--orange:#ffa502;--orange-dim:#ffa50222;--yellow:#eccc68;--text-primary:#e8eaf0;--text-secondary:#8892a8;--text-muted:#4a5568;--border:#1e2a3a;--border-accent:#00d4aa44}
+  *{margin:0;padding:0;box-sizing:border-box}body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg-primary);color:var(--text-primary);line-height:1.7;overflow-x:hidden}body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,212,170,0.015) 2px,rgba(0,212,170,0.015) 4px);pointer-events:none;z-index:9999}
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,14,23,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 2rem}.nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:60px}.nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none}.nav-brand .logo{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.3rem;color:var(--accent);letter-spacing:3px}.nav-brand .tagline{font-size:0.7rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase}.nav-links{display:flex;gap:2rem;list-style:none}.nav-links a{color:var(--text-secondary);text-decoration:none;font-size:0.85rem;font-weight:500;transition:color 0.2s}.nav-links a:hover{color:var(--accent)}.back-link{color:var(--accent)!important;font-family:'JetBrains Mono',monospace;font-size:0.8rem!important}
+  .deep-hero{padding:120px 2rem 60px;text-align:center;position:relative}.deep-hero::before{content:'';position:absolute;top:60px;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(circle,var(--orange-dim) 0%,transparent 70%);pointer-events:none}
+  .status-tag{font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:700;letter-spacing:1.5px;padding:3px 10px;border-radius:3px;text-transform:uppercase}.status-tag.unreported{background:rgba(255,71,87,0.15);color:var(--red);border:1px solid var(--red)}.risk-badge{font-family:'JetBrains Mono',monospace;font-size:0.65rem;font-weight:700;letter-spacing:1px;padding:4px 10px;border-radius:4px}.risk-badge.high{background:var(--orange-dim);color:var(--orange);border:1px solid var(--orange)}
+  .deep-hero h1{font-size:2.6rem;font-weight:700;line-height:1.2;margin:1rem 0;background:linear-gradient(135deg,var(--text-primary) 0%,var(--text-secondary) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}.deep-hero p{font-size:1.1rem;color:var(--text-secondary);max-width:700px;margin:0 auto;font-weight:300}.hero-badges{display:flex;gap:1rem;justify-content:center;margin-bottom:1rem}
+  .content{max-width:900px;margin:0 auto;padding:0 2rem 4rem}
+  .key-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin:2rem 0 3rem}.stat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:1.5rem;text-align:center}.stat-card .number{font-family:'JetBrains Mono',monospace;font-size:1.8rem;font-weight:700;color:var(--orange)}.stat-card .label{font-size:0.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+  .section-block{margin-bottom:3rem}.section-block h2{font-size:1.4rem;font-weight:700;color:var(--accent);margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border);font-family:'JetBrains Mono',monospace;letter-spacing:1px}.section-block h3{font-size:1.1rem;font-weight:600;color:var(--text-primary);margin:1.5rem 0 0.5rem}.section-block p{color:var(--text-secondary);font-size:0.92rem;margin-bottom:1rem}
+  .evidence-box{background:var(--bg-card);border-left:3px solid var(--red);border-radius:0 8px 8px 0;padding:1.2rem 1.5rem;margin:1rem 0}.evidence-box.orange{border-left-color:var(--orange)}.evidence-box.accent{border-left-color:var(--accent)}.evidence-box strong{color:var(--text-primary)}.evidence-box p{margin-bottom:0.3rem;color:var(--text-secondary);font-size:0.88rem}
+  .data-table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:0.85rem}.data-table th{text-align:left;padding:10px 14px;background:rgba(0,212,170,0.08);color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:0.7rem;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--border)}.data-table td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text-secondary)}.data-table tr:hover td{background:rgba(0,212,170,0.03)}
+  .source-list{list-style:none;margin:1rem 0}.source-list li{padding:0.5rem 0;border-bottom:1px solid var(--border)}.source-list a{color:var(--accent);text-decoration:none;font-size:0.85rem}.source-list a:hover{text-decoration:underline}.source-list .source-type{font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-left:0.5rem}
+  footer{text-align:center;padding:3rem 2rem;border-top:1px solid var(--border);color:var(--text-muted);font-size:0.8rem}
+  @media(max-width:768px){.deep-hero h1{font-size:1.8rem}.key-stats{grid-template-columns:repeat(2,1fr)}.nav-links{display:none}}
+</style>
+</head>
+<body>
+<nav><div class="nav-inner">
+  <a href="index.html" class="nav-brand"><span class="logo">SIGIL</span><span class="tagline">Signal Intelligence Lab</span></a>
+  <ul class="nav-links"><li><a href="index.html" class="back-link">&larr; Back to Investigations</a></li><li><a href="index.html#investigations">All Cases</a></li></ul>
+</div></nav>
+
+<div class="deep-hero">
+  <div class="hero-badges">
+    <span class="status-tag unreported">UNREPORTED</span>
+    <span class="risk-badge high">HIGH</span>
+  </div>
+  <h1>Siemens / Infraestruturas de Portugal</h1>
+  <p>109 direct awards to a single vendor for railway infrastructure — and a global corporation with a documented history of bribery in public procurement across multiple continents.</p>
+</div>
+
+<div class="content">
+  <div class="key-stats">
+    <div class="stat-card"><div class="number">109</div><div class="label">Direct Awards</div></div>
+    <div class="stat-card"><div class="number">&euro;1.6B</div><div class="label">Global Bribery Settlement (2008)</div></div>
+    <div class="stat-card"><div class="number">5+</div><div class="label">Board Interlocks</div></div>
+    <div class="stat-card"><div class="number">0</div><div class="label">PT Media Investigations</div></div>
+  </div>
+
+  <div class="section-block">
+    <h2>01 &mdash; The Vendor Lock-In Pattern</h2>
+    <p>Railway signaling and control systems represent one of the most lock-in-prone sectors in public procurement. Once a railway operator installs a proprietary signaling system, switching vendors requires replacing the entire infrastructure — signals, interlockings, train control software, communication systems — at costs that can exceed the original installation by orders of magnitude.</p>
+    <p>Siemens Mobility is one of three dominant players globally (alongside Alstom and Hitachi Rail). In Portugal, Siemens has established itself as the primary signaling provider for <strong>Infraestruturas de Portugal (IP)</strong>, the state-owned company managing the national railway and road network.</p>
+
+    <div class="evidence-box orange">
+      <strong>109 direct awards is not a procurement pattern. It's a dependency.</strong>
+      <p>When the same vendor receives over 100 contracts without competitive bidding from a single state entity, the question shifts from "is there a problem?" to "how did the dependency form, and who benefits from maintaining it?" Direct awards for proprietary system maintenance are legally defensible. But 109 of them suggest a system designed from the start to exclude competition.</p>
+    </div>
+  </div>
+
+  <div class="section-block">
+    <h2>02 &mdash; The &euro;1.6 Billion Global Corruption Record</h2>
+    <p>In 2008, Siemens AG agreed to pay <strong>&euro;1.6 billion</strong> in fines — the largest corporate corruption settlement in history at the time — to resolve bribery charges brought by US and German authorities. The company admitted to systematic bribery across multiple countries and business divisions.</p>
+
+    <table class="data-table">
+      <thead><tr><th>Jurisdiction</th><th>Year</th><th>Charges / Settlement</th><th>Amount</th></tr></thead>
+      <tbody>
+        <tr><td><strong>USA (DOJ + SEC)</strong></td><td>2008</td><td>Foreign Corrupt Practices Act violations</td><td style="color:var(--red);font-family:'JetBrains Mono'">$800M</td></tr>
+        <tr><td><strong>Germany</strong></td><td>2008</td><td>Bribery, breach of trust</td><td style="color:var(--red);font-family:'JetBrains Mono'">&euro;596M</td></tr>
+        <tr><td><strong>Greece</strong></td><td>2008–2017</td><td>Bribery of government officials for OTE telecoms contracts</td><td style="color:var(--orange)">Criminal proceedings</td></tr>
+        <tr><td><strong>Argentina</strong></td><td>2014</td><td>$100M bribery for national ID card contract</td><td style="color:var(--orange)">Criminal proceedings</td></tr>
+        <tr><td><strong>Brazil</strong></td><td>2014</td><td>Metro/rail cartel (S&atilde;o Paulo)</td><td style="color:var(--orange)">Leniency agreement</td></tr>
+        <tr><td><strong>Nigeria</strong></td><td>2010</td><td>Telecom infrastructure bribery</td><td style="color:var(--red);font-family:'JetBrains Mono'">$48.5M</td></tr>
+        <tr><td><strong>World Bank</strong></td><td>2009</td><td>Debarment from Bank-financed projects</td><td>2-year ban</td></tr>
+      </tbody>
+    </table>
+
+    <div class="evidence-box">
+      <strong>The bribery was systematic, not incidental.</strong>
+      <p>Internal investigations revealed that Siemens maintained an organized system for paying bribes across its business divisions, including dedicated slush funds, offshore accounts, and intermediaries. The company's own compliance review identified approximately &euro;1.3 billion in suspicious payments made between 2000 and 2006.</p>
+    </div>
+  </div>
+
+  <div class="section-block">
+    <h2>03 &mdash; Director Interlocks</h2>
+    <p>Siemens in Portugal operates through multiple subsidiary entities. Key directors hold positions across several of these entities simultaneously, creating information-sharing and coordination capacity that individual subsidiaries nominally competing for contracts should not have.</p>
+
+    <table class="data-table">
+      <thead><tr><th>Director</th><th>Positions Held</th><th>Significance</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Miguel &Aacute;. L&oacute;pez Borrego</strong></td><td>President: Siemens PT, Siemens Belgium, Siemens Rail Automation, Siemens Gamesa, NORMA Group</td><td style="color:var(--orange)">Pan-European board presence across energy, rail, and industrial subsidiaries</td></tr>
+        <tr><td><strong>Maria A. F. Loureiro</strong></td><td>Manager: Siemens Energy PT, Siemens Gamesa PT, ANIMEE Board</td><td style="color:var(--orange)">Controls multiple procurement entities that could bid on different parts of the same project</td></tr>
+        <tr><td><strong>Alexandre Fonseca</strong></td><td>Former CEO Altice/MEO, Siemens board, government advisory positions</td><td style="color:var(--red)">Revolving door between telecommunications, Siemens, and government advisory roles</td></tr>
+      </tbody>
+    </table>
+
+    <div class="evidence-box accent">
+      <strong>The revolving door.</strong>
+      <p>Alexandre Fonseca's trajectory — from CEO of Portugal's largest telco (Altice/MEO) to Siemens board member to government advisory roles — exemplifies the kind of cross-sector relationship network that enables preferential access to procurement decisions. His case was documented in Operation Picoas, where he was charged in connection with a scheme involving false invoices worth &euro;380,000+.</p>
+    </div>
+  </div>
+
+  <div class="section-block">
+    <h2>04 &mdash; How Other Countries Handle This</h2>
+    <p>The vendor lock-in problem in railway infrastructure is not unique to Portugal. What differs is how countries address it:</p>
+
+    <table class="data-table">
+      <thead><tr><th>Country</th><th>Approach</th><th>Result</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Germany (DB Netz)</strong></td><td>Open standards (ETCS) + multi-vendor framework agreements</td><td>Multiple suppliers per corridor; vendor switching possible</td></tr>
+        <tr><td><strong>UK (Network Rail)</strong></td><td>Modular procurement; separate signaling from installation</td><td>Competitive tension between Siemens, Alstom, Hitachi</td></tr>
+        <tr><td><strong>Netherlands (ProRail)</strong></td><td>Technology-neutral specifications + market consultation</td><td>Regular competitive tenders even for legacy systems</td></tr>
+        <tr><td style="color:var(--red)"><strong>Portugal (IP)</strong></td><td style="color:var(--red)">Proprietary systems + direct awards</td><td style="color:var(--red)">109 non-competitive contracts to single vendor</td></tr>
+      </tbody>
+    </table>
+
+    <div class="evidence-box accent">
+      <strong>ERTMS/ETCS: the standard Portugal should be using.</strong>
+      <p>The European Rail Traffic Management System (ERTMS) was specifically designed to break vendor lock-in. By mandating interoperable standards, EU railway policy aims to create competitive markets. Portugal's continued reliance on proprietary Siemens systems — rather than transitioning to open standards — perpetuates the dependency.</p>
+    </div>
+  </div>
+
+  <div class="section-block">
+    <h2>05 &mdash; What Nobody Is Talking About</h2>
+    <div class="evidence-box">
+      <strong>1. No Portuguese media has investigated the IP-Siemens relationship.</strong>
+      <p>Despite 109 direct awards and Siemens' documented global corruption history, no Portuguese outlet has examined whether the procurement pattern at IP represents value for money, vendor lock-in, or something else entirely.</p>
+    </div>
+    <div class="evidence-box">
+      <strong>2. Total lifetime value unknown.</strong>
+      <p>The cumulative value of all Siemens contracts with IP has not been publicly calculated. Individual direct awards may appear small, but 109 of them could total hundreds of millions.</p>
+    </div>
+    <div class="evidence-box">
+      <strong>3. The initial system selection was never scrutinized.</strong>
+      <p>Every direct award today is justified by the proprietary system already in place. But who chose that system? When? Through what process? If the original selection was influenced, every subsequent direct award inherits that taint.</p>
+    </div>
+    <div class="evidence-box">
+      <strong>4. ERTMS transition timeline unclear.</strong>
+      <p>Portugal is nominally committed to ERTMS deployment under EU directives. But the timeline for transitioning from proprietary Siemens systems to interoperable standards — which would break the lock-in — has not been publicly communicated or audited.</p>
+    </div>
+  </div>
+
+  <div class="section-block">
+    <h2>06 &mdash; Sources</h2>
+    <ul class="source-list">
+      <li><a href="https://www.base.gov.pt" target="_blank">BASE.gov.pt &mdash; Portuguese Public Procurement Portal</a> <span class="source-type">Database</span></li>
+      <li><a href="https://www.sec.gov/litigation/litreleases/2008/lr20829.htm" target="_blank">SEC &mdash; Siemens Settlement ($800M FCPA, 2008)</a> <span class="source-type">Legal</span></li>
+      <li><a href="https://www.justice.gov/archive/opa/pr/2008/December/08-crm-1105.html" target="_blank">DOJ &mdash; Siemens Plea Agreement (2008)</a> <span class="source-type">Legal</span></li>
+      <li><a href="https://www.era.europa.eu/domains/infrastructure/european-rail-traffic-management-system-ertms_en" target="_blank">ERA &mdash; European Rail Traffic Management System (ERTMS)</a> <span class="source-type">EU Official</span></li>
+      <li><a href="https://www.infraestruturasdeportugal.pt/" target="_blank">Infraestruturas de Portugal &mdash; Official Website</a> <span class="source-type">Official</span></li>
+    </ul>
+  </div>
+</div>
+
+<footer>
+  <p style="color:var(--accent);font-family:'JetBrains Mono',monospace;letter-spacing:2px;margin-bottom:0.5rem">SIGIL</p>
+  <p>Signal Intelligence Lab &mdash; Portuguese Public Procurement Analysis</p>
+  <p style="margin-top:0.5rem"><a href="index.html" style="color:var(--accent);text-decoration:none">&larr; Return to all investigations</a></p>
+</footer>
+</body>
+</html>

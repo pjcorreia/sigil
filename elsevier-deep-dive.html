@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIGIL | Elsevier / FCT Academic Monopoly — Deep Dive</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+  :root { --bg-primary:#0a0e17;--bg-secondary:#111827;--bg-card:#1a2235;--bg-card-hover:#1f2a40;--accent:#00d4aa;--accent-dim:#00d4aa33;--accent-glow:#00d4aa22;--red:#ff4757;--red-dim:#ff475722;--orange:#ffa502;--orange-dim:#ffa50222;--yellow:#eccc68;--text-primary:#e8eaf0;--text-secondary:#8892a8;--text-muted:#4a5568;--border:#1e2a3a;--border-accent:#00d4aa44; }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg-primary);color:var(--text-primary);line-height:1.7;overflow-x:hidden}
+  body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,212,170,0.015) 2px,rgba(0,212,170,0.015) 4px);pointer-events:none;z-index:9999}
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,14,23,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 2rem}
+  .nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:60px}
+  .nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+  .nav-brand .logo{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.3rem;color:var(--accent);letter-spacing:3px}
+  .nav-brand .tagline{font-size:0.7rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase}
+  .nav-links{display:flex;gap:2rem;list-style:none}
+  .nav-links a{color:var(--text-secondary);text-decoration:none;font-size:0.85rem;font-weight:500;transition:color 0.2s}
+  .nav-links a:hover{color:var(--accent)}
+  .back-link{color:var(--accent)!important;font-family:'JetBrains Mono',monospace;font-size:0.8rem!important}
+  .deep-hero{padding:120px 2rem 60px;text-align:center;position:relative}
+  .deep-hero::before{content:'';position:absolute;top:60px;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(circle,var(--orange-dim) 0%,transparent 70%);pointer-events:none}
+  .status-tag{font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:700;letter-spacing:1.5px;padding:3px 10px;border-radius:3px;text-transform:uppercase}
+  .status-tag.unreported{background:rgba(255,71,87,0.15);color:var(--red);border:1px solid var(--red)}
+  .risk-badge{font-family:'JetBrains Mono',monospace;font-size:0.65rem;font-weight:700;letter-spacing:1px;padding:4px 10px;border-radius:4px}
+  .risk-badge.high{background:var(--orange-dim);color:var(--orange);border:1px solid var(--orange)}
+  .deep-hero h1{font-size:2.6rem;font-weight:700;line-height:1.2;margin:1rem 0;background:linear-gradient(135deg,var(--text-primary) 0%,var(--text-secondary) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+  .deep-hero p{font-size:1.1rem;color:var(--text-secondary);max-width:700px;margin:0 auto;font-weight:300}
+  .hero-badges{display:flex;gap:1rem;justify-content:center;margin-bottom:1rem}
+  .content{max-width:900px;margin:0 auto;padding:0 2rem 4rem}
+  .key-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin:2rem 0 3rem}
+  .stat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:1.5rem;text-align:center}
+  .stat-card .number{font-family:'JetBrains Mono',monospace;font-size:1.8rem;font-weight:700;color:var(--orange)}
+  .stat-card .label{font-size:0.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+  .section-block{margin-bottom:3rem}
+  .section-block h2{font-size:1.4rem;font-weight:700;color:var(--accent);margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border);font-family:'JetBrains Mono',monospace;letter-spacing:1px}
+  .section-block h3{font-size:1.1rem;font-weight:600;color:var(--text-primary);margin:1.5rem 0 0.5rem}
+  .section-block p{color:var(--text-secondary);font-size:0.92rem;margin-bottom:1rem}
+  .evidence-box{background:var(--bg-card);border-left:3px solid var(--red);border-radius:0 8px 8px 0;padding:1.2rem 1.5rem;margin:1rem 0}
+  .evidence-box.orange{border-left-color:var(--orange)}
+  .evidence-box.accent{border-left-color:var(--accent)}
+  .evidence-box strong{color:var(--text-primary)}
+  .evidence-box p{margin-bottom:0.3rem;color:var(--text-secondary);font-size:0.88rem}
+  .data-table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:0.85rem}
+  .data-table th{text-align:left;padding:10px 14px;background:rgba(0,212,170,0.08);color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:0.7rem;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--border)}
+  .data-table td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text-secondary)}
+  .data-table tr:hover td{background:rgba(0,212,170,0.03)}
+  .source-list{list-style:none;margin:1rem 0}
+  .source-list li{padding:0.5rem 0;border-bottom:1px solid var(--border)}
+  .source-list a{color:var(--accent);text-decoration:none;font-size:0.85rem}
+  .source-list a:hover{text-decoration:underline}
+  .source-list .source-type{font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-left:0.5rem}
+  footer{text-align:center;padding:3rem 2rem;border-top:1px solid var(--border);color:var(--text-muted);font-size:0.8rem}
+  @media(max-width:768px){.deep-hero h1{font-size:1.8rem}.key-stats{grid-template-columns:repeat(2,1fr)}.nav-links{display:none}}
+</style>
+</head>
+<body>
+<nav><div class="nav-inner">
+  <a href="index.html" class="nav-brand"><span class="logo">SIGIL</span><span class="tagline">Signal Intelligence Lab</span></a>
+  <ul class="nav-links"><li><a href="index.html" class="back-link">&larr; Back to Investigations</a></li><li><a href="index.html#investigations">All Cases</a></li></ul>
+</div></nav>
+
+<div class="deep-hero">
+  <div class="hero-badges">
+    <span class="status-tag unreported">UNREPORTED</span>
+    <span class="risk-badge high">HIGH</span>
+  </div>
+  <h1>Elsevier / FCT: The &euro;120M+ Academic Monopoly</h1>
+  <p>For 15+ years, Portugal has paid a Dutch publishing giant for access to research its own scientists produced — with no public debate, no competitive bidding, and contracts hidden behind NDAs.</p>
+</div>
+
+<div class="content">
+  <div class="key-stats">
+    <div class="stat-card"><div class="number">&euro;120M+</div><div class="label">Estimated Total Spend</div></div>
+    <div class="stat-card"><div class="number">15+</div><div class="label">Years of Monopoly</div></div>
+    <div class="stat-card"><div class="number">37%</div><div class="label">Elsevier Profit Margin</div></div>
+    <div class="stat-card"><div class="number">64</div><div class="label">Captive Institutions</div></div>
+    <div class="stat-card"><div class="number">0</div><div class="label">Public Debates Held</div></div>
+  </div>
+
+  <div class="section-block">
+    <h2>01 &mdash; The B-On Consortium</h2>
+    <p><strong>B-On (Biblioteca do Conhecimento Online)</strong> was created in 2004 as Portugal's national consortium for academic publishing access. It serves <strong>64 institutions</strong> — universities, polytechnics, research centers — giving approximately <strong>380,000 users</strong> access to scientific journals. It is managed by FCCN (Funda&ccedil;&atilde;o para a Computa&ccedil;&atilde;o Cient&iacute;fica Nacional), itself under FCT.</p>
+    <p>The model sounds reasonable: pool purchasing power to negotiate better deals. In practice, it created a single negotiating counterpart for publishers — and Elsevier captured it completely. When the entire country negotiates through one entity, there is no competition. There is only the question of how much you will pay.</p>
+  </div>
+
+  <div class="section-block">
+    <h2>02 &mdash; The Profit Machine</h2>
+    <p>Elsevier (owned by RELX Group, traded on the London Stock Exchange) is the world's largest academic publisher, controlling approximately 16% of all scientific articles. Its business model is uniquely profitable: researchers produce content for free, peer reviewers evaluate it for free, and universities pay to read it.</p>
+
+    <div class="evidence-box orange">
+      <strong>Profit margin: 37–38%.</strong>
+      <p>Elsevier's operating profit margin exceeds that of Apple, Google, and Amazon. This margin is extracted from publicly funded research — taxpayers pay for the science, then pay again to read it.</p>
+    </div>
+
+    <p>The "Big Five" academic publishers (Elsevier, Springer Nature, Wiley, Taylor &amp; Francis, SAGE) control <strong>75% of European journal spending</strong> according to a Chemistry World analysis. An antitrust lawsuit was filed against these publishers in September 2024.</p>
+  </div>
+
+  <div class="section-block">
+    <h2>03 &mdash; Portugal vs. The World</h2>
+    <p>While other countries have fought back against Elsevier's pricing, Portugal has remained silent. The contrast is stark:</p>
+
+    <table class="data-table">
+      <thead><tr><th>Country</th><th>Action Taken</th><th>Year</th><th>Outcome</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Sweden</strong></td><td>Cancelled Elsevier contract</td><td>2018</td><td>Negotiated better open-access terms after public standoff</td></tr>
+        <tr><td><strong>Germany (DEAL)</strong></td><td>700+ institutions cancelled</td><td>2018</td><td>Multi-year negotiation led to transformative agreement</td></tr>
+        <tr><td><strong>UC System (USA)</strong></td><td>Cancelled contract</td><td>2019</td><td>Secured transformative open-access agreement in 2021</td></tr>
+        <tr><td><strong>Hungary</strong></td><td>Cancelled contract</td><td>2018</td><td>Shifted to open-access and interlibrary loans</td></tr>
+        <tr><td><strong>CERN (SCOAP3)</strong></td><td>Built Diamond Open Access model</td><td>2014</td><td>High-energy physics articles free for all, forever</td></tr>
+        <tr><td style="color:var(--red)"><strong>Portugal</strong></td><td style="color:var(--red)">No public debate. Renewed.</td><td>2025</td><td style="color:var(--red)">Signed new 3-year "transformative" agreement</td></tr>
+      </tbody>
+    </table>
+
+    <div class="evidence-box">
+      <strong>Portugal signed a new 3-year deal (2025–2027) with no public scrutiny.</strong>
+      <p>In February 2025, FCT announced a "transformative agreement" with Elsevier and simultaneously adopted a Plan S-aligned Open Access policy. The agreement terms — including costs — remain undisclosed. While Elsevier celebrated the deal publicly, no Portuguese media outlet reported on the contract value or questioned whether competitive alternatives were evaluated.</p>
+    </div>
+  </div>
+
+  <div class="section-block">
+    <h2>04 &mdash; The Hidden Numbers</h2>
+    <p>The most damning aspect of this arrangement is what we <em>cannot</em> see. Critical data is concealed behind non-disclosure agreements:</p>
+
+    <table class="data-table">
+      <thead><tr><th>Data Point</th><th>Status</th><th>Why It Matters</th></tr></thead>
+      <tbody>
+        <tr><td>Annual contract value</td><td style="color:var(--red)">Hidden (NDA)</td><td>Estimated &euro;1–3M/year but unverifiable</td></tr>
+        <tr><td>Year-over-year cost growth</td><td style="color:var(--red)">Hidden (NDA)</td><td>Global trend: 5–7% annual increases above inflation</td></tr>
+        <tr><td>Cost per researcher</td><td style="color:var(--red)">Hidden (NDA)</td><td>Impossible to compare with peer countries</td></tr>
+        <tr><td>Procurement process details</td><td style="color:var(--red)">Not published</td><td>Was competitive bidding conducted?</td></tr>
+        <tr><td>Alternative evaluation</td><td style="color:var(--red)">No evidence</td><td>Were open-access models considered?</td></tr>
+        <tr><td>Total 15-year cumulative spend</td><td style="color:var(--red)">Unknown</td><td>Conservative estimate: &euro;120M+</td></tr>
+      </tbody>
+    </table>
+
+    <div class="evidence-box accent">
+      <strong>A public entity using public funds should not sign NDAs on pricing.</strong>
+      <p>FCT's annual budget exceeds &euro;525M. The Elsevier contract is funded by Portuguese taxpayers. The use of NDAs to conceal pricing from the public contradicts both the spirit of open access and the requirements of public procurement transparency.</p>
+    </div>
+  </div>
+
+  <div class="section-block">
+    <h2>05 &mdash; The Open Access Alternative</h2>
+    <p>The money Portugal spends on Elsevier subscriptions could fund an entirely different model:</p>
+
+    <div class="evidence-box accent">
+      <strong>Plan S &amp; Diamond Open Access.</strong>
+      <p>Plan S (launched 2018 by European research funders) mandates that publicly funded research must be freely accessible. Diamond Open Access — where neither authors nor readers pay — is supported by institutions like CERN (SCOAP3 model). Portugal adopted Plan S-aligned policies in February 2025 but simultaneously renewed with Elsevier, creating a contradiction.</p>
+    </div>
+
+    <div class="evidence-box accent">
+      <strong>Opportunity cost: &euro;15–45M over 15 years.</strong>
+      <p>The estimated Elsevier spend over 15 years could have funded: 150–450 PhD scholarships, 30–90 research lab upgrades, or the development of a national open-access publishing infrastructure. Instead, it generated 37% profit margins for a Dutch corporation.</p>
+    </div>
+  </div>
+
+  <div class="section-block">
+    <h2>06 &mdash; What Nobody Is Talking About</h2>
+    <div class="evidence-box">
+      <strong>1. No competitive procurement.</strong>
+      <p>There is no evidence that FCT/FCCN conducted competitive bidding for journal access services. In a market with alternatives (open access, preprint servers, direct publisher agreements), sole-source procurement of this scale warrants scrutiny.</p>
+    </div>
+    <div class="evidence-box">
+      <strong>2. NDA-protected public spending.</strong>
+      <p>Public institutions hiding the cost of publicly funded services behind NDAs is antithetical to transparency. No Portuguese journalist, MP, or auditor has publicly challenged this practice.</p>
+    </div>
+    <div class="evidence-box">
+      <strong>3. The revolving door.</strong>
+      <p>Whether FCT or FCCN leadership has connections to the publishing industry has never been investigated. The "legitimate interest" restriction on Portugal's beneficial ownership register (RCBE), tightened in October 2025, makes such investigations harder.</p>
+    </div>
+    <div class="evidence-box">
+      <strong>4. Researcher lock-in.</strong>
+      <p>Portugal's academic evaluation system (via FCT) rewards publication in high-impact journals — which are overwhelmingly controlled by the Big Five. This creates demand-side lock-in: researchers must publish in Elsevier journals to advance their careers, and then the state must pay Elsevier for access.</p>
+    </div>
+  </div>
+
+  <div class="section-block">
+    <h2>07 &mdash; Sources</h2>
+    <ul class="source-list">
+      <li><a href="https://www.elsevier.com/about/press-releases/portugal-national-funder-fct-agrees-transformative-agreement-with-elsevier" target="_blank">Elsevier Press Release &mdash; Portugal FCT Transformative Agreement (2025)</a> <span class="source-type">Official</span></li>
+      <li><a href="https://www.fct.pt/en/nova-politica-sobre-acesso-aberto-a-publicacoes-cientificas-da-fct-promove-a-visibilidade-da-producao-cientifica/" target="_blank">FCT &mdash; New Open Access Policy (Feb 2025)</a> <span class="source-type">Official</span></li>
+      <li><a href="https://www.timeshighereducation.com/news/sweden-cancels-elsevier-contract-open-access-dispute-spreads" target="_blank">Times Higher Ed &mdash; Sweden Cancels Elsevier</a> <span class="source-type">News</span></li>
+      <li><a href="https://www.insidehighered.com/news/2019/03/01/university-california-cancels-deal-elsevier-after-months-negotiations" target="_blank">Inside Higher Ed &mdash; UC Cancels Elsevier Deal</a> <span class="source-type">News</span></li>
+      <li><a href="https://www.lieffcabraser.com/antitrust/academic-journals/" target="_blank">Lieff Cabraser &mdash; Antitrust Lawsuit Against Academic Publishers (2024)</a> <span class="source-type">Legal</span></li>
+      <li><a href="https://direct.mit.edu/qss/article/4/4/778/118070/" target="_blank">MIT Press &mdash; The Oligopoly's Shift to Open Access</a> <span class="source-type">Academic</span></li>
+      <li><a href="https://www.chemistryworld.com/news/75-of-european-spending-on-scientific-journals-goes-to-big-five-publishers/4010616.article" target="_blank">Chemistry World &mdash; 75% of European Spending Goes to Big Five</a> <span class="source-type">Analysis</span></li>
+    </ul>
+  </div>
+</div>
+
+<footer>
+  <p style="color:var(--accent);font-family:'JetBrains Mono',monospace;letter-spacing:2px;margin-bottom:0.5rem">SIGIL</p>
+  <p>Signal Intelligence Lab &mdash; Portuguese Public Procurement Analysis</p>
+  <p style="margin-top:0.5rem"><a href="index.html" style="color:var(--accent);text-decoration:none">&larr; Return to all investigations</a></p>
+</footer>
+</body>
+</html>

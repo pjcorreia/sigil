@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIGIL | Cleaning &amp; Security Services — Deep Dive</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+  :root{--bg-primary:#0a0e17;--bg-secondary:#111827;--bg-card:#1a2235;--bg-card-hover:#1f2a40;--accent:#00d4aa;--accent-dim:#00d4aa33;--accent-glow:#00d4aa22;--red:#ff4757;--red-dim:#ff475722;--orange:#ffa502;--orange-dim:#ffa50222;--yellow:#eccc68;--text-primary:#e8eaf0;--text-secondary:#8892a8;--text-muted:#4a5568;--border:#1e2a3a;--border-accent:#00d4aa44}
+  *{margin:0;padding:0;box-sizing:border-box}body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg-primary);color:var(--text-primary);line-height:1.7;overflow-x:hidden}body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,212,170,0.015) 2px,rgba(0,212,170,0.015) 4px);pointer-events:none;z-index:9999}
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,14,23,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 2rem}.nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:60px}.nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none}.nav-brand .logo{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.3rem;color:var(--accent);letter-spacing:3px}.nav-brand .tagline{font-size:0.7rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase}.nav-links{display:flex;gap:2rem;list-style:none}.nav-links a{color:var(--text-secondary);text-decoration:none;font-size:0.85rem;font-weight:500;transition:color 0.2s}.nav-links a:hover{color:var(--accent)}.back-link{color:var(--accent)!important;font-family:'JetBrains Mono',monospace;font-size:0.8rem!important}
+  .deep-hero{padding:120px 2rem 60px;text-align:center;position:relative}.deep-hero::before{content:'';position:absolute;top:60px;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(circle,var(--orange-dim) 0%,transparent 70%);pointer-events:none}
+  .status-tag{font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:700;letter-spacing:1.5px;padding:3px 10px;border-radius:3px;text-transform:uppercase}.status-tag.unreported{background:rgba(255,71,87,0.15);color:var(--red);border:1px solid var(--red)}.risk-badge{font-family:'JetBrains Mono',monospace;font-size:0.65rem;font-weight:700;letter-spacing:1px;padding:4px 10px;border-radius:4px}.risk-badge.medium{background:rgba(236,204,104,0.1);color:var(--yellow);border:1px solid var(--yellow)}
+  .deep-hero h1{font-size:2.6rem;font-weight:700;line-height:1.2;margin:1rem 0;background:linear-gradient(135deg,var(--text-primary) 0%,var(--text-secondary) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}.deep-hero p{font-size:1.1rem;color:var(--text-secondary);max-width:700px;margin:0 auto;font-weight:300}.hero-badges{display:flex;gap:1rem;justify-content:center;margin-bottom:1rem}
+  .content{max-width:900px;margin:0 auto;padding:0 2rem 4rem}
+  .key-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin:2rem 0 3rem}.stat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:1.5rem;text-align:center}.stat-card .number{font-family:'JetBrains Mono',monospace;font-size:1.8rem;font-weight:700;color:var(--orange)}.stat-card .label{font-size:0.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+  .section-block{margin-bottom:3rem}.section-block h2{font-size:1.4rem;font-weight:700;color:var(--accent);margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border);font-family:'JetBrains Mono',monospace;letter-spacing:1px}.section-block h3{font-size:1.1rem;font-weight:600;color:var(--text-primary);margin:1.5rem 0 0.5rem}.section-block p{color:var(--text-secondary);font-size:0.92rem;margin-bottom:1rem}
+  .evidence-box{background:var(--bg-card);border-left:3px solid var(--red);border-radius:0 8px 8px 0;padding:1.2rem 1.5rem;margin:1rem 0}.evidence-box.orange{border-left-color:var(--orange)}.evidence-box.accent{border-left-color:var(--accent)}.evidence-box strong{color:var(--text-primary)}.evidence-box p{margin-bottom:0.3rem;color:var(--text-secondary);font-size:0.88rem}
+  .data-table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:0.85rem}.data-table th{text-align:left;padding:10px 14px;background:rgba(0,212,170,0.08);color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:0.7rem;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--border)}.data-table td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text-secondary)}.data-table tr:hover td{background:rgba(0,212,170,0.03)}
+  .source-list{list-style:none;margin:1rem 0}.source-list li{padding:0.5rem 0;border-bottom:1px solid var(--border)}.source-list a{color:var(--accent);text-decoration:none;font-size:0.85rem}.source-list a:hover{text-decoration:underline}.source-list .source-type{font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-left:0.5rem}
+  footer{text-align:center;padding:3rem 2rem;border-top:1px solid var(--border);color:var(--text-muted);font-size:0.8rem}
+  @media(max-width:768px){.deep-hero h1{font-size:1.8rem}.key-stats{grid-template-columns:repeat(2,1fr)}.nav-links{display:none}}
+</style>
+</head>
+<body>
+<nav><div class="nav-inner">
+  <a href="index.html" class="nav-brand"><span class="logo">SIGIL</span><span class="tagline">Signal Intelligence Lab</span></a>
+  <ul class="nav-links"><li><a href="index.html" class="back-link">&larr; Back to Investigations</a></li><li><a href="index.html#investigations">All Cases</a></li></ul>
+</div></nav>
+
+<div class="deep-hero">
+  <div class="hero-badges">
+    <span class="status-tag unreported">UNREPORTED</span>
+    <span class="risk-badge medium">MEDIUM-HIGH</span>
+  </div>
+  <h1>Cleaning &amp; Security Services</h1>
+  <p>397 direct awards above EU thresholds. Shell-like company networks sharing the same address. Directors deliberately hidden from public registries. And &euro;13.6M in GNR contracts awarded under permanent "urgency" for three years.</p>
+</div>
+
+<div class="content">
+  <div class="key-stats">
+    <div class="stat-card"><div class="number">397</div><div class="label">Direct Awards Above Threshold</div></div>
+    <div class="stat-card"><div class="number">871</div><div class="label">Fine Facility Govt Contracts</div></div>
+    <div class="stat-card"><div class="number">&euro;13.6M</div><div class="label">GNR No-Contract Awards</div></div>
+    <div class="stat-card"><div class="number">3 yrs</div><div class="label">of "Urgent Necessity"</div></div>
+  </div>
+
+  <div class="section-block">
+    <h2>01 &mdash; Fine Facility Services: The Hidden Company</h2>
+    <p><strong>Fine Facility Services</strong> is one of Portugal's most prolific government contractors in the cleaning and facility management sector, with <strong>871 government contracts</strong> registered on BASE.gov.pt. Yet basic information about the company — who owns it, who manages it — is deliberately concealed from public view.</p>
+
+    <div class="evidence-box">
+      <strong>Directors deliberately hidden.</strong>
+      <p>Manager and shareholder names are absent from all free public sources — an unusual situation for a company with 871 government contracts and &euro;1M share capital. In a country where the commercial registry (RNPC/IRN) provides basic transparency for most companies, Fine Facility's ownership opacity is a deliberate choice, not an accident.</p>
+    </div>
+
+    <h3>The F&eacute;nix Rebrand</h3>
+    <p>Fine Facility previously operated as <strong>F&eacute;nix Facility Services</strong> before rebranding. The name change — from the mythological bird that rises from ashes — raises immediate questions: what needed to be burned and reborn? Company rebranding in the government contracting space is a recognized red flag for entities attempting to distance themselves from past performance issues or investigations.</p>
+  </div>
+
+  <div class="section-block">
+    <h2>02 &mdash; The Rua Rosa Damasceno Network</h2>
+    <p>Multiple entities linked to Fine Facility share the same registered address: <strong>Rua Rosa Damasceno, 11, Lisbon</strong>. This pattern — multiple companies at one address, often with shared or hidden directors — is a classic indicator of corporate compartmentalization.</p>
+
+    <table class="data-table">
+      <thead><tr><th>Entity</th><th>Activity</th><th>Address</th><th>Known Director</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Fine Facility Services</strong></td><td>Cleaning &amp; facility management</td><td>Rua Rosa Damasceno, 11</td><td style="color:var(--red)">Hidden</td></tr>
+        <tr><td><strong>F&eacute;nix Cleaning</strong></td><td>Cleaning services</td><td>Rua Rosa Damasceno, 11</td><td>Jos&eacute; Ribeiro Da Costa</td></tr>
+        <tr><td><strong>F&eacute;nix Intersegur</strong></td><td>Security services</td><td>Rua Rosa Damasceno, 11</td><td>Linked to F&eacute;nix network</td></tr>
+        <tr><td><strong>Fine &amp; Fine Norte</strong></td><td>Regional subsidiary</td><td>Network entity</td><td style="color:var(--red)">Hidden</td></tr>
+        <tr><td><strong>Fine &amp; Fine Sul</strong></td><td>Regional subsidiary</td><td>Network entity</td><td style="color:var(--red)">Hidden</td></tr>
+        <tr><td><strong>Fine &amp; Fine II</strong></td><td>Subsidiary</td><td>Network entity</td><td style="color:var(--red)">Hidden</td></tr>
+      </tbody>
+    </table>
+
+    <div class="evidence-box orange">
+      <strong>Compartmentalization suggests bid coordination capacity.</strong>
+      <p>When multiple entities in the same sector (cleaning + security) share the same address and are linked through common management, they have the structural capacity to coordinate bids. One entity bids on cleaning, another on security, a third on facility management — all controlled by the same network but appearing as independent competitors. This is the architecture of bid rigging.</p>
+    </div>
+  </div>
+
+  <div class="section-block">
+    <h2>03 &mdash; The GNR Scandal: &euro;13.6M Without Written Contracts</h2>
+    <p>Portugal's GNR (Guarda Nacional Republicana — military police) awarded Fine Facility <strong>&euro;13.6 million</strong> in cleaning contracts between October 2022 and April 2025 via direct adjustment, repeatedly invoking "urgent imperative necessity" to justify bypassing competitive procurement — for <strong>three consecutive years</strong>.</p>
+
+    <div class="evidence-box">
+      <strong>"Urgent imperative necessity" — for cleaning?</strong>
+      <p>The "urgent necessity" exception in Portuguese procurement law (C&oacute;digo dos Contratos P&uacute;blicos) is designed for genuine emergencies — natural disasters, security crises, situations where competitive procurement would cause unacceptable delay. Using it repeatedly for three years for <em>cleaning services</em> stretches the concept beyond any reasonable interpretation. As legal experts consulted by media noted: this is "clearly illegal."</p>
+    </div>
+
+    <h3>The Pattern of Abuse</h3>
+    <p>The "urgent necessity" exception is not unique to GNR. It represents a systemic loophole in Portuguese procurement that allows contracting entities to bypass EU thresholds and competitive requirements by declaring urgency. When the same entity invokes urgency for the same service repeatedly, the urgency is clearly fabricated — the real emergency is the entity's unwillingness to run a competitive tender.</p>
+  </div>
+
+  <div class="section-block">
+    <h2>04 &mdash; 397 Direct Awards Above Threshold</h2>
+    <p>Across the cleaning and security services sector, SIGIL identified <strong>397 direct awards that exceed EU procurement thresholds</strong> — contracts that should have been subject to competitive, EU-wide tender processes but were instead awarded directly to incumbent providers.</p>
+
+    <div class="evidence-box accent">
+      <strong>EU threshold for services: &euro;143,000 (2024).</strong>
+      <p>Under EU Directive 2014/24/EU, service contracts above &euro;143,000 must be advertised in the Official Journal of the European Union (OJEU) and subject to competitive procurement. Direct awards above this threshold require specific legal justification — technical exclusivity, extreme urgency, or protection of exclusive rights. Cleaning services rarely qualify under any of these exceptions.</p>
+    </div>
+
+    <h3>Common Justifications</h3>
+    <table class="data-table">
+      <thead><tr><th>Justification Used</th><th>Frequency</th><th>Validity Assessment</th></tr></thead>
+      <tbody>
+        <tr><td>"Urgent imperative necessity"</td><td style="font-family:'JetBrains Mono'">High</td><td style="color:var(--red)">Rarely valid for recurring services</td></tr>
+        <tr><td>"Technical reasons / sole provider"</td><td style="font-family:'JetBrains Mono'">Medium</td><td style="color:var(--red)">Cleaning/security are commodity services with many providers</td></tr>
+        <tr><td>"Continuity of service"</td><td style="font-family:'JetBrains Mono'">Medium</td><td style="color:var(--orange)">Valid short-term; not for multi-year renewals</td></tr>
+        <tr><td>"Contract extension / modification"</td><td style="font-family:'JetBrains Mono'">High</td><td style="color:var(--orange)">Legal if within limits; often used to circumvent thresholds</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-block">
+    <h2>05 &mdash; The Workers</h2>
+    <p>Behind the corporate structures and procurement loopholes are real people — the cleaning and security workers who operate under these contracts. The outsourcing model that direct awards perpetuate has well-documented consequences:</p>
+
+    <div class="evidence-box accent">
+      <strong>Low wages, precarious conditions, invisible labor.</strong>
+      <p>Outsourced cleaning and security workers in Portugal's public sector typically earn minimum wage (&euro;870/month in 2026), work irregular hours, and have limited job security. When contracts change hands without competitive bidding, workers lose what little bargaining power they have. The companies bidding for these contracts compete primarily on labor cost — not service quality.</p>
+    </div>
+
+    <p>The irony is stark: a procurement system that claims to protect public interest through competitive bidding actually protects incumbents through direct awards — and the workers who deliver the actual services have no voice in either the procurement process or the companies that employ them.</p>
+  </div>
+
+  <div class="section-block">
+    <h2>06 &mdash; What Nobody Is Talking About</h2>
+    <div class="evidence-box">
+      <strong>1. Who owns Fine Facility?</strong>
+      <p>A company with 871 government contracts whose directors are deliberately hidden from public registries should trigger immediate investigation. Portugal's RCBE (beneficial ownership register) should contain this information, but access was restricted to "legitimate interest" in October 2025.</p>
+    </div>
+    <div class="evidence-box">
+      <strong>2. Is the F&eacute;nix network coordinating bids?</strong>
+      <p>Multiple entities at the same address, in the same sector, with some shared management — the structural indicators of bid coordination are present. No competition authority investigation has been announced.</p>
+    </div>
+    <div class="evidence-box">
+      <strong>3. How many "urgent necessity" declarations are actually urgent?</strong>
+      <p>A systematic analysis of all "urgent necessity" direct awards on BASE.gov.pt — comparing the claimed urgency against the actual timeline and service type — has never been conducted publicly. The GNR case suggests the exception is being used as a loophole, not an exception.</p>
+    </div>
+    <div class="evidence-box">
+      <strong>4. What happened to the workers?</strong>
+      <p>When Fine Facility wins contracts through direct awards rather than competitive tenders, how does this affect employment conditions? Are workers being subcontracted through the shell network? No labor-focused investigation of this sector exists.</p>
+    </div>
+  </div>
+
+  <div class="section-block">
+    <h2>07 &mdash; Sources</h2>
+    <ul class="source-list">
+      <li><a href="https://www.base.gov.pt" target="_blank">BASE.gov.pt &mdash; Portuguese Public Procurement Portal</a> <span class="source-type">Database</span></li>
+      <li><a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32014L0024" target="_blank">EU Directive 2014/24/EU &mdash; Public Procurement</a> <span class="source-type">EU Law</span></li>
+      <li><a href="https://www.impic.pt" target="_blank">IMPIC &mdash; Portuguese Public Procurement Regulator</a> <span class="source-type">Official</span></li>
+    </ul>
+  </div>
+</div>
+
+<footer>
+  <p style="color:var(--accent);font-family:'JetBrains Mono',monospace;letter-spacing:2px;margin-bottom:0.5rem">SIGIL</p>
+  <p>Signal Intelligence Lab &mdash; Portuguese Public Procurement Analysis</p>
+  <p style="margin-top:0.5rem"><a href="index.html" style="color:var(--accent);text-decoration:none">&larr; Return to all investigations</a></p>
+</footer>
+</body>
+</html>
