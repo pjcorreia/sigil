@@ -599,6 +599,114 @@
     color: var(--text-secondary);
   }
 
+  /* === PROMISE TRACKER === */
+  .promise-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.2rem;
+    margin-bottom: 1rem;
+    transition: border-color 0.2s;
+  }
+  .promise-card:hover { border-color: var(--border-accent); }
+  .promise-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 0.8rem;
+  }
+  .promise-header h4 {
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+  .promise-status {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 3px;
+    white-space: nowrap;
+  }
+  .promise-status.massively-delayed { background: var(--red-dim); color: var(--red); border: 1px solid var(--red); }
+  .promise-status.delayed { background: var(--orange-dim); color: var(--orange); border: 1px solid var(--orange); }
+  .promise-status.partial { background: #eccc6822; color: var(--yellow); border: 1px solid var(--yellow); }
+  .promise-status.delivered { background: var(--accent-dim); color: var(--accent); border: 1px solid var(--accent); }
+  .promise-status.cancelled { background: #8892a822; color: var(--text-muted); border: 1px solid var(--text-muted); }
+
+  .promise-bars {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
+    margin: 0.8rem 0;
+  }
+  .promise-bar-group { }
+  .promise-bar-label {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+  .promise-bar-track {
+    background: var(--bg-secondary);
+    border-radius: 4px;
+    height: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .promise-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    padding-left: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: white;
+    white-space: nowrap;
+  }
+  .promise-bar-fill.promised { background: var(--accent); opacity: 0.5; }
+  .promise-bar-fill.actual { background: var(--red); }
+  .promise-bar-fill.actual.ok { background: var(--accent); }
+
+  .promise-meta {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin-top: 0.5rem;
+  }
+  .promise-meta span { color: var(--text-primary); font-weight: 500; }
+
+  .promise-filter-bar {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .promise-filter {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .promise-filter:hover, .promise-filter.active {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-dim);
+  }
+
   /* === SCROLL REVEAL === */
   .reveal {
     opacity: 0;
@@ -624,6 +732,7 @@
     </a>
     <ul class="nav-links">
       <li><a href="#investigations">Investigations</a></li>
+      <li><a href="#promises">Promises</a></li>
       <li><a href="#data">Data</a></li>
       <li><a href="#timeline">Timeline</a></li>
       <li><a href="#downloads">Downloads</a></li>
@@ -1034,6 +1143,331 @@
   </div>
 </section>
 
+<!-- PROMISE TRACKER -->
+<section id="promises">
+  <div class="section-header">
+    <div class="section-label">// Accountability</div>
+    <div class="section-title">Promise vs. Reality Tracker</div>
+  </div>
+
+  <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 1.5rem;">Comparing what Portuguese governments promised for major public projects against what was actually delivered. Data from official announcements, Tribunal de Contas, PRR reports, and public records.</p>
+
+  <div class="promise-filter-bar">
+    <button class="promise-filter active" onclick="filterPromises('all')">All</button>
+    <button class="promise-filter" onclick="filterPromises('infra')">Infrastructure</button>
+    <button class="promise-filter" onclick="filterPromises('health')">Hospitals</button>
+    <button class="promise-filter" onclick="filterPromises('prr')">PRR / Housing</button>
+  </div>
+
+  <!-- TGV -->
+  <div class="promise-card reveal" data-category="infra">
+    <div class="promise-header">
+      <h4>High-Speed Rail Porto&ndash;Lisbon (TGV)</h4>
+      <span class="promise-status massively-delayed">27 YEARS DELAYED</span>
+    </div>
+    <div class="promise-bars">
+      <div class="promise-bar-group">
+        <div class="promise-bar-label">Budget</div>
+        <div class="promise-bar-track">
+          <div class="promise-bar-fill promised" style="width:55%">&euro;5B promised (1999)</div>
+        </div>
+      </div>
+      <div class="promise-bar-group">
+        <div class="promise-bar-label">Timeline</div>
+        <div class="promise-bar-track">
+          <div class="promise-bar-fill actual" style="width:100%">2013 &rarr; 2028+ (Phase 1 only)</div>
+        </div>
+      </div>
+    </div>
+    <div class="promise-meta">
+      <div>First promised: <span>1999</span></div>
+      <div>Cancelled: <span>2009&ndash;2020</span></div>
+      <div>Phase 1 contract: <span>Oct 2024</span></div>
+      <div>Full completion: <span>Post-2030</span></div>
+    </div>
+  </div>
+
+  <!-- NEW LISBON AIRPORT -->
+  <div class="promise-card reveal" data-category="infra">
+    <div class="promise-header">
+      <h4>New Lisbon Airport (Alcochete &rarr; Montijo &rarr; Alcochete)</h4>
+      <span class="promise-status massively-delayed">18 YEARS &bull; 680% OVERRUN</span>
+    </div>
+    <div class="promise-bars">
+      <div class="promise-bar-group">
+        <div class="promise-bar-label">Budget</div>
+        <div class="promise-bar-track">
+          <div class="promise-bar-fill actual" style="width:100%">&euro;1.15B &rarr; &euro;6.1&ndash;9B</div>
+        </div>
+      </div>
+      <div class="promise-bar-group">
+        <div class="promise-bar-label">Location changes</div>
+        <div class="promise-bar-track">
+          <div class="promise-bar-fill actual" style="width:100%">Alcochete &rarr; Montijo &rarr; Alcochete</div>
+        </div>
+      </div>
+    </div>
+    <div class="promise-meta">
+      <div>First promised: <span>2008</span></div>
+      <div>Montijo rejected: <span>2021</span></div>
+      <div>Back to Alcochete: <span>2024</span></div>
+      <div>New target: <span>2034</span></div>
+    </div>
+  </div>
+
+  <!-- CP TRAINS -->
+  <div class="promise-card reveal" data-category="infra">
+    <div class="promise-header">
+      <h4>CP Comboios &mdash; 117 New Trains</h4>
+      <span class="promise-status delayed">5-6 YRS LATE &bull; +43%</span>
+    </div>
+    <div class="promise-bars">
+      <div class="promise-bar-group">
+        <div class="promise-bar-label">Budget</div>
+        <div class="promise-bar-track">
+          <div class="promise-bar-fill actual" style="width:100%">&euro;746M &rarr; &euro;1.064B (+43%)</div>
+        </div>
+      </div>
+      <div class="promise-bar-group">
+        <div class="promise-bar-label">First delivery</div>
+        <div class="promise-bar-track">
+          <div class="promise-bar-fill actual" style="width:85%">2023-24 &rarr; 2029</div>
+        </div>
+      </div>
+    </div>
+    <div class="promise-meta">
+      <div>Promised: <span>2023</span></div>
+      <div>Legal disputes: <span>20 months</span></div>
+      <div>Signed: <span>Aug 2025</span></div>
+      <div>Delivery: <span>2029</span></div>
+    </div>
+  </div>
+
+  <!-- LISBON METRO -->
+  <div class="promise-card reveal" data-category="infra">
+    <div class="promise-header">
+      <h4>Lisbon Metro Expansion (3 lines)</h4>
+      <span class="promise-status delayed">&euro;550M OVER BUDGET</span>
+    </div>
+    <div class="promise-bars">
+      <div class="promise-bar-group">
+        <div class="promise-bar-label">Circular Line</div>
+        <div class="promise-bar-track">
+          <div class="promise-bar-fill actual" style="width:70%">Oct 2024 &rarr; Q2 2026 (+18mo)</div>
+        </div>
+      </div>
+      <div class="promise-bar-group">
+        <div class="promise-bar-label">Violet Line</div>
+        <div class="promise-bar-track">
+          <div class="promise-bar-fill actual" style="width:100%">Mid-2026 &rarr; 2029 (+3 yrs)</div>
+        </div>
+      </div>
+    </div>
+    <div class="promise-meta">
+      <div>Red Line to Alc&acirc;ntara: <span>Not started</span></div>
+      <div>Total overrun: <span>&euro;550M+</span></div>
+    </div>
+  </div>
+
+  <!-- HOSPITAL LISBOA ORIENTAL -->
+  <div class="promise-card reveal" data-category="health">
+    <div class="promise-header">
+      <h4>Hospital de Lisboa Oriental</h4>
+      <span class="promise-status massively-delayed">21 YEARS &bull; +33%</span>
+    </div>
+    <div class="promise-bars">
+      <div class="promise-bar-group">
+        <div class="promise-bar-label">Budget</div>
+        <div class="promise-bar-track">
+          <div class="promise-bar-fill actual" style="width:100%">&euro;600M &rarr; &euro;796M (+33%)</div>
+        </div>
+      </div>
+      <div class="promise-bar-group">
+        <div class="promise-bar-label">Completion</div>
+        <div class="promise-bar-track">
+          <div class="promise-bar-fill actual" style="width:100%">2015 &rarr; 2029 (14 yrs late)</div>
+        </div>
+      </div>
+    </div>
+    <div class="promise-meta">
+      <div>First promised: <span>2008</span></div>
+      <div>PRR lost: <span>&euro;100M</span></div>
+      <div>First stone: <span>Oct 2024</span></div>
+      <div>Replaces: <span>6 hospitals</span></div>
+    </div>
+  </div>
+
+  <!-- HOSPITAL CENTRAL ALGARVE -->
+  <div class="promise-card reveal" data-category="health">
+    <div class="promise-header">
+      <h4>Hospital Central do Algarve</h4>
+      <span class="promise-status massively-delayed">18 YEARS &bull; 8 &ldquo;FIRST STONES&rdquo;</span>
+    </div>
+    <div class="promise-bars">
+      <div class="promise-bar-group">
+        <div class="promise-bar-label">PPP Total (27yr)</div>
+        <div class="promise-bar-track">
+          <div class="promise-bar-fill actual" style="width:100%">&euro;1,118M lifecycle cost</div>
+        </div>
+      </div>
+      <div class="promise-bar-group">
+        <div class="promise-bar-label">Completion</div>
+        <div class="promise-bar-track">
+          <div class="promise-bar-fill actual" style="width:100%">2013 &rarr; 2031</div>
+        </div>
+      </div>
+    </div>
+    <div class="promise-meta">
+      <div>First promised: <span>2006</span></div>
+      <div>Approved: <span>Jan 2026</span></div>
+      <div>First stones laid: <span>8 times</span></div>
+      <div>Construction: <span>&euro;427M</span></div>
+    </div>
+  </div>
+
+  <!-- HOSPITAL EVORA -->
+  <div class="promise-card reveal" data-category="health">
+    <div class="promise-header">
+      <h4>Hospital Central do Alentejo (&Eacute;vora)</h4>
+      <span class="promise-status delayed">5+ YRS LATE &bull; +58%</span>
+    </div>
+    <div class="promise-bars">
+      <div class="promise-bar-group">
+        <div class="promise-bar-label">Budget</div>
+        <div class="promise-bar-track">
+          <div class="promise-bar-fill actual" style="width:90%">&euro;150M &rarr; &euro;237M (+58%)</div>
+        </div>
+      </div>
+      <div class="promise-bar-group">
+        <div class="promise-bar-label">Completion</div>
+        <div class="promise-bar-track">
+          <div class="promise-bar-fill actual" style="width:70%">~2020s &rarr; End 2027</div>
+        </div>
+      </div>
+    </div>
+    <div class="promise-meta">
+      <div>Functional plan: <span>2008</span></div>
+      <div>Progress: <span>70%+</span></div>
+      <div>EU funding deadline: <span>End 2027</span></div>
+    </div>
+  </div>
+
+  <!-- HOSPITAL SEIXAL -->
+  <div class="promise-card reveal" data-category="health">
+    <div class="promise-header">
+      <h4>Hospital do Seixal</h4>
+      <span class="promise-status cancelled">15+ YRS &bull; STILL NO CONSTRUCTION</span>
+    </div>
+    <div class="promise-bars">
+      <div class="promise-bar-group">
+        <div class="promise-bar-label">Progress</div>
+        <div class="promise-bar-track">
+          <div class="promise-bar-fill actual" style="width:5%">~0%</div>
+        </div>
+      </div>
+      <div class="promise-bar-group">
+        <div class="promise-bar-label">Timeline</div>
+        <div class="promise-bar-track">
+          <div class="promise-bar-fill actual" style="width:100%">2009 &rarr; Indefinite</div>
+        </div>
+      </div>
+    </div>
+    <div class="promise-meta">
+      <div>Agreement signed: <span>2009</span></div>
+      <div>Residents without GP: <span>40,000</span></div>
+      <div>Garcia de Orta: <span>2x capacity</span></div>
+    </div>
+  </div>
+
+  <!-- PRR HOUSING -->
+  <div class="promise-card reveal" data-category="prr">
+    <div class="promise-header">
+      <h4>PRR Housing &mdash; 26,000 Affordable Units</h4>
+      <span class="promise-status partial">68% DELIVERED</span>
+    </div>
+    <div class="promise-bars">
+      <div class="promise-bar-group">
+        <div class="promise-bar-label">Units delivered</div>
+        <div class="promise-bar-track">
+          <div class="promise-bar-fill actual ok" style="width:68%">17,700 / 26,000</div>
+        </div>
+      </div>
+      <div class="promise-bar-group">
+        <div class="promise-bar-label">Lisbon Metro Area</div>
+        <div class="promise-bar-track">
+          <div class="promise-bar-fill actual" style="width:33%">33% of local target</div>
+        </div>
+      </div>
+    </div>
+    <div class="promise-meta">
+      <div>Deadline: <span>Aug 2026</span></div>
+      <div>Remaining: <span>8,300 units</span></div>
+      <div>Investment: <span>&euro;4.2B</span></div>
+    </div>
+  </div>
+
+  <!-- PRR SCHOOLS -->
+  <div class="promise-card reveal" data-category="prr">
+    <div class="promise-header">
+      <h4>School Renovation &mdash; 450 Schools</h4>
+      <span class="promise-status massively-delayed">FAILED &bull; 500+ DEGRADED</span>
+    </div>
+    <div class="promise-bars">
+      <div class="promise-bar-group">
+        <div class="promise-bar-label">Schools contracted</div>
+        <div class="promise-bar-track">
+          <div class="promise-bar-fill actual" style="width:17%">75 / 450 (17%)</div>
+        </div>
+      </div>
+      <div class="promise-bar-group">
+        <div class="promise-bar-label">Budget committed</div>
+        <div class="promise-bar-track">
+          <div class="promise-bar-fill actual" style="width:8%">&euro;130M / &euro;1.73B (8%)</div>
+        </div>
+      </div>
+    </div>
+    <div class="promise-meta">
+      <div>Promised: <span>450 schools (2023)</span></div>
+      <div>Contracted: <span>75</span></div>
+      <div>Degraded: <span>500+</span></div>
+    </div>
+  </div>
+
+  <!-- BUS ELECTRIFICATION - SUCCESS -->
+  <div class="promise-card reveal" data-category="prr">
+    <div class="promise-header">
+      <h4>Bus Fleet Electrification</h4>
+      <span class="promise-status delivered">EXCEEDED TARGET</span>
+    </div>
+    <div class="promise-bars">
+      <div class="promise-bar-group">
+        <div class="promise-bar-label">Electric buses</div>
+        <div class="promise-bar-track">
+          <div class="promise-bar-fill actual ok" style="width:100%">861 vs 471 promised (183%)</div>
+        </div>
+      </div>
+      <div class="promise-bar-group">
+        <div class="promise-bar-label">Investment</div>
+        <div class="promise-bar-track">
+          <div class="promise-bar-fill actual ok" style="width:100%">&euro;227M (&euro;137M + &euro;90M extra)</div>
+        </div>
+      </div>
+    </div>
+    <div class="promise-meta">
+      <div>Target: <span>471 buses</span></div>
+      <div>Delivered: <span>861 buses</span></div>
+      <div>Coverage: <span>All continental PT</span></div>
+    </div>
+  </div>
+
+  <!-- SUMMARY CHART -->
+  <div class="chart-container" style="margin-top:1.5rem;">
+    <div class="chart-title">Promise Delivery Scorecard</div>
+    <canvas id="chart-promises"></canvas>
+  </div>
+
+</section>
+
 <!-- DATA VISUALIZATION -->
 <section id="data">
   <div class="section-header">
@@ -1306,6 +1740,19 @@ function initCharts() {
   }
 }
 
+// Promise filter
+function filterPromises(cat) {
+  document.querySelectorAll('.promise-filter').forEach(function(b) { b.classList.remove('active'); });
+  event.target.classList.add('active');
+  document.querySelectorAll('.promise-card').forEach(function(c) {
+    if (cat === 'all' || c.dataset.category === cat) {
+      c.style.display = '';
+    } else {
+      c.style.display = 'none';
+    }
+  });
+}
+
 // Overview charts (always visible)
 document.addEventListener('DOMContentLoaded', function() {
   // Risk distribution
@@ -1350,6 +1797,45 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     }
   });
+
+  // Promise scorecard chart
+  const promCtx = document.getElementById('chart-promises');
+  if (promCtx) {
+    new Chart(promCtx, {
+      type: 'bar',
+      data: {
+        labels: ['TGV Rail', 'New Airport', 'CP Trains', 'Lisbon Metro', 'Hosp. Lisboa', 'Hosp. Algarve', 'Hosp. Évora', 'Hosp. Seixal', 'PRR Housing', 'Schools', 'Buses'],
+        datasets: [{
+          label: 'Delivery Score (0-10)',
+          data: [2, 1, 3, 4, 2, 1, 5, 0, 7, 1, 10],
+          backgroundColor: function(ctx) {
+            var v = [2,1,3,4,2,1,5,0,7,1,10][ctx.dataIndex];
+            if (v <= 2) return '#ff475788';
+            if (v <= 5) return '#ffa50288';
+            if (v <= 7) return '#eccc6888';
+            return '#00d4aa88';
+          },
+          borderColor: function(ctx) {
+            var v = [2,1,3,4,2,1,5,0,7,1,10][ctx.dataIndex];
+            if (v <= 2) return '#ff4757';
+            if (v <= 5) return '#ffa502';
+            if (v <= 7) return '#eccc68';
+            return '#00d4aa';
+          },
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        indexAxis: 'y',
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { min: 0, max: 10, ticks: { color: '#8892a8', callback: function(v) { return v === 0 ? 'Failed' : v === 5 ? 'Partial' : v === 10 ? 'Delivered' : ''; } }, grid: { color: '#1e2a3a' } },
+          y: { ticks: { color: '#8892a8', font: { size: 10 } }, grid: { color: '#1e2a3a' } }
+        }
+      }
+    });
+  }
 
   // Scroll reveal
   const observer = new IntersectionObserver(entries => {
