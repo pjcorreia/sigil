@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIGIL | SUCH Serviços Hospitalares — Investigação Completa</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+  :root {
+    --bg-primary: #0a0e17; --bg-secondary: #111827; --bg-card: #1a2235; --bg-card-hover: #1f2a40;
+    --accent: #00d4aa; --accent-dim: #00d4aa33; --accent-glow: #00d4aa22;
+    --red: #ff4757; --red-dim: #ff475722; --orange: #ffa502; --orange-dim: #ffa50222; --yellow: #eccc68;
+    --text-primary: #e8eaf0; --text-secondary: #8892a8; --text-muted: #4a5568;
+    --border: #1e2a3a; --border-accent: #00d4aa44;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg-primary); color: var(--text-primary); line-height: 1.7; overflow-x: hidden; }
+  body::before { content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,212,170,0.015) 2px, rgba(0,212,170,0.015) 4px); pointer-events: none; z-index: 9999; }
+
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: rgba(10,14,23,0.92); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); padding: 0 2rem; }
+  .nav-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 60px; }
+  .nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .nav-brand .logo { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 1.3rem; color: var(--accent); letter-spacing: 3px; }
+  .nav-brand .tagline { font-size: 0.7rem; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a { color: var(--text-secondary); text-decoration: none; font-size: 0.85rem; font-weight: 500; letter-spacing: 0.5px; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--accent); }
+  .back-link { color: var(--accent) !important; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem !important; }
+  .lang-toggle { display: flex; gap: 0; border: 1px solid #1e2a3a; border-radius: 4px; overflow: hidden; margin-left: 1rem; }
+  .lang-toggle a { padding: 4px 10px; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; font-weight: 700; letter-spacing: 1px; text-decoration: none; color: #4a5568; transition: all 0.2s; }
+  .lang-toggle a.active { background: #00d4aa; color: #0a0e17; }
+  .lang-toggle a:not(.active):hover { color: #00d4aa; background: #00d4aa33; }
+
+  .deep-hero { padding: 120px 2rem 60px; text-align: center; position: relative; }
+  .deep-hero::before { content: ''; position: absolute; top: 60px; left: 50%; transform: translateX(-50%); width: 600px; height: 600px; background: radial-gradient(circle, var(--red-dim) 0%, transparent 70%); pointer-events: none; }
+  .status-tag { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; font-weight: 700; letter-spacing: 1.5px; padding: 3px 10px; border-radius: 3px; text-transform: uppercase; }
+  .status-tag.unreported { background: rgba(255,71,87,0.15); color: var(--red); border: 1px solid var(--red); }
+  .risk-badge { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; font-weight: 700; letter-spacing: 1px; padding: 4px 10px; border-radius: 4px; }
+  .risk-badge.critical { background: var(--red-dim); color: var(--red); border: 1px solid var(--red); }
+  .deep-hero h1 { font-size: 2.6rem; font-weight: 700; line-height: 1.2; margin: 1rem 0; background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .deep-hero p { font-size: 1.1rem; color: var(--text-secondary); max-width: 700px; margin: 0 auto; font-weight: 300; }
+  .hero-badges { display: flex; gap: 1rem; justify-content: center; margin-bottom: 1rem; }
+
+  .content { max-width: 900px; margin: 0 auto; padding: 0 2rem 4rem; }
+
+  .key-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin: 2rem 0 3rem; }
+  .stat-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 1.5rem; text-align: center; }
+  .stat-card .number { font-family: 'JetBrains Mono', monospace; font-size: 1.8rem; font-weight: 700; color: var(--red); }
+  .stat-card .label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+
+  .section-block { margin-bottom: 3rem; }
+  .section-block h2 { font-size: 1.4rem; font-weight: 700; color: var(--accent); margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); font-family: 'JetBrains Mono', monospace; letter-spacing: 1px; }
+  .section-block h3 { font-size: 1.1rem; font-weight: 600; color: var(--text-primary); margin: 1.5rem 0 0.5rem; }
+  .section-block p { color: var(--text-secondary); font-size: 0.92rem; margin-bottom: 1rem; }
+
+  .evidence-box { background: var(--bg-card); border-left: 3px solid var(--red); border-radius: 0 8px 8px 0; padding: 1.2rem 1.5rem; margin: 1rem 0; }
+  .evidence-box.orange { border-left-color: var(--orange); }
+  .evidence-box.accent { border-left-color: var(--accent); }
+  .evidence-box strong { color: var(--text-primary); }
+  .evidence-box p { margin-bottom: 0.3rem; color: var(--text-secondary); font-size: 0.88rem; }
+
+  .data-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.85rem; }
+  .data-table th { text-align: left; padding: 10px 14px; background: rgba(0,212,170,0.08); color: var(--accent); font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; letter-spacing: 1px; text-transform: uppercase; border-bottom: 1px solid var(--border); }
+  .data-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--text-secondary); }
+  .data-table tr:hover td { background: rgba(0,212,170,0.03); }
+
+  .timeline { position: relative; padding: 2rem 0; }
+  .timeline::before { content: ''; position: absolute; left: 20px; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, var(--accent), var(--red), var(--border)); }
+  .timeline-item { position: relative; padding-left: 50px; margin-bottom: 2rem; }
+  .timeline-item::before { content: ''; position: absolute; left: 14px; top: 6px; width: 14px; height: 14px; border-radius: 50%; background: var(--bg-primary); border: 2px solid var(--accent); }
+  .timeline-item.red::before { border-color: var(--red); }
+  .timeline-item.active::before { background: var(--red); box-shadow: 0 0 12px var(--red); }
+  .timeline-date { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--accent); letter-spacing: 1px; margin-bottom: 4px; }
+  .timeline-title { font-size: 0.95rem; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
+  .timeline-desc { font-size: 0.82rem; color: var(--text-muted); }
+
+  .source-list { list-style: none; margin: 1rem 0; }
+  .source-list li { padding: 0.5rem 0; border-bottom: 1px solid var(--border); }
+  .source-list a { color: var(--accent); text-decoration: none; font-size: 0.85rem; }
+  .source-list a:hover { text-decoration: underline; }
+  .source-list .source-type { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; margin-left: 0.5rem; }
+
+  .chart-container { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; }
+  .chart-container canvas { max-height: 350px; }
+  .chart-title { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--accent); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 1rem; }
+
+  footer { text-align: center; padding: 3rem 2rem; border-top: 1px solid var(--border); color: var(--text-muted); font-size: 0.8rem; }
+
+  @media (max-width: 768px) {
+    .deep-hero h1 { font-size: 1.8rem; }
+    .key-stats { grid-template-columns: repeat(2, 1fr); }
+    .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <a href="pt.html" class="nav-brand">
+      <span class="logo">SIGIL</span>
+      <span class="tagline">Signal Intelligence Lab</span>
+    </a>
+    <div style="display: flex; align-items: center; flex: 1;">
+      <ul class="nav-links">
+        <li><a href="pt.html" class="back-link">← Voltar às Investigações</a></li>
+        <li><a href="pt.html#investigations">Todos os Casos</a></li>
+        <li><a href="pt.html#promises">Promessas</a></li>
+      </ul>
+      <div class="lang-toggle"><a href="such-deep-dive.html">EN</a><a href="such-deep-dive-pt.html" class="active">PT</a></div>
+    </div>
+  </div>
+</nav>
+
+<div class="deep-hero">
+  <div class="hero-badges">
+    <span class="status-tag unreported">UNREPORTED</span>
+    <span class="risk-badge critical">CRITICAL</span>
+  </div>
+  <h1>SUCH Serviços Hospitalares</h1>
+  <p>Uma entidade com 60 anos a ocultar €45,5M em dívida através de subsidiárias fantoche, a adjudicar €21M em contratos sem concurso, e com o seu presidente acusado de fraude comunitária — continuando a servir o SNS português.</p>
+</div>
+
+<div class="content">
+
+  <div class="key-stats">
+    <div class="stat-card"><div class="number">€45,5M</div><div class="label">Dívida Ocultada</div></div>
+    <div class="stat-card"><div class="number">€21M+</div><div class="label">Consultoria Sem Concurso</div></div>
+    <div class="stat-card"><div class="number">11.000%</div><div class="label">Expansão de Contrato</div></div>
+    <div class="stat-card"><div class="number">73+</div><div class="label">Suspeitos de Fraude</div></div>
+    <div class="stat-card"><div class="number">€510</div><div class="label">Multa por Fraude de €45,5M</div></div>
+  </div>
+
+  <!-- SECTION: What is SUCH? -->
+  <div class="section-block">
+    <h2>01 &mdash; O que é Somos Pessoas?</h2>
+    <p>Serviço de Utilização Comum dos Hospitais (SUCH) foi fundado em <strong>22 de Abril de 1966</strong> sob o Decreto-Lei n.º 46.668/1965 como associação privada sem fins lucrativos com estatuto de utilidade pública. A sua missão: fornecer serviços partilhados — nutrição, engenharia, limpeza, manutenção, logística, gestão de resíduos — à rede pública hospitalar portuguesa.</p>
+    <p>Com aproximadamente <strong>3.250 colaboradores</strong> e sede no Parque de Saúde de Lisboa, o SUCH serve dezenas de entidades de saúde pública, incluindo hospitais, centros de saúde e administrações regionais de saúde. O seu fundador pioneiro foi o Professor <strong>Coriolano Albino Ferreira</strong> (1916–1996).</p>
+    <p>No papel, um modelo de serviços partilhados deveria reduzir custos. Na prática, SUCH tornou-se um veículo para ocultar dívida, adjudicar contratos sem concorrência e canalizar dinheiro de saúde pública através de subsidiárias opacas com capital registado tão baixo quanto €0.</p>
+  </div>
+
+  <!-- SECTION: Shell Subsidiaries -->
+  <div class="section-block">
+    <h2>02 &mdash; A Rede de Subsidiárias Fantoche</h2>
+    <p>SUCH operava através de uma rede de Agrupamentos Complementares de Empresas (ACE) — estruturas tipo joint venture que lhe permitiam compartimentalizar atividades e, criticamente, <strong>ocultar dívida do seu próprio balanço</strong>.</p>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>Entidade</th><th>Capital Registado</th><th>Objetivo</th><th>Participação SUCH</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Somos Pessoas</strong></td><td style="color:var(--red); font-family:'JetBrains Mono'">€9</td><td>Serviços partilhados de pessoal para hospitais</td><td>Maioritária</td></tr>
+        <tr><td><strong>Somos Compras</strong></td><td style="color:var(--red); font-family:'JetBrains Mono'">€0</td><td>Aprovisionamento centralizado &amp; logística</td><td>91%</td></tr>
+        <tr><td><strong>Somos Contas</strong></td><td style="color:var(--red); font-family:'JetBrains Mono'">Mínimo</td><td>Serviços partilhados financeiros &amp; contabilísticos</td><td>Maioritária</td></tr>
+      </tbody>
+    </table>
+
+    <div class="evidence-box">
+      <strong>A empresa de €9 a gerir pessoal hospitalar.</strong>
+      <p>Somos Pessoas foi registada com um capital de apenas nove euros — menos do que o custo de uma refeição hospitalar — mas coordenava serviços de pessoal para a rede hospitalar de Lisboa. Isto não é uma startup. É um veículo para separar responsabilidades de ativos.</p>
+    </div>
+
+    <div class="evidence-box">
+      <strong>A empresa de €0 a lidar com aprovisionamento.</strong>
+      <p>Somos Compras — designada como centro de aquisição pública oficial por Decreto-Lei 200/2008 — tinha um capital registado de zero. Apesar disto, acumulou <strong>€19,3M em dívida bancária</strong>. Quando implodiu, os centros hospitalares de Lisboa pagaram 100% desta dívida apesar de terem apenas 9% de participação. O detentor dos restantes 91% — SUCH — afastou-se, recebendo um adicional de €3,7M em perdão de dívida.</p>
+    </div>
+
+    <p>Uma quarta entidade, <strong>Somos Ambiente</strong>, foi posteriormente implicada na investigação de fraude comunitária (Operação Inovar). Esta estrutura de subsidiárias serviu um duplo propósito: compartimentação operacional e proteção do próprio balanço de SUCH da verdadeira escala da sua exposição financeira — €17,6M ocultado nas entidades Somos.</p>
+  </div>
+
+  <!-- SECTION: Concealed Debt -->
+  <div class="section-block">
+    <h2>03 &mdash; A Ocultação de €45,5 Milhões</h2>
+    <p>O Tribunal de Contas <strong>Relatório n.º 30/2015</strong> revelou que SUCH havia ocultado um passivo de <strong>€45,5 milhões</strong> nas suas contas de 2013–2014. A organização tinha atingido um estado de insolvência técnica com capital próprio negativo de €36,3M — um facto ocultado dos hospitais que servia e do público que era suposto proteger.</p>
+
+    <div class="evidence-box">
+      <strong>Multa por ocultar €45,5M: apenas €510.</strong>
+      <p>O Tribunal de Contas identificou irregularidades contabilísticas maciças exigindo reestruturação financeira. A penalidade? Uma multa de quinhentos e dez euros. Para contexto, isto é equivalente a multar alguém 0,0011% do montante que ocultou — ou aproximadamente o custo de estacionamento num hospital de Lisboa durante um mês.</p>
+    </div>
+
+    <h3>Como a Dívida Foi Ocultada</h3>
+    <p>As subsidiárias ACE serviam como veículos contabilísticos extrabancários. Somos Compras isoladamente transportava €19,3M em dívida bancária, mas porque era uma entidade jurídica separada com os seus próprios livros, esta dívida não aparecia nas contas consolidadas de SUCH. Quando a estrutura colapsou, os hospitais — financiados pelo orçamento do SNS — absorveram as perdas enquanto a liderança de SUCH enfrentava nenhuma consequência significativa.</p>
+
+    <h3>Quem Pagou?</h3>
+    <p>Os centros hospitalares de Lisboa, detendo apenas 9% de Somos Compras, pagaram 100% da dívida bancária de €19,3M através de alocações de orçamento SNS via um acordo de recurso de 10 anos. SUCH recebeu €3,7M em perdão de dívida. Em 2015, o governo orquestrou uma transferência de €17,2M de posições jurídicas das entidades Somos para SPMS (Serviços Partilhados do Ministério da Saúde) — efetivamente socializando as perdas.</p>
+  </div>
+
+  <!-- SECTION: No-Tender Consulting -->
+  <div class="section-block">
+    <h2>04 &mdash; €21M em Consultoria Sem Concurso</h2>
+    <p>A auditoria do Tribunal de Contas de 2010 (Relatório n.º 31/2010) descobriu que SUCH tinha pago mais de <strong>€21 milhões</strong> a três grandes empresas de consultoria até ao final de 2009 — quatro vezes superior à perda total da organização nesse ano — tudo <strong>sem processos formais de concurso competitivo</strong>.</p>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>Empresa de Consultoria</th><th>Montante</th><th>Projeto</th><th>Processo de Concurso</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Accenture</strong></td><td style="color:var(--red); font-family:'JetBrains Mono'">€9,4M</td><td>Projeto de serviços partilhados "Somos"</td><td style="color:var(--red)">Nenhum</td></tr>
+        <tr><td><strong>Deloitte / SGG</strong></td><td style="color:var(--red); font-family:'JetBrains Mono'">€7,6M</td><td>Projeto de serviços partilhados "Somos"</td><td style="color:var(--red)">Nenhum</td></tr>
+        <tr><td><strong>CapGemini</strong></td><td style="color:var(--red); font-family:'JetBrains Mono'">€4,3M</td><td>Projeto de serviços partilhados "Somos"</td><td style="color:var(--red)">Nenhum</td></tr>
+      </tbody>
+    </table>
+
+    <div class="evidence-box orange">
+      <strong>O projeto "Somos" falhou.</strong>
+      <p>Estes €21M+ em honorários de consultoria foram gastos na reestruturação de serviços partilhados "Somos". O Tribunal de Contas concluiu que o projeto <strong>não contribuiu para a redução esperada no défice do Serviço Nacional de Saúde</strong>. O dinheiro foi gasto. O objetivo não foi alcançado. Ninguém foi responsabilizado.</p>
+    </div>
+
+    <p>Após os achados críticos da auditoria de 2010, a diretora de SUCH <strong>Paula Nanita</strong> foi dispensada no final de junho de 2010.</p>
+  </div>
+
+  <!-- SECTION: Operation Inovar -->
+  <div class="section-block">
+    <h2>05 &mdash; Operação Inovar: Acusações de Fraude Comunitária</h2>
+    <p>Em Maio de 2019, a Polícia Judiciária lançou a <strong>Operação Inovar</strong>, uma operação nacional visando o uso fraudulento de fundos estruturais comunitários "Portugal 2020". O presidente de SUCH <strong>Paulo Jorge Rendeiro Correia de Sousa</strong> estava entre 73+ indivíduos constituídos como suspeitos.</p>
+
+    <div class="evidence-box">
+      <strong>Acusado de fraude comunitária — depois reeleito presidente.</strong>
+      <p>Paulo Sousa foi constituído como arguido em 2–3 de Maio de 2019 em conexão com esquemas de faturação fraudulenta para obter subsídios comunitários através de Somos Ambiente. As acusações incluem falsificação de documentos, lavagem de dinheiro e fraude fiscal. Apesar disto, foi <strong>reeleito Presidente de SUCH</strong> em 2 de Maio de 2022 via Despacho 5212/2022 — exatamente três anos após a sua acusação.</p>
+    </div>
+
+    <h3>Suspeitos Principais</h3>
+    <table class="data-table">
+      <thead>
+        <tr><th>Nome</th><th>Cargo</th><th>Envolvimento Alegado</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Paulo Sousa</strong></td><td>Presidente de SUCH</td><td>Participação via ACE Somos Ambiente em reclamações fraudulentas de subsídios comunitários</td></tr>
+        <tr><td><strong>Adelino Gonçalves Mendes</strong></td><td>VP de Somos Ambiente; Chefe de Gabinete da Secretária de Estado da Proteção Civil</td><td>Removido da posição governamental após designação como suspeito; envolvido em esquemas de contratos de gestão de resíduos hospitalares</td></tr>
+      </tbody>
+    </table>
+
+    <p>A investigação alegou esquemas de sobrefaturação para obter fraudulentamente subsídios comunitários, envolvimento de empresas alemãs e milhões de euros tanto em fraude comunitária como em fraude fiscal portuguesa. Até à informação mais recente disponível, o caso permanece ativo.</p>
+  </div>
+
+  <!-- SECTION: Timeline -->
+  <div class="section-block">
+    <h2>06 &mdash; Cronologia</h2>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-date">Novembro 1965</div>
+        <div class="timeline-title">Fundação jurídica estabelecida</div>
+        <div class="timeline-desc">Decreto-Lei 46.668 permite criação de serviços complementares hospitalares</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">Abril 1966</div>
+        <div class="timeline-title">SUCH oficialmente fundado</div>
+        <div class="timeline-desc">Despacho ministerial estabelece a organização; estatutos publicados junho 1966</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">Outubro 2008</div>
+        <div class="timeline-title">Somos Compras designada centro de aquisição pública</div>
+        <div class="timeline-desc">Decreto-Lei 200/2008 formaliza uma entidade de capital €0 como órgão oficial de aprovisionamento</div>
+      </div>
+      <div class="timeline-item red">
+        <div class="timeline-date">2009</div>
+        <div class="timeline-title">€21M+ em consultoria sem concurso</div>
+        <div class="timeline-desc">Contratos Accenture, Deloitte, CapGemini atingem €21M sem concurso competitivo</div>
+      </div>
+      <div class="timeline-item red">
+        <div class="timeline-date">Março 2010</div>
+        <div class="timeline-title">SPMS criado para absorver funções SUCH</div>
+        <div class="timeline-desc">Governo reconhece que o modelo está partido; inicia consolidação</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">Junho 2010</div>
+        <div class="timeline-title">Diretora Paula Nanita dispensada</div>
+        <div class="timeline-desc">Remoção segue achados críticos de auditoria do Tribunal de Contas</div>
+      </div>
+      <div class="timeline-item red">
+        <div class="timeline-date">2013–2014</div>
+        <div class="timeline-title">€45,5M em dívida ocultada</div>
+        <div class="timeline-desc">Contas financeiras ocultam passivo massivo; SUCH tecnicamente insolvente (capital próprio negativo €36,3M)</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">2015</div>
+        <div class="timeline-title">Relatório Tribunal de Contas 30/2015</div>
+        <div class="timeline-desc">Auditoria expõe dívida ocultada. Multa imposta: €510.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">Agosto 2015</div>
+        <div class="timeline-title">Transferência de €17,2M para SPMS</div>
+        <div class="timeline-desc">Governo socializa perdas das entidades Somos</div>
+      </div>
+      <div class="timeline-item red">
+        <div class="timeline-date">Setembro 2015</div>
+        <div class="timeline-title">Decreto-Lei 209/2015 reestrutura SUCH</div>
+        <div class="timeline-desc">Novo marco; estatutos publicados fevereiro 2016</div>
+      </div>
+      <div class="timeline-item active">
+        <div class="timeline-date">2–3 Maio 2019</div>
+        <div class="timeline-title">Operação Inovar: Paulo Sousa acusado</div>
+        <div class="timeline-desc">Presidente de SUCH entre 73+ suspeitos em investigação de fraude comunitária (falsificação de documentos, lavagem de dinheiro, fraude fiscal)</div>
+      </div>
+      <div class="timeline-item active">
+        <div class="timeline-date">2 Maio 2022</div>
+        <div class="timeline-title">Paulo Sousa reeleito Presidente</div>
+        <div class="timeline-desc">Despacho 5212/2022 reelege a mesma pessoa acusada na Operação Inovar</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION: What's UNREPORTED -->
+  <div class="section-block">
+    <h2>07 &mdash; O Que Ninguém Está a Falar</h2>
+    <p>As auditorias do Tribunal de Contas e a Operação Inovar receberam alguma cobertura mediática. Mas vários ângulos críticos permanecem completamente por reportar:</p>
+
+    <div class="evidence-box">
+      <strong>1. A estrutura fantoche de €9 / €0.</strong>
+      <p>Nenhuma media portuguesa investigou porque é que serviços públicos hospitalares foram canalizados através de entidades com capital registado zero ou de um dígito. Este é um padrão clássico de empresa fantoche — capitalização mínima para limitar responsabilidade enquanto maneja milhões em fundos públicos.</p>
+    </div>
+
+    <div class="evidence-box">
+      <strong>2. O paradoxo da reeleição.</strong>
+      <p>Paulo Sousa foi acusado de fraude comunitária em 2019 e reeleito presidente em 2022. Nenhuma media questionou como alguém sob investigação criminal ativa por defraudar fundos comunitários foi considerado adequado para liderar uma organização de utilidade pública a gerir dinheiro do SNS.</p>
+    </div>
+
+    <div class="evidence-box">
+      <strong>3. A multa de €510 por fraude de €45,5M.</strong>
+      <p>A multa representa 0,0011% do montante ocultado. Este rácio — e o que diz sobre responsabilidade na governança pública portuguesa — não foi examinado como uma questão sistémica.</p>
+    </div>
+
+    <div class="evidence-box">
+      <strong>4. Padrões de expansão de contrato.</strong>
+      <p>Contratos SUCH que expandiram até 11.000% do valor original através de modificações permanecem inexaminados. O mecanismo — ganhar um pequeno contrato, depois expandir sem nova concorrência — é uma bandeira vermelha de aprovisionamento que dados BASE.gov.pt deveriam revelar.</p>
+    </div>
+  </div>
+
+  <!-- SECTION: Sources -->
+  <div class="section-block">
+    <h2>08 &mdash; Fontes</h2>
+    <ul class="source-list">
+      <li><a href="https://www.tcontas.pt/pt-pt/ProdutosTC/Relatorios/RelatoriosAuditoria/Documents/2015/rel030-2015-2s.pdf" target="_blank">Tribunal de Contas &mdash; Relatório n.º 30/2015 (2.ª Secção)</a> <span class="source-type">Relatório de Auditoria</span></li>
+      <li><a href="https://www.jornaldenegocios.pt/economia/saude/detalhe/servico_de_utilizacao_comum_dos_hospitais_ocultou_passivo_de_455_milhoes" target="_blank">Jornal de Negócios &mdash; SUCH ocultou passivo de €45,5M</a> <span class="source-type">Notícia</span></li>
+      <li><a href="https://observador.pt/2016/01/12/auditoria-servico-fornece-hospitais-ocultou-divida-455-milhoes/" target="_blank">Observador &mdash; Auditoria revela dívida hospitalar ocultada</a> <span class="source-type">Notícia</span></li>
+      <li><a href="https://www.publico.pt/2019/05/03/sociedade/noticia/presidente-such-arguido-fraude-fundos-comunitarios-1871304" target="_blank">Público &mdash; Presidente de SUCH acusado em fraude de fundos comunitários</a> <span class="source-type">Notícia</span></li>
+      <li><a href="https://www.sabado.pt/portugal/detalhe/presidente-do-such-e-arguido-no-caso-de-fraude-com-fundos-europeus" target="_blank">Sábado &mdash; Detalhes da Operação Inovar</a> <span class="source-type">Notícia</span></li>
+      <li><a href="https://www.dn.pt/pais/fraude-de-milhoes-na-obtencao-de-fundos-comunitarios-pj-lanca-operacao-nacional-10854724.html" target="_blank">Diário de Notícias &mdash; Operação nacional sobre fraude de fundos comunitários</a> <span class="source-type">Notícia</span></li>
+      <li><a href="https://diariodarepublica.pt/dr/detalhe/decreto-lei/209-2015-70386136" target="_blank">Decreto-Lei 209/2015 &mdash; Marco de reestruturação de SUCH</a> <span class="source-type">Legislação</span></li>
+      <li><a href="https://www.such.pt/" target="_blank">Website Oficial SUCH</a> <span class="source-type">Oficial</span></li>
+      <li><a href="https://www.such.pt/orgaos-sociais/" target="_blank">SUCH Órgãos Sociais &mdash; Composição Atual</a> <span class="source-type">Oficial</span></li>
+      <li><a href="https://www.racius.com/servico-de-utilizacao-comum-dos-hospitais-s-u-c-h/" target="_blank">Racius &mdash; Registo de Empresa SUCH</a> <span class="source-type">Registo</span></li>
+    </ul>
+  </div>
+
+</div>
+
+<!-- AI DISCLAIMER & REPORT -->
+<div style="max-width:900px;margin:0 auto 2rem;padding:0 2rem;">
+  <div style="background:linear-gradient(135deg,rgba(255,71,87,0.12),rgba(255,165,2,0.08));border:1px solid rgba(255,71,87,0.3);border-radius:10px;padding:1.2rem 1.5rem;display:flex;align-items:flex-start;gap:1rem;">
+    <div style="font-size:1.4rem;flex-shrink:0;">&#9888;&#65039;</div>
+    <div style="font-size:0.82rem;color:#8892a8;line-height:1.6;">
+      <strong style="color:#ffa502;font-family:JetBrains Mono,monospace;font-size:0.75rem;letter-spacing:1px;">CONTEÚDO GERADO POR IA</strong><br>
+      Esta página foi gerada por IA e pode conter inexatidões. Todas as alegações devem ser independentemente verificadas usando as fontes fornecidas.
+      <br><br>
+      <a href="https://github.com/pjcorreia/sigil/issues/new?labels=correction&amp;title=%5BCorrection%5D+" target="_blank" style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border:1px solid #ff4757;border-radius:4px;color:#ff4757;font-family:JetBrains Mono,monospace;font-size:0.6rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;text-decoration:none;">&#9873; Reportar Erro no GitHub</a>
+      &nbsp;
+      <a href="mailto:pjcorreia@gmail.com?subject=%5BSIGIL%20Correction%5D" style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border:1px solid #00d4aa;border-radius:4px;color:#00d4aa;font-family:JetBrains Mono,monospace;font-size:0.6rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;text-decoration:none;">&#9993; Correção por Email</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p style="color:var(--accent); font-family:'JetBrains Mono', monospace; letter-spacing: 2px; margin-bottom: 0.5rem;">SIGIL</p>
+  <p>Signal Intelligence Lab &mdash; Análise de Aprovisionamento Público Português</p>
+  <p style="margin-top: 0.5rem;"><a href="pt.html" style="color:var(--accent); text-decoration:none;">← Voltar a todas as investigações</a></p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIGIL | Serviços de Limpeza e Segurança — Investigação Completa</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+  :root{--bg-primary:#0a0e17;--bg-secondary:#111827;--bg-card:#1a2235;--bg-card-hover:#1f2a40;--accent:#00d4aa;--accent-dim:#00d4aa33;--accent-glow:#00d4aa22;--red:#ff4757;--red-dim:#ff475722;--orange:#ffa502;--orange-dim:#ffa50222;--yellow:#eccc68;--text-primary:#e8eaf0;--text-secondary:#8892a8;--text-muted:#4a5568;--border:#1e2a3a;--border-accent:#00d4aa44}
+  *{margin:0;padding:0;box-sizing:border-box}body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg-primary);color:var(--text-primary);line-height:1.7;overflow-x:hidden}body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,212,170,0.015) 2px,rgba(0,212,170,0.015) 4px);pointer-events:none;z-index:9999}
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,14,23,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 2rem}.nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:60px}.nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none}.nav-brand .logo{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.3rem;color:var(--accent);letter-spacing:3px}.nav-brand .tagline{font-size:0.7rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase}.nav-links{display:flex;gap:2rem;list-style:none;align-items:center}.nav-links a{color:var(--text-secondary);text-decoration:none;font-size:0.85rem;font-weight:500;transition:color 0.2s}.nav-links a:hover{color:var(--accent)}.back-link{color:var(--accent)!important;font-family:'JetBrains Mono',monospace;font-size:0.8rem!important}.lang-toggle{display:flex;gap:0;border:1px solid #1e2a3a;border-radius:4px;overflow:hidden;margin-left:1rem}.lang-toggle a{padding:4px 10px;font-family:'JetBrains Mono',monospace;font-size:0.65rem;font-weight:700;letter-spacing:1px;text-decoration:none;color:#4a5568;transition:all 0.2s}.lang-toggle a.active{background:#00d4aa;color:#0a0e17}.lang-toggle a:not(.active):hover{color:#00d4aa;background:#00d4aa33}
+  .deep-hero{padding:120px 2rem 60px;text-align:center;position:relative}.deep-hero::before{content:'';position:absolute;top:60px;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(circle,var(--orange-dim) 0%,transparent 70%);pointer-events:none}
+  .status-tag{font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:700;letter-spacing:1.5px;padding:3px 10px;border-radius:3px;text-transform:uppercase}.status-tag.unreported{background:rgba(255,71,87,0.15);color:var(--red);border:1px solid var(--red)}.risk-badge{font-family:'JetBrains Mono',monospace;font-size:0.65rem;font-weight:700;letter-spacing:1px;padding:4px 10px;border-radius:4px}.risk-badge.medium{background:rgba(236,204,104,0.1);color:var(--yellow);border:1px solid var(--yellow)}
+  .deep-hero h1{font-size:2.6rem;font-weight:700;line-height:1.2;margin:1rem 0;background:linear-gradient(135deg,var(--text-primary) 0%,var(--text-secondary) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}.deep-hero p{font-size:1.1rem;color:var(--text-secondary);max-width:700px;margin:0 auto;font-weight:300}.hero-badges{display:flex;gap:1rem;justify-content:center;margin-bottom:1rem}
+  .content{max-width:900px;margin:0 auto;padding:0 2rem 4rem}
+  .key-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin:2rem 0 3rem}.stat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:1.5rem;text-align:center}.stat-card .number{font-family:'JetBrains Mono',monospace;font-size:1.8rem;font-weight:700;color:var(--orange)}.stat-card .label{font-size:0.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+  .section-block{margin-bottom:3rem}.section-block h2{font-size:1.4rem;font-weight:700;color:var(--accent);margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border);font-family:'JetBrains Mono',monospace;letter-spacing:1px}.section-block h3{font-size:1.1rem;font-weight:600;color:var(--text-primary);margin:1.5rem 0 0.5rem}.section-block p{color:var(--text-secondary);font-size:0.92rem;margin-bottom:1rem}
+  .evidence-box{background:var(--bg-card);border-left:3px solid var(--red);border-radius:0 8px 8px 0;padding:1.2rem 1.5rem;margin:1rem 0}.evidence-box.orange{border-left-color:var(--orange)}.evidence-box.accent{border-left-color:var(--accent)}.evidence-box strong{color:var(--text-primary)}.evidence-box p{margin-bottom:0.3rem;color:var(--text-secondary);font-size:0.88rem}
+  .data-table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:0.85rem}.data-table th{text-align:left;padding:10px 14px;background:rgba(0,212,170,0.08);color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:0.7rem;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--border)}.data-table td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text-secondary)}.data-table tr:hover td{background:rgba(0,212,170,0.03)}
+  .source-list{list-style:none;margin:1rem 0}.source-list li{padding:0.5rem 0;border-bottom:1px solid var(--border)}.source-list a{color:var(--accent);text-decoration:none;font-size:0.85rem}.source-list a:hover{text-decoration:underline}.source-list .source-type{font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-left:0.5rem}
+  footer{text-align:center;padding:3rem 2rem;border-top:1px solid var(--border);color:var(--text-muted);font-size:0.8rem}
+  @media(max-width:768px){.deep-hero h1{font-size:1.8rem}.key-stats{grid-template-columns:repeat(2,1fr)}.nav-links{display:none}}
+</style>
+</head>
+<body>
+<nav><div class="nav-inner">
+  <a href="pt.html" class="nav-brand"><span class="logo">SIGIL</span><span class="tagline">Signal Intelligence Lab</span></a>
+  <ul class="nav-links"><li><a href="pt.html" class="back-link">&larr; Voltar às Investigações</a></li><li><a href="pt.html#investigations">Todos os Casos</a></li><li><div class="lang-toggle"><a href="cleaning-deep-dive.html">EN</a><a href="cleaning-deep-dive-pt.html" class="active">PT</a></div></li></ul>
+</div></nav>
+
+<div class="deep-hero">
+  <div class="hero-badges">
+    <span class="status-tag unreported">NÃO DIVULGADO</span>
+    <span class="risk-badge medium">MÉDIO-ALTO</span>
+  </div>
+  <h1>Serviços de Limpeza e Segurança</h1>
+  <p>397 adjudicações diretas acima dos limiares UE. Redes de empresas tipo "casca de ovo" partilhando o mesmo endereço. Diretores deliberadamente ocultos de registos públicos. E 13,6 milhões de euros em contratos GNR atribuídos sob "urgência" permanente durante três anos.</p>
+</div>
+
+<div class="content">
+  <div class="key-stats">
+    <div class="stat-card"><div class="number">397</div><div class="label">Adjudicações Diretas Acima do Limiar</div></div>
+    <div class="stat-card"><div class="number">871</div><div class="label">Contratos Fine Facility com Governo</div></div>
+    <div class="stat-card"><div class="number">&euro;13,6M</div><div class="label">Adjudicações GNR Sem Contrato</div></div>
+    <div class="stat-card"><div class="number">3 anos</div><div class="label">de "Necessidade Urgente"</div></div>
+  </div>
+
+  <div class="section-block">
+    <h2>01 &mdash; Fine Facility Services: A Empresa Oculta</h2>
+    <p><strong>Fine Facility Services</strong> é uma das empresas mais proliferas do setor de limpeza e gestão de instalações em Portugal, com <strong>871 contratos com governo</strong> registados em BASE.gov.pt. Mas informação básica sobre a empresa — quem a detém, quem a gere — é deliberadamente ocultada do domínio público.</p>
+
+    <div class="evidence-box">
+      <strong>Diretores deliberadamente ocultos.</strong>
+      <p>Os nomes de gerentes e sócios estão ausentes de todas as fontes públicas gratuitas — uma situação invulgar para uma empresa com 871 contratos governamentais e capital de 1 milhão de euros. Num país onde o registo comercial (RNPC/IRN) proporciona transparência básica para a maioria das empresas, a opacidade de propriedade da Fine Facility é uma escolha deliberada, não um acidente.</p>
+    </div>
+
+    <h3>A Rebranding Fénix</h3>
+    <p>Fine Facility operava anteriormente como <strong>Fénix Facility Services</strong> antes de mudar de nome. A mudança de nome — do pássaro mitológico que renasce das cinzas — levanta imediatas questões: o que precisava de ser queimado e renascido? A rebranding de empresas no espaço de contratação governamental é um sinal de alerta reconhecido para entidades a tentar distanciar-se de problemas de desempenho passado ou investigações.</p>
+  </div>
+
+  <div class="section-block">
+    <h2>02 &mdash; A Rede da Rua Rosa Damasceno</h2>
+    <p>Múltiplas entidades ligadas à Fine Facility partilham o mesmo endereço registado: <strong>Rua Rosa Damasceno, 11, Lisboa</strong>. Este padrão — múltiplas empresas num endereço, frequentemente com diretores partilhados ou ocultos — é um indicador clássico de compartimentação corporativa.</p>
+
+    <table class="data-table">
+      <thead><tr><th>Entidade</th><th>Atividade</th><th>Endereço</th><th>Diretor Conhecido</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Fine Facility Services</strong></td><td>Limpeza e gestão de instalações</td><td>Rua Rosa Damasceno, 11</td><td style="color:var(--red)">Oculto</td></tr>
+        <tr><td><strong>Fénix Cleaning</strong></td><td>Serviços de limpeza</td><td>Rua Rosa Damasceno, 11</td><td>José Ribeiro Da Costa</td></tr>
+        <tr><td><strong>Fénix Intersegur</strong></td><td>Serviços de segurança</td><td>Rua Rosa Damasceno, 11</td><td>Ligado à rede Fénix</td></tr>
+        <tr><td><strong>Fine & Fine Norte</strong></td><td>Subsidiária regional</td><td>Entidade da rede</td><td style="color:var(--red)">Oculto</td></tr>
+        <tr><td><strong>Fine & Fine Sul</strong></td><td>Subsidiária regional</td><td>Entidade da rede</td><td style="color:var(--red)">Oculto</td></tr>
+        <tr><td><strong>Fine & Fine II</strong></td><td>Subsidiária</td><td>Entidade da rede</td><td style="color:var(--red)">Oculto</td></tr>
+      </tbody>
+    </table>
+
+    <div class="evidence-box orange">
+      <strong>A compartimentação sugere capacidade de coordenação de propostas.</strong>
+      <p>Quando múltiplas entidades no mesmo setor (limpeza + segurança) partilham o mesmo endereço e estão ligadas através de gestão comum, têm a capacidade estrutural para coordenar propostas. Uma entidade faz proposta em limpeza, outra em segurança, uma terceira em gestão de instalações — todas controladas pela mesma rede mas aparentando serem concorrentes independentes. Esta é a arquitetura de manipulação de concursos.</p>
+    </div>
+  </div>
+
+  <div class="section-block">
+    <h2>03 &mdash; O Escândalo GNR: 13,6 Milhões Sem Contratos Escritos</h2>
+    <p>A GNR (Guarda Nacional Republicana) atribuiu à Fine Facility <strong>13,6 milhões de euros</strong> em contratos de limpeza entre outubro de 2022 e abril de 2025 por ajuste direto, repetidamente invocando "imperativo de urgência" para justificar o contorno de procuração competitiva — durante <strong>três anos consecutivos</strong>.</p>
+
+    <div class="evidence-box">
+      <strong>"Imperativo de urgência" — para limpeza?</strong>
+      <p>A exceção de "necessidade urgente" na lei de contratação pública portuguesa (Código dos Contratos Públicos) foi concebida para emergências genuínas — desastres naturais, crises de segurança, situações onde a procuração competitiva causaria atraso inaceitável. Usá-la repetidamente durante três anos para <em>serviços de limpeza</em> ultrapassa o conceito além de qualquer interpretação razoável. Como especialistas jurídicos consultados pela média notaram: isto é "claramente ilegal."</p>
+    </div>
+
+    <h3>O Padrão de Abuso</h3>
+    <p>A exceção de "necessidade urgente" não é exclusiva da GNR. Representa uma brecha sistémica na contratação pública portuguesa que permite a entidades contratantes contornar limiares UE e requisitos competitivos declarando urgência. Quando a mesma entidade invoca urgência para o mesmo serviço repetidamente, a urgência é claramente fabricada — a emergência real é a indisposição da entidade de fazer um concurso competitivo.</p>
+  </div>
+
+  <div class="section-block">
+    <h2>04 &mdash; 397 Adjudicações Diretas Acima do Limiar</h2>
+    <p>Ao longo do setor de serviços de limpeza e segurança, SIGIL identificou <strong>397 adjudicações diretas que excedem limiares de contratação UE</strong> — contratos que deveriam ter sido sujeitos a processos de concurso competitivo, de âmbito europeu, mas foram adjudicados diretamente a fornecedores incumbentes.</p>
+
+    <div class="evidence-box accent">
+      <strong>Limiar UE para serviços: 143.000 euros (2024).</strong>
+      <p>De acordo com a Diretiva UE 2014/24/EU, contratos de serviço acima de 143.000 euros devem ser anunciados no Jornal Oficial da União Europeia (JOUE) e sujeitos a contratação competitiva. Adjudicações diretas acima deste limiar requerem justificação legal específica — exclusividade técnica, urgência extrema, ou proteção de direitos exclusivos. Serviços de limpeza raramente se qualificam sob qualquer uma destas exceções.</p>
+    </div>
+
+    <h3>Justificações Comuns</h3>
+    <table class="data-table">
+      <thead><tr><th>Justificação Usada</th><th>Frequência</th><th>Avaliação de Validade</th></tr></thead>
+      <tbody>
+        <tr><td>"Imperativo de urgência"</td><td style="font-family:'JetBrains Mono'">Alta</td><td style="color:var(--red)">Raramente válida para serviços recorrentes</td></tr>
+        <tr><td>"Razões técnicas / fornecedor único"</td><td style="font-family:'JetBrains Mono'">Média</td><td style="color:var(--red)">Limpeza/segurança são serviços commodity com muitos fornecedores</td></tr>
+        <tr><td>"Continuidade de serviço"</td><td style="font-family:'JetBrains Mono'">Média</td><td style="color:var(--orange)">Válido curto prazo; não para renovações multi-anuais</td></tr>
+        <tr><td>"Extensão de contrato / modificação"</td><td style="font-family:'JetBrains Mono'">Alta</td><td style="color:var(--orange)">Legal se dentro de limites; frequentemente usado para contornar limiares</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-block">
+    <h2>05 &mdash; Os Trabalhadores</h2>
+    <p>Por trás das estruturas corporativas e brechas de contratação estão pessoas reais — os trabalhadores de limpeza e segurança que operam sob estes contratos. O modelo de externalização que as adjudicações diretas perpetuam tem consequências bem documentadas:</p>
+
+    <div class="evidence-box accent">
+      <strong>Baixos salários, condições precárias, trabalho invisível.</strong>
+      <p>Trabalhadores terceirizados de limpeza e segurança no setor público português tipicamente ganham salário mínimo (870 euros/mês em 2026), trabalham horários irregulares, e têm segurança laboral limitada. Quando contratos mudam de mãos sem concurso competitivo, os trabalhadores perdem o pouco poder de negociação que têm. As empresas que concorrem por estes contratos competem primariamente em custo de trabalho — não qualidade de serviço.</p>
+    </div>
+
+    <p>A ironia é crua: um sistema de contratação que afirma proteger o interesse público através de licitação competitiva na verdade protege incumbentes através de adjudicações diretas — e os trabalhadores que prestam os serviços reais não têm voz nem no processo de contratação nem nas empresas que os empregam.</p>
+  </div>
+
+  <div class="section-block">
+    <h2>06 &mdash; O Que Ninguém Está a Falar</h2>
+    <div class="evidence-box">
+      <strong>1. Quem detém Fine Facility?</strong>
+      <p>Uma empresa com 871 contratos governamentais cujos diretores são deliberadamente ocultados de registos públicos deveria desencadear investigação imediata. O RCBE português (registo de propriedade beneficiária) deveria conter esta informação, mas o acesso foi restringido a "interesse legítimo" em outubro de 2025.</p>
+    </div>
+    <div class="evidence-box">
+      <strong>2. Está a rede Fénix a coordenar propostas?</strong>
+      <p>Múltiplas entidades no mesmo endereço, no mesmo setor, com gestão parcialmente partilhada — os indicadores estruturais de coordenação de propostas estão presentes. Nenhuma investigação de autoridade de concorrência foi anunciada.</p>
+    </div>
+    <div class="evidence-box">
+      <strong>3. Quantas declarações de "necessidade urgente" são realmente urgentes?</strong>
+      <p>Uma análise sistemática de todas as adjudicações diretas por "necessidade urgente" em BASE.gov.pt — comparando a urgência alegada contra o cronograma real e tipo de serviço — nunca foi conduzida publicamente. O caso GNR sugere que a exceção está a ser usada como brecha, não exceção.</p>
+    </div>
+    <div class="evidence-box">
+      <strong>4. O que aconteceu aos trabalhadores?</strong>
+      <p>Quando Fine Facility vence contratos através de adjudicações diretas em vez de concursos competitivos, como isto afeta condições de emprego? Os trabalhadores estão a ser subcontratados através da rede de casca? Nenhuma investigação focada em trabalho deste setor existe.</p>
+    </div>
+  </div>
+
+  <div class="section-block">
+    <h2>07 &mdash; Fontes</h2>
+    <ul class="source-list">
+      <li><a href="https://www.base.gov.pt" target="_blank">BASE.gov.pt &mdash; Portal de Contratação Pública Portuguesa</a> <span class="source-type">Base de Dados</span></li>
+      <li><a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32014L0024" target="_blank">Diretiva UE 2014/24/EU &mdash; Contratação Pública</a> <span class="source-type">Direito UE</span></li>
+      <li><a href="https://www.impic.pt" target="_blank">IMPIC &mdash; Regulador de Contratação Pública Portuguesa</a> <span class="source-type">Oficial</span></li>
+    </ul>
+  </div>
+</div>
+
+<!-- AI DISCLAIMER & REPORT -->
+<div style="max-width:900px;margin:0 auto 2rem;padding:0 2rem;">
+  <div style="background:linear-gradient(135deg,rgba(255,71,87,0.12),rgba(255,165,2,0.08));border:1px solid rgba(255,71,87,0.3);border-radius:10px;padding:1.2rem 1.5rem;display:flex;align-items:flex-start;gap:1rem;">
+    <div style="font-size:1.4rem;flex-shrink:0;">&#9888;&#65039;</div>
+    <div style="font-size:0.82rem;color:#8892a8;line-height:1.6;">
+      <strong style="color:#ffa502;font-family:JetBrains Mono,monospace;font-size:0.75rem;letter-spacing:1px;">CONTEÚDO GERADO POR IA</strong><br>
+      Esta página foi gerada por IA e pode conter imprecisões. Todas as afirmações devem ser verificadas independentemente usando as fontes fornecidas.
+      <br><br>
+      <a href="https://github.com/pjcorreia/sigil/issues/new?labels=correction&amp;title=%5BCorrection%5D+" target="_blank" style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border:1px solid #ff4757;border-radius:4px;color:#ff4757;font-family:JetBrains Mono,monospace;font-size:0.6rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;text-decoration:none;">&#9873; Reportar Erro no GitHub</a>
+      &nbsp;
+      <a href="mailto:pjcorreia@gmail.com?subject=%5BSIGIL%20Correction%5D" style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border:1px solid #00d4aa;border-radius:4px;color:#00d4aa;font-family:JetBrains Mono,monospace;font-size:0.6rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;text-decoration:none;">&#9993; Correção por Email</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p style="color:var(--accent);font-family:'JetBrains Mono',monospace;letter-spacing:2px;margin-bottom:0.5rem">SIGIL</p>
+  <p>Signal Intelligence Lab &mdash; Análise de Contratação Pública Portuguesa</p>
+  <p style="margin-top:0.5rem"><a href="pt.html" style="color:var(--accent);text-decoration:none">&larr; Voltar a todas as investigações</a></p>
+</footer>
+</body>
+</html>

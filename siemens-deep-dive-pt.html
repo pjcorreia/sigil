@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIGIL | Siemens / Infraestruturas de Portugal — Investigação Completa</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+  :root{--bg-primary:#0a0e17;--bg-secondary:#111827;--bg-card:#1a2235;--bg-card-hover:#1f2a40;--accent:#00d4aa;--accent-dim:#00d4aa33;--accent-glow:#00d4aa22;--red:#ff4757;--red-dim:#ff475722;--orange:#ffa502;--orange-dim:#ffa50222;--yellow:#eccc68;--text-primary:#e8eaf0;--text-secondary:#8892a8;--text-muted:#4a5568;--border:#1e2a3a;--border-accent:#00d4aa44}
+  *{margin:0;padding:0;box-sizing:border-box}body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg-primary);color:var(--text-primary);line-height:1.7;overflow-x:hidden}body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,212,170,0.015) 2px,rgba(0,212,170,0.015) 4px);pointer-events:none;z-index:9999}
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,14,23,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 2rem}.nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:60px}.nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none}.nav-brand .logo{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.3rem;color:var(--accent);letter-spacing:3px}.nav-brand .tagline{font-size:0.7rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase}.nav-links{display:flex;gap:2rem;list-style:none;align-items:center}.nav-links a{color:var(--text-secondary);text-decoration:none;font-size:0.85rem;font-weight:500;transition:color 0.2s}.nav-links a:hover{color:var(--accent)}.back-link{color:var(--accent)!important;font-family:'JetBrains Mono',monospace;font-size:0.8rem!important}.lang-toggle{display:flex;gap:0;border:1px solid #1e2a3a;border-radius:4px;overflow:hidden;margin-left:1rem}.lang-toggle a{padding:4px 10px;font-family:'JetBrains Mono',monospace;font-size:0.65rem;font-weight:700;letter-spacing:1px;text-decoration:none;color:#4a5568;transition:all 0.2s}.lang-toggle a.active{background:#00d4aa;color:#0a0e17}.lang-toggle a:not(.active):hover{color:#00d4aa;background:#00d4aa33}
+  .deep-hero{padding:120px 2rem 60px;text-align:center;position:relative}.deep-hero::before{content:'';position:absolute;top:60px;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(circle,var(--orange-dim) 0%,transparent 70%);pointer-events:none}
+  .status-tag{font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:700;letter-spacing:1.5px;padding:3px 10px;border-radius:3px;text-transform:uppercase}.status-tag.unreported{background:rgba(255,71,87,0.15);color:var(--red);border:1px solid var(--red)}.risk-badge{font-family:'JetBrains Mono',monospace;font-size:0.65rem;font-weight:700;letter-spacing:1px;padding:4px 10px;border-radius:4px}.risk-badge.high{background:var(--orange-dim);color:var(--orange);border:1px solid var(--orange)}
+  .deep-hero h1{font-size:2.6rem;font-weight:700;line-height:1.2;margin:1rem 0;background:linear-gradient(135deg,var(--text-primary) 0%,var(--text-secondary) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}.deep-hero p{font-size:1.1rem;color:var(--text-secondary);max-width:700px;margin:0 auto;font-weight:300}.hero-badges{display:flex;gap:1rem;justify-content:center;margin-bottom:1rem}
+  .content{max-width:900px;margin:0 auto;padding:0 2rem 4rem}
+  .key-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin:2rem 0 3rem}.stat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:1.5rem;text-align:center}.stat-card .number{font-family:'JetBrains Mono',monospace;font-size:1.8rem;font-weight:700;color:var(--orange)}.stat-card .label{font-size:0.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+  .section-block{margin-bottom:3rem}.section-block h2{font-size:1.4rem;font-weight:700;color:var(--accent);margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border);font-family:'JetBrains Mono',monospace;letter-spacing:1px}.section-block h3{font-size:1.1rem;font-weight:600;color:var(--text-primary);margin:1.5rem 0 0.5rem}.section-block p{color:var(--text-secondary);font-size:0.92rem;margin-bottom:1rem}
+  .evidence-box{background:var(--bg-card);border-left:3px solid var(--red);border-radius:0 8px 8px 0;padding:1.2rem 1.5rem;margin:1rem 0}.evidence-box.orange{border-left-color:var(--orange)}.evidence-box.accent{border-left-color:var(--accent)}.evidence-box strong{color:var(--text-primary)}.evidence-box p{margin-bottom:0.3rem;color:var(--text-secondary);font-size:0.88rem}
+  .data-table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:0.85rem}.data-table th{text-align:left;padding:10px 14px;background:rgba(0,212,170,0.08);color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:0.7rem;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--border)}.data-table td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text-secondary)}.data-table tr:hover td{background:rgba(0,212,170,0.03)}
+  .source-list{list-style:none;margin:1rem 0}.source-list li{padding:0.5rem 0;border-bottom:1px solid var(--border)}.source-list a{color:var(--accent);text-decoration:none;font-size:0.85rem}.source-list a:hover{text-decoration:underline}.source-list .source-type{font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-left:0.5rem}
+  footer{text-align:center;padding:3rem 2rem;border-top:1px solid var(--border);color:var(--text-muted);font-size:0.8rem}
+  @media(max-width:768px){.deep-hero h1{font-size:1.8rem}.key-stats{grid-template-columns:repeat(2,1fr)}.nav-links{display:none}}
+</style>
+</head>
+<body>
+<nav><div class="nav-inner">
+  <a href="pt.html" class="nav-brand"><span class="logo">SIGIL</span><span class="tagline">Signal Intelligence Lab</span></a>
+  <ul class="nav-links"><li><a href="pt.html" class="back-link">&larr; Voltar às Investigações</a></li><li><a href="pt.html#investigations">Todos os Casos</a></li><li class="lang-toggle"><a href="siemens-deep-dive.html">EN</a><a href="siemens-deep-dive-pt.html" class="active">PT</a></li></ul>
+</div></nav>
+
+<div class="deep-hero">
+  <div class="hero-badges">
+    <span class="status-tag unreported">NÃO REPORTADO</span>
+    <span class="risk-badge high">ALTO</span>
+  </div>
+  <h1>Siemens / Infraestruturas de Portugal</h1>
+  <p>109 adjudicações diretas a um único fornecedor para infraestrutura ferroviária — e uma corporação global com um histórico documentado de suborno em contratação pública em múltiplos continentes.</p>
+</div>
+
+<div class="content">
+  <div class="key-stats">
+    <div class="stat-card"><div class="number">109</div><div class="label">Adjudicações Diretas</div></div>
+    <div class="stat-card"><div class="number">&euro;1,6B</div><div class="label">Acordo Global de Suborno (2008)</div></div>
+    <div class="stat-card"><div class="number">5+</div><div class="label">Interligações na Administração</div></div>
+    <div class="stat-card"><div class="number">0</div><div class="label">Investigações de Média PT</div></div>
+  </div>
+
+  <div class="section-block">
+    <h2>01 &mdash; O Padrão de Bloqueio de Fornecedor</h2>
+    <p>Os sistemas de sinalização e controlo ferroviário representam um dos sectores mais propensos ao bloqueio em contratação pública. Assim que um operador ferroviário instala um sistema de sinalização proprietário, mudar de fornecedor requer substituir toda a infraestrutura — sinais, encravamentos, software de controlo de comboios, sistemas de comunicação — a custos que podem exceder a instalação original por ordens de magnitude.</p>
+    <p>A Siemens Mobility é um de três atores dominantes globalmente (ao lado de Alstom e Hitachi Rail). Em Portugal, a Siemens estabeleceu-se como o fornecedor primário de sinalização para <strong>Infraestruturas de Portugal (IP)</strong>, a empresa estatal que gere a rede ferroviária e rodoviária nacional.</p>
+
+    <div class="evidence-box orange">
+      <strong>109 adjudicações diretas não é um padrão de contratação. É uma dependência.</strong>
+      <p>Quando o mesmo fornecedor recebe mais de 100 contratos sem licitação competitiva de uma única entidade estatal, a questão muda de "há um problema?" para "como se formou a dependência, e quem se beneficia em mantê-la?" Adjudicações diretas para manutenção de sistemas proprietários são legalmente defensáveis. Mas 109 delas sugerem um sistema concebido desde o início para excluir a concorrência.</p>
+    </div>
+  </div>
+
+  <div class="section-block">
+    <h2>02 &mdash; O Registo Global de Corrupção de &euro;1,6 Mil Milhões</h2>
+    <p>Em 2008, a Siemens AG concordou em pagar <strong>&euro;1,6 mil milhões</strong> em multas — o maior acordo de corrupção corporativa na história nessa altura — para resolver acusações de suborno apresentadas por autoridades norte-americanas e alemãs. A empresa admitiu suborno sistemático em múltiplos países e divisões comerciais.</p>
+
+    <table class="data-table">
+      <thead><tr><th>Jurisdição</th><th>Ano</th><th>Acusações / Acordo</th><th>Montante</th></tr></thead>
+      <tbody>
+        <tr><td><strong>EUA (DOJ + SEC)</strong></td><td>2008</td><td>Violações da Lei de Práticas de Corrupção Estrangeira</td><td style="color:var(--red);font-family:'JetBrains Mono'">$800M</td></tr>
+        <tr><td><strong>Alemanha</strong></td><td>2008</td><td>Suborno, violação de confiança</td><td style="color:var(--red);font-family:'JetBrains Mono'">&euro;596M</td></tr>
+        <tr><td><strong>Grécia</strong></td><td>2008–2017</td><td>Suborno de oficiais governamentais para contratos de telecomunicações OTE</td><td style="color:var(--orange)">Procedimentos criminais</td></tr>
+        <tr><td><strong>Argentina</strong></td><td>2014</td><td>$100M suborno para contrato de cartão de identificação nacional</td><td style="color:var(--orange)">Procedimentos criminais</td></tr>
+        <tr><td><strong>Brasil</strong></td><td>2014</td><td>Cartel de metrô/ferroviário (São Paulo)</td><td style="color:var(--orange)">Acordo de leniência</td></tr>
+        <tr><td><strong>Nigéria</strong></td><td>2010</td><td>Suborno de infraestrutura de telecomunicações</td><td style="color:var(--red);font-family:'JetBrains Mono'">$48,5M</td></tr>
+        <tr><td><strong>Banco Mundial</strong></td><td>2009</td><td>Inabilitação de projetos financiados pelo Banco</td><td>Proibição de 2 anos</td></tr>
+      </tbody>
+    </table>
+
+    <div class="evidence-box">
+      <strong>O suborno era sistemático, não incidental.</strong>
+      <p>Investigações internas revelaram que a Siemens mantinha um sistema organizado para pagar subornos em suas divisões comerciais, incluindo fundos de contingência dedicados, contas offshore e intermediários. A revisão de conformidade da própria empresa identificou aproximadamente &euro;1,3 mil milhões em pagamentos suspeitos feitos entre 2000 e 2006.</p>
+    </div>
+  </div>
+
+  <div class="section-block">
+    <h2>03 &mdash; Interligações na Administração</h2>
+    <p>A Siemens em Portugal opera através de múltiplas entidades subsidiárias. Administradores chave mantêm posições em várias destas entidades simultaneamente, criando capacidade de partilha de informação e coordenação que subsidiárias individuais nominalmente em competição por contratos não deveriam ter.</p>
+
+    <table class="data-table">
+      <thead><tr><th>Administrador</th><th>Posições Detidas</th><th>Significância</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Miguel Á. López Borrego</strong></td><td>Presidente: Siemens PT, Siemens Bélgica, Siemens Rail Automation, Siemens Gamesa, NORMA Group</td><td style="color:var(--orange)">Presença em conselhos pan-europeia nas divisões de energia, ferroviária e industrial</td></tr>
+        <tr><td><strong>Maria A. F. Loureiro</strong></td><td>Gestora: Siemens Energy PT, Siemens Gamesa PT, Conselho ANIMEE</td><td style="color:var(--orange)">Controla múltiplas entidades de contratação que poderiam licitar em diferentes partes do mesmo projeto</td></tr>
+        <tr><td><strong>Alexandre Fonseca</strong></td><td>Ex-CEO Altice/MEO, conselho da Siemens, posições consultivas governamentais</td><td style="color:var(--red)">Porta giratória entre telecomunicações, Siemens e papéis consultivos governamentais</td></tr>
+      </tbody>
+    </table>
+
+    <div class="evidence-box accent">
+      <strong>A porta giratória.</strong>
+      <p>A trajetória de Alexandre Fonseca — de CEO da maior telco de Portugal (Altice/MEO) para membro do conselho da Siemens para papéis consultivos governamentais — exemplifica o tipo de rede de relações intersectoriais que permite acesso preferencial às decisões de contratação. O seu caso foi documentado na Operação Picoas, onde foi acusado em conexão com um esquema envolvendo faturas falsas no valor de &euro;380.000+.</p>
+    </div>
+  </div>
+
+  <div class="section-block">
+    <h2>04 &mdash; Como Outros Países Lidam Isto</h2>
+    <p>O problema do bloqueio de fornecedor em infraestrutura ferroviária não é único de Portugal. O que difere é como os países o abordam:</p>
+
+    <table class="data-table">
+      <thead><tr><th>País</th><th>Abordagem</th><th>Resultado</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Alemanha (DB Netz)</strong></td><td>Normas abertas (ETCS) + acordos de quadro multifornecedor</td><td>Múltiplos fornecedores por corredor; mudança de fornecedor possível</td></tr>
+        <tr><td><strong>Reino Unido (Network Rail)</strong></td><td>Contratação modular; sinalização separada da instalação</td><td>Tensão competitiva entre Siemens, Alstom, Hitachi</td></tr>
+        <tr><td><strong>Países Baixos (ProRail)</strong></td><td>Especificações agnósticas em relação à tecnologia + consulta de mercado</td><td>Licitações competitivas regulares mesmo para sistemas legados</td></tr>
+        <tr><td style="color:var(--red)"><strong>Portugal (IP)</strong></td><td style="color:var(--red)">Sistemas proprietários + adjudicações diretas</td><td style="color:var(--red)">109 contratos não-competitivos para um único fornecedor</td></tr>
+      </tbody>
+    </table>
+
+    <div class="evidence-box accent">
+      <strong>ERTMS/ETCS: a norma que Portugal deveria usar.</strong>
+      <p>O Sistema Europeu de Gestão do Tráfego Ferroviário (ERTMS) foi especificamente concebido para quebrar o bloqueio de fornecedor. Ao impor normas interoperáveis, a política ferroviária da UE visa criar mercados competitivos. A contínua dependência de Portugal em sistemas proprietários da Siemens — em vez de transição para normas abertas — perpetua a dependência.</p>
+    </div>
+  </div>
+
+  <div class="section-block">
+    <h2>05 &mdash; O Que Ninguém Está a Falar</h2>
+    <div class="evidence-box">
+      <strong>1. Nenhuma média portuguesa investigou a relação IP-Siemens.</strong>
+      <p>Apesar de 109 adjudicações diretas e histórico de corrupção global documentado da Siemens, nenhuma outlet portuguesa examinou se o padrão de contratação em IP representa valor pelo dinheiro, bloqueio de fornecedor, ou algo mais.</p>
+    </div>
+    <div class="evidence-box">
+      <strong>2. Valor total de vida desconhecido.</strong>
+      <p>O valor cumulativo de todos os contratos da Siemens com IP não foi calculado publicamente. Adjudicações diretas individuais podem parecer pequenas, mas 109 delas poderiam totalizar centenas de milhões.</p>
+    </div>
+    <div class="evidence-box">
+      <strong>3. A seleção do sistema inicial nunca foi escrutinada.</strong>
+      <p>Cada adjudicação direta hoje é justificada pelo sistema proprietário já em lugar. Mas quem escolheu esse sistema? Quando? Através de que processo? Se a seleção original foi influenciada, cada adjudicação direta subsequente herda essa mancha.</p>
+    </div>
+    <div class="evidence-box">
+      <strong>4. Cronograma de transição ERTMS pouco claro.</strong>
+      <p>Portugal está nominalmente comprometida com implantação de ERTMS sob diretivas da UE. Mas o cronograma para transição de sistemas proprietários da Siemens para normas interoperáveis — que quebraria o bloqueio — não foi publicamente comunicado ou auditado.</p>
+    </div>
+  </div>
+
+  <div class="section-block">
+    <h2>06 &mdash; Fontes</h2>
+    <ul class="source-list">
+      <li><a href="https://www.base.gov.pt" target="_blank">BASE.gov.pt &mdash; Portal Português de Contratação Pública</a> <span class="source-type">Base de Dados</span></li>
+      <li><a href="https://www.sec.gov/litigation/litreleases/2008/lr20829.htm" target="_blank">SEC &mdash; Acordo de Siemens ($800M FCPA, 2008)</a> <span class="source-type">Legal</span></li>
+      <li><a href="https://www.justice.gov/archive/opa/pr/2008/December/08-crm-1105.html" target="_blank">DOJ &mdash; Acordo de Declaração de Culpa Siemens (2008)</a> <span class="source-type">Legal</span></li>
+      <li><a href="https://www.era.europa.eu/domains/infrastructure/european-rail-traffic-management-system-ertms_en" target="_blank">ERA &mdash; Sistema Europeu de Gestão do Tráfego Ferroviário (ERTMS)</a> <span class="source-type">Oficial UE</span></li>
+      <li><a href="https://www.infraestruturasdeportugal.pt/" target="_blank">Infraestruturas de Portugal &mdash; Site Oficial</a> <span class="source-type">Oficial</span></li>
+    </ul>
+  </div>
+</div>
+
+<!-- AI DISCLAIMER & REPORT -->
+<div style="max-width:900px;margin:0 auto 2rem;padding:0 2rem;">
+  <div style="background:linear-gradient(135deg,rgba(255,71,87,0.12),rgba(255,165,2,0.08));border:1px solid rgba(255,71,87,0.3);border-radius:10px;padding:1.2rem 1.5rem;display:flex;align-items:flex-start;gap:1rem;">
+    <div style="font-size:1.4rem;flex-shrink:0;">⚠️</div>
+    <div style="font-size:0.82rem;color:#8892a8;line-height:1.6;">
+      <strong style="color:#ffa502;font-family:JetBrains Mono,monospace;font-size:0.75rem;letter-spacing:1px;">CONTEÚDO GERADO POR IA</strong><br>
+      Esta página foi gerada por IA e pode conter imprecisões. Todas as afirmações devem ser verificadas independentemente usando as fontes fornecidas.
+      <br><br>
+      <a href="https://github.com/pjcorreia/sigil/issues/new?labels=correction&amp;title=%5BCorrection%5D+" target="_blank" style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border:1px solid #ff4757;border-radius:4px;color:#ff4757;font-family:JetBrains Mono,monospace;font-size:0.6rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;text-decoration:none;">⚙ Reportar Erro no GitHub</a>
+      &nbsp;
+      <a href="mailto:pjcorreia@gmail.com?subject=%5BSIGIL%20Correction%5D" style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border:1px solid #00d4aa;border-radius:4px;color:#00d4aa;font-family:JetBrains Mono,monospace;font-size:0.6rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;text-decoration:none;">✉ Correção por Email</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p style="color:var(--accent);font-family:'JetBrains Mono',monospace;letter-spacing:2px;margin-bottom:0.5rem">SIGIL</p>
+  <p>Signal Intelligence Lab &mdash; Análise Portuguesa de Contratação Pública</p>
+  <p style="margin-top:0.5rem"><a href="pt.html" style="color:var(--accent);text-decoration:none">&larr; Voltar a todas as investigações</a></p>
+</footer>
+</body>
+</html>

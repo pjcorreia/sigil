@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIGIL | Modificações Contratuais — Investigação Completa</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+  :root{--bg-primary:#0a0e17;--bg-secondary:#111827;--bg-card:#1a2235;--bg-card-hover:#1f2a40;--accent:#00d4aa;--accent-dim:#00d4aa33;--accent-glow:#00d4aa22;--red:#ff4757;--red-dim:#ff475722;--orange:#ffa502;--orange-dim:#ffa50222;--yellow:#eccc68;--text-primary:#e8eaf0;--text-secondary:#8892a8;--text-muted:#4a5568;--border:#1e2a3a;--border-accent:#00d4aa44}
+  *{margin:0;padding:0;box-sizing:border-box}body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg-primary);color:var(--text-primary);line-height:1.7;overflow-x:hidden}body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,212,170,0.015) 2px,rgba(0,212,170,0.015) 4px);pointer-events:none;z-index:9999}
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,14,23,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 2rem}.nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:60px}.nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none}.nav-brand .logo{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.3rem;color:var(--accent);letter-spacing:3px}.nav-brand .tagline{font-size:0.7rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase}.nav-links{display:flex;gap:2rem;list-style:none;align-items:center}.nav-links a{color:var(--text-secondary);text-decoration:none;font-size:0.85rem;font-weight:500;transition:color 0.2s}.nav-links a:hover{color:var(--accent)}.back-link{color:var(--accent)!important;font-family:'JetBrains Mono',monospace;font-size:0.8rem!important}.lang-toggle{display:flex;gap:0;border:1px solid #1e2a3a;border-radius:4px;overflow:hidden;margin-left:1rem}.lang-toggle a{padding:4px 10px;font-family:'JetBrains Mono',monospace;font-size:0.65rem;font-weight:700;letter-spacing:1px;text-decoration:none;color:#4a5568;transition:all 0.2s}.lang-toggle a.active{background:#00d4aa;color:#0a0e17}.lang-toggle a:not(.active):hover{color:#00d4aa;background:#00d4aa33}
+  .deep-hero{padding:120px 2rem 60px;text-align:center;position:relative}.deep-hero::before{content:'';position:absolute;top:60px;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(circle,var(--orange-dim) 0%,transparent 70%);pointer-events:none}
+  .status-tag{font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:700;letter-spacing:1.5px;padding:3px 10px;border-radius:3px;text-transform:uppercase}.status-tag.unreported{background:rgba(255,71,87,0.15);color:var(--red);border:1px solid var(--red)}.risk-badge{font-family:'JetBrains Mono',monospace;font-size:0.65rem;font-weight:700;letter-spacing:1px;padding:4px 10px;border-radius:4px}.risk-badge.high{background:var(--orange-dim);color:var(--orange);border:1px solid var(--orange)}
+  .deep-hero h1{font-size:2.6rem;font-weight:700;line-height:1.2;margin:1rem 0;background:linear-gradient(135deg,var(--text-primary) 0%,var(--text-secondary) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}.deep-hero p{font-size:1.1rem;color:var(--text-secondary);max-width:700px;margin:0 auto;font-weight:300}.hero-badges{display:flex;gap:1rem;justify-content:center;margin-bottom:1rem}
+  .content{max-width:900px;margin:0 auto;padding:0 2rem 4rem}
+  .key-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin:2rem 0 3rem}.stat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:1.5rem;text-align:center}.stat-card .number{font-family:'JetBrains Mono',monospace;font-size:1.8rem;font-weight:700;color:var(--orange)}.stat-card .label{font-size:0.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+  .section-block{margin-bottom:3rem}.section-block h2{font-size:1.4rem;font-weight:700;color:var(--accent);margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border);font-family:'JetBrains Mono',monospace;letter-spacing:1px}.section-block h3{font-size:1.1rem;font-weight:600;color:var(--text-primary);margin:1.5rem 0 0.5rem}.section-block p{color:var(--text-secondary);font-size:0.92rem;margin-bottom:1rem}
+  .evidence-box{background:var(--bg-card);border-left:3px solid var(--red);border-radius:0 8px 8px 0;padding:1.2rem 1.5rem;margin:1rem 0}.evidence-box.orange{border-left-color:var(--orange)}.evidence-box.accent{border-left-color:var(--accent)}.evidence-box strong{color:var(--text-primary)}.evidence-box p{margin-bottom:0.3rem;color:var(--text-secondary);font-size:0.88rem}
+  .data-table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:0.85rem}.data-table th{text-align:left;padding:10px 14px;background:rgba(0,212,170,0.08);color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:0.7rem;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--border)}.data-table td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text-secondary)}.data-table tr:hover td{background:rgba(0,212,170,0.03)}
+  .source-list{list-style:none;margin:1rem 0}.source-list li{padding:0.5rem 0;border-bottom:1px solid var(--border)}.source-list a{color:var(--accent);text-decoration:none;font-size:0.85rem}.source-list a:hover{text-decoration:underline}.source-list .source-type{font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-left:0.5rem}
+  footer{text-align:center;padding:3rem 2rem;border-top:1px solid var(--border);color:var(--text-muted);font-size:0.8rem}
+  @media(max-width:768px){.deep-hero h1{font-size:1.8rem}.key-stats{grid-template-columns:repeat(2,1fr)}.nav-links{display:none}}
+</style>
+</head>
+<body>
+<nav><div class="nav-inner">
+  <a href="pt.html" class="nav-brand"><span class="logo">SIGIL</span><span class="tagline">Signal Intelligence Lab</span></a>
+  <ul class="nav-links"><li><a href="pt.html" class="back-link">&larr; Voltar às Investigações</a></li><li><a href="pt.html#investigations">Todos os Casos</a></li><li><div class="lang-toggle"><a href="modifications-deep-dive.html">EN</a><a href="modifications-deep-dive-pt.html" class="active">PT</a></div></li></ul>
+</div></nav>
+
+<div class="deep-hero">
+  <div class="hero-badges">
+    <span class="status-tag unreported">NÃO DIVULGADO</span>
+    <span class="risk-badge high">ALTO</span>
+  </div>
+  <h1>Modificações Contratuais</h1>
+  <p>Vencer a proposta baixa. Modificá-la para cima. O padrão sistemático de contratos públicos portugueses que inflacionam em preço após adjudicação — com cobertura legal de cláusulas vagas de "circunstâncias imprevisíveis" e supervisão fraca.</p>
+</div>
+
+<div class="content">
+  <div class="key-stats">
+    <div class="stat-card"><div class="number">33%</div><div class="label">Taxa de Falha de Contrato (2022)</div></div>
+    <div class="stat-card"><div class="number">25%</div><div class="label">Modificação Legal Máxima</div></div>
+    <div class="stat-card"><div class="number">75%→67%</div><div class="label">Contratos Cumprindo Preço (2015→2022)</div></div>
+    <div class="stat-card"><div class="number">+45%</div><div class="label">Inflação Preço Aço Citada</div></div>
+  </div>
+
+  <div class="section-block">
+    <h2>01 &mdash; Como o Jogo Funciona</h2>
+    <p>A modificação contratual é a forma menos visível mas mais dispendiosa de manipulação de contratação. O padrão é simples: proposta baixa para vencer o contrato, depois modifica o preço para cima uma vez que concorrentes foram eliminados. É legal dentro de limites — e esses limites são sistematicamente explorados.</p>
+
+    <h3>O Marco Legal</h3>
+    <table class="data-table">
+      <thead><tr><th>Regra</th><th>Fonte</th><th>Limite</th><th>Risco de Exploração</th></tr></thead>
+      <tbody>
+        <tr><td>Modificação para "mudança de circunstâncias"</td><td>CCP Art. 447-A (Lei portuguesa)</td><td style="font-family:'JetBrains Mono'">25%</td><td style="color:var(--red)">Alto — "circunstâncias" vagamente definidas</td></tr>
+        <tr><td>Alteração de "interesse público"</td><td>CCP (Lei portuguesa)</td><td style="font-family:'JetBrains Mono'">10%</td><td style="color:var(--orange)">Médio — discricionário</td></tr>
+        <tr><td>Porto seguro (serviços/abastecimentos)</td><td>Diretiva UE 2014/24/EU</td><td style="font-family:'JetBrains Mono'">10%</td><td style="color:var(--orange)">Menor — mas modificações cumulativas avaliadas individualmente</td></tr>
+        <tr><td>Porto seguro (obras)</td><td>Diretiva UE 2014/24/EU</td><td style="font-family:'JetBrains Mono'">15%</td><td style="color:var(--red)">Alto — setor construção mais propenso</td></tr>
+        <tr><td>"Imprevisão" (circunstâncias imprevisíveis)</td><td>Código Civil Art. 437</td><td>Sem limite fixo</td><td style="color:var(--red)">Muito alto — teste subjetivo</td></tr>
+      </tbody>
+    </table>
+
+    <div class="evidence-box">
+      <strong>O Tribunal de Contas sinalizou "conceitos indeterminados" como facilitadores de abuso.</strong>
+      <p>O Tribunal de Contas português identificou especificamente que a linguagem vaga usada em disposições de modificação — "mudança de circunstâncias," "imprevisível," "interesse público" — cria ambiguidade explorável. Contratantes e entidades contratantes podem enquadrar praticamente qualquer aumento de custo como caindo dentro destas categorias amplas.</p>
+    </div>
+  </div>
+
+  <div class="section-block">
+    <h2>02 &mdash; Os Números Contam a História</h2>
+    <p>Os dados revelam uma clara deterioração na disciplina de preço contratual:</p>
+
+    <div class="evidence-box orange">
+      <strong>Contratos cumprindo preços estipulados: de 75,3% para 67,1%.</strong>
+      <p>Entre 2015–2018 e 2019–2022, a percentagem de contratos públicos portugueses completados ao preço inicialmente acordado caiu de 75,3% para 67,1%. Em 2022, a taxa de falha contratual atingiu 32% — significando aproximadamente um em cada três contratos públicos não desempenhou conforme acordado.</p>
+    </div>
+
+    <h3>O Padrão "Abaixo do Limiar Depois Modificar Acima"</h3>
+    <p>Os requisitos de transparência UE acionam em limiares específicos: 5.538.000 euros para contratos de obras e 143.000 euros para serviços. Um contrato adjudicado a 5 milhões evita publicidade de âmbito UE. Uma modificação de 15% traz-o a 5,75 milhões — acima do limiar mas já comprometido. O preço de adjudicação inicial foi escolhido para evitar escrutínio; a modificação captura o verdadeiro preço pretendido.</p>
+
+    <div class="evidence-box">
+      <strong>Múltiplas modificações sucessivas são avaliadas cumulativamente — em teoria.</strong>
+      <p>A lei UE requer que modificações sucessivas sejam avaliadas contra o valor contratual original. Na prática, as entidades contratantes portuguesas frequentemente tratam cada modificação como independente, permitindo aumentos faseados que individualmente caem dentro de portos seguros mas cumulativamente excedem-nos em muito.</p>
+    </div>
+  </div>
+
+  <div class="section-block">
+    <h2>03 &mdash; Setores Mais Afetados</h2>
+
+    <h3>Construção & Infraestrutura</h3>
+    <p>O setor de construção é o mais propenso a modificação, com inflação de custo de material fornecendo cobertura conveniente. Preços de aço subiram 45% e madeira até 60% durante 2021–2022, dando a contratantes base legítima para reivindicações de aumento de preço. O problema: distinguir escalação genuína de custo de inflação oportunista de preço quando ambos usam o mesmo marco legal.</p>
+
+    <div class="evidence-box orange">
+      <strong>Contratos de preço fixo de períodos pré-inflação.</strong>
+      <p>Contratos assinados em 2019–2020 a preços fixos estão agora sendo modificados para cima em 20–40%, com contratantes citando aumentos de material e custo de trabalho. Alguns contratantes faliram; outros usaram o mecanismo de modificação para capturar ajustes de ganho que excedem seus aumentos reais de custo.</p>
+    </div>
+
+    <h3>PPPs Saúde</h3>
+    <p>Parcerias Público-Privadas de Hospital em Portugal têm histórico documentado de renegociações que desfavorecem o estado. Apesar deste histórico, 5 novas PPPs de hospital foram aprovadas — criando risco de modificação futuro em contratos avaliados em centenas de milhões de euros.</p>
+
+    <h3>Serviços TI</h3>
+    <p>Contratos de TI são particularmente susceptíveis a modificação através de scope creep. Um contrato inicial para um "sistema básico" é modificado para incluir módulos adicionais, integrações, e suporte — cada modificação individualmente justificável, mas coletivamente transformando um contrato modesto em despesa major sem retender competitivo.</p>
+  </div>
+
+  <div class="section-block">
+    <h2>04 &mdash; A Brecha "Imprevisão"</h2>
+    <p>Artigo 437 do Código Civil português permite revisão contratual quando desempenho se torna "excessivamente oneroso" devido a circunstâncias que não eram previsíveis no momento de contratação. Esta doutrina — <em>imprevisão</em> — é a opção nuclear para modificação contratual.</p>
+
+    <div class="evidence-box">
+      <strong>Sem limite fixo. Teste subjetivo. Iniciado por contratante.</strong>
+      <p>Ao contrário dos limites de modificação estatutária (10–25%), <em>imprevisão</em> não tem limite. O teste é se circunstâncias mudaram de forma que faz desempenho "excessivamente oneroso" — uma avaliação subjetiva que diferentes juízes e árbitros podem avaliar diferentemente. O contratante inicia a reclamação, colocando o encargo na entidade pública para aceitar a modificação ou enfrentar potencial rescisão contratual e retender custoso.</p>
+    </div>
+
+    <p>A distinção entre genuína <em>imprevisão</em> (uma pandemia, uma guerra perturbando cadeias de abastecimento) e risco comercial ordinário (flutuações de preço material, mudanças de mercado laboral) é o limite crítico. A lei portuguesa não desenha esta linha claramente, criando oportunidade sistemática para contratantes reclassificarem riscos normais como eventos imprevistos.</p>
+  </div>
+
+  <div class="section-block">
+    <h2>05 &mdash; A Brecha de Supervisão</h2>
+
+    <table class="data-table">
+      <thead><tr><th>Mecanismo de Supervisão</th><th>Status</th><th>Efetividade</th></tr></thead>
+      <tbody>
+        <tr><td>Tribunal de Contas (Tribunal de Auditores)</td><td>Ativo mas sub-recusado</td><td style="color:var(--orange)">Identifica problemas; poder de execução limitado</td></tr>
+        <tr><td>Transparência portal BASE</td><td>Incompleta</td><td style="color:var(--red)">Muitos contratos não publicados; modificações frequentemente não rastreadas</td></tr>
+        <tr><td>Supervisão regulatória IMPIC</td><td>Ativa</td><td style="color:var(--orange)">Monitoramento sistémico limitado</td></tr>
+        <tr><td>Escrutínio parlamentar</td><td>Mínimo</td><td style="color:var(--red)">Nenhum comité dedicado de supervisão de contratação</td></tr>
+        <tr><td>Detecção de proposta anormalmente baixa</td><td style="color:var(--red)">Sem método sistemático</td><td style="color:var(--red)">Propostas projetadas para modificação não são sinalizadas</td></tr>
+      </tbody>
+    </table>
+
+    <div class="evidence-box accent">
+      <strong>OCDE recomenda supervisão reforçada do Tribunal de Contas.</strong>
+      <p>A OCDE recomendou especificamente que Portugal reforce a capacidade do Tribunal de Contas de auditar modificações contratuais. O governo propôs treinamento para 114.000 funcionários da administração pública — mas sem abordar o problema fundamental que regras de modificação são demasiado permissivas e execução demasiado fraca.</p>
+    </div>
+  </div>
+
+  <div class="section-block">
+    <h2>06 &mdash; O Que Ninguém Está a Falar</h2>
+    <div class="evidence-box">
+      <strong>1. Nenhum rastreamento sistemático de modificação.</strong>
+      <p>BASE.gov.pt não rastreia consistentemente modificações contratuais ou seu impacto cumulativo. Atualmente é impossível responder a pergunta básica: quanto custaram contratos públicos portugueses depois de modificações versus seu preço de adjudicação?</p>
+    </div>
+    <div class="evidence-box">
+      <strong>2. A brecha de detecção de "proposta anormalmente baixa".</strong>
+      <p>Propostas projetadas para vencer baixa e modificar alta são, por definição, anormalmente baixas no estágio de adjudicação. Ainda assim Portugal não tem método sistemático para detectar propostas anormalmente baixas — a ferramenta muito que sinalizaria contratos prone-a-modificação antes de serem adjudicados.</p>
+    </div>
+    <div class="evidence-box">
+      <strong>3. Impacto de modificação cumulativa em orçamento nacional.</strong>
+      <p>Nenhuma instituição portuguesa publicou estimativa do custo agregado de modificações contratuais ao erário público. Com uma taxa de falha contratual de 33% e disciplina de preço em declínio, o número é provavelmente em centenas de milhões anualmente.</p>
+    </div>
+    <div class="evidence-box">
+      <strong>4. Responsabilidade de contratante para propostas falhadas.</strong>
+      <p>Quando um contratante proposta baixa e modifica alto, não há consequências — a entidade pública absorve a diferença de custo. Noutros países UE, padrões de modificação repetidos desencadeiam resenhas de desqualificação. Em Portugal, os mesmos contratantes continuam a vencer novos contratos.</p>
+    </div>
+  </div>
+
+  <div class="section-block">
+    <h2>07 &mdash; Fontes</h2>
+    <ul class="source-list">
+      <li><a href="https://www.base.gov.pt" target="_blank">BASE.gov.pt &mdash; Portal de Contratação Pública Portuguesa</a> <span class="source-type">Base de Dados</span></li>
+      <li><a href="https://www.tcontas.pt" target="_blank">Tribunal de Contas &mdash; Relatórios de Auditores</a> <span class="source-type">Auditoria</span></li>
+      <li><a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32014L0024" target="_blank">Diretiva UE 2014/24/EU &mdash; Contratação Pública</a> <span class="source-type">Direito UE</span></li>
+      <li><a href="https://www.impic.pt" target="_blank">IMPIC &mdash; Regulador de Contratação Pública Portuguesa</a> <span class="source-type">Oficial</span></li>
+      <li><a href="https://www.oecd.org/governance/public-procurement/" target="_blank">OCDE &mdash; Recomendações de Contratação Pública</a> <span class="source-type">Internacional</span></li>
+    </ul>
+  </div>
+</div>
+
+<!-- AI DISCLAIMER & REPORT -->
+<div style="max-width:900px;margin:0 auto 2rem;padding:0 2rem;">
+  <div style="background:linear-gradient(135deg,rgba(255,71,87,0.12),rgba(255,165,2,0.08));border:1px solid rgba(255,71,87,0.3);border-radius:10px;padding:1.2rem 1.5rem;display:flex;align-items:flex-start;gap:1rem;">
+    <div style="font-size:1.4rem;flex-shrink:0;">&#9888;&#65039;</div>
+    <div style="font-size:0.82rem;color:#8892a8;line-height:1.6;">
+      <strong style="color:#ffa502;font-family:JetBrains Mono,monospace;font-size:0.75rem;letter-spacing:1px;">CONTEÚDO GERADO POR IA</strong><br>
+      Esta página foi gerada por IA e pode conter imprecisões. Todas as afirmações devem ser verificadas independentemente usando as fontes fornecidas.
+      <br><br>
+      <a href="https://github.com/pjcorreia/sigil/issues/new?labels=correction&amp;title=%5BCorrection%5D+" target="_blank" style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border:1px solid #ff4757;border-radius:4px;color:#ff4757;font-family:JetBrains Mono,monospace;font-size:0.6rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;text-decoration:none;">&#9873; Reportar Erro no GitHub</a>
+      &nbsp;
+      <a href="mailto:pjcorreia@gmail.com?subject=%5BSIGIL%20Correction%5D" style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border:1px solid #00d4aa;border-radius:4px;color:#00d4aa;font-family:JetBrains Mono,monospace;font-size:0.6rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;text-decoration:none;">&#9993; Correção por Email</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p style="color:var(--accent);font-family:'JetBrains Mono',monospace;letter-spacing:2px;margin-bottom:0.5rem">SIGIL</p>
+  <p>Signal Intelligence Lab &mdash; Análise de Contratação Pública Portuguesa</p>
+  <p style="margin-top:0.5rem"><a href="pt.html" style="color:var(--accent);text-decoration:none">&larr; Voltar a todas as investigações</a></p>
+</footer>
+</body>
+</html>

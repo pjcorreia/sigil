@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIGIL | Dentsu / Turismo de Portugal — Investigação Completa</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+  :root{--bg-primary:#0a0e17;--bg-secondary:#111827;--bg-card:#1a2235;--bg-card-hover:#1f2a40;--accent:#00d4aa;--accent-dim:#00d4aa33;--accent-glow:#00d4aa22;--red:#ff4757;--red-dim:#ff475722;--orange:#ffa502;--orange-dim:#ffa50222;--yellow:#eccc68;--text-primary:#e8eaf0;--text-secondary:#8892a8;--text-muted:#4a5568;--border:#1e2a3a;--border-accent:#00d4aa44}
+  *{margin:0;padding:0;box-sizing:border-box}body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg-primary);color:var(--text-primary);line-height:1.7;overflow-x:hidden}body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,212,170,0.015) 2px,rgba(0,212,170,0.015) 4px);pointer-events:none;z-index:9999}
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,14,23,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 2rem}.nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:60px}.nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none}.nav-brand .logo{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.3rem;color:var(--accent);letter-spacing:3px}.nav-brand .tagline{font-size:0.7rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase}.nav-links{display:flex;gap:2rem;list-style:none;align-items:center}.nav-links a{color:var(--text-secondary);text-decoration:none;font-size:0.85rem;font-weight:500;transition:color 0.2s}.nav-links a:hover{color:var(--accent)}.back-link{color:var(--accent)!important;font-family:'JetBrains Mono',monospace;font-size:0.8rem!important}.lang-toggle{display:flex;gap:0;border:1px solid #1e2a3a;border-radius:4px;overflow:hidden;margin-left:1rem}.lang-toggle a{padding:4px 10px;font-family:'JetBrains Mono',monospace;font-size:0.65rem;font-weight:700;letter-spacing:1px;text-decoration:none;color:#4a5568;transition:all 0.2s}.lang-toggle a.active{background:#00d4aa;color:#0a0e17}.lang-toggle a:not(.active):hover{color:#00d4aa;background:#00d4aa33}
+  .deep-hero{padding:120px 2rem 60px;text-align:center;position:relative}.deep-hero::before{content:'';position:absolute;top:60px;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(circle,var(--orange-dim) 0%,transparent 70%);pointer-events:none}
+  .status-tag{font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:700;letter-spacing:1.5px;padding:3px 10px;border-radius:3px;text-transform:uppercase}.status-tag.unreported{background:rgba(255,71,87,0.15);color:var(--red);border:1px solid var(--red)}.risk-badge{font-family:'JetBrains Mono',monospace;font-size:0.65rem;font-weight:700;letter-spacing:1px;padding:4px 10px;border-radius:4px}.risk-badge.medium{background:rgba(236,204,104,0.1);color:var(--yellow);border:1px solid var(--yellow)}
+  .deep-hero h1{font-size:2.6rem;font-weight:700;line-height:1.2;margin:1rem 0;background:linear-gradient(135deg,var(--text-primary) 0%,var(--text-secondary) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}.deep-hero p{font-size:1.1rem;color:var(--text-secondary);max-width:700px;margin:0 auto;font-weight:300}.hero-badges{display:flex;gap:1rem;justify-content:center;margin-bottom:1rem}
+  .content{max-width:900px;margin:0 auto;padding:0 2rem 4rem}
+  .key-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin:2rem 0 3rem}.stat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:1.5rem;text-align:center}.stat-card .number{font-family:'JetBrains Mono',monospace;font-size:1.8rem;font-weight:700;color:var(--orange)}.stat-card .label{font-size:0.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+  .section-block{margin-bottom:3rem}.section-block h2{font-size:1.4rem;font-weight:700;color:var(--accent);margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border);font-family:'JetBrains Mono',monospace;letter-spacing:1px}.section-block h3{font-size:1.1rem;font-weight:600;color:var(--text-primary);margin:1.5rem 0 0.5rem}.section-block p{color:var(--text-secondary);font-size:0.92rem;margin-bottom:1rem}
+  .evidence-box{background:var(--bg-card);border-left:3px solid var(--red);border-radius:0 8px 8px 0;padding:1.2rem 1.5rem;margin:1rem 0}.evidence-box.orange{border-left-color:var(--orange)}.evidence-box.accent{border-left-color:var(--accent)}.evidence-box strong{color:var(--text-primary)}.evidence-box p{margin-bottom:0.3rem;color:var(--text-secondary);font-size:0.88rem}
+  .data-table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:0.85rem}.data-table th{text-align:left;padding:10px 14px;background:rgba(0,212,170,0.08);color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:0.7rem;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--border)}.data-table td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text-secondary)}.data-table tr:hover td{background:rgba(0,212,170,0.03)}
+  .source-list{list-style:none;margin:1rem 0}.source-list li{padding:0.5rem 0;border-bottom:1px solid var(--border)}.source-list a{color:var(--accent);text-decoration:none;font-size:0.85rem}.source-list a:hover{text-decoration:underline}.source-list .source-type{font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-left:0.5rem}
+  footer{text-align:center;padding:3rem 2rem;border-top:1px solid var(--border);color:var(--text-muted);font-size:0.8rem}
+  @media(max-width:768px){.deep-hero h1{font-size:1.8rem}.key-stats{grid-template-columns:repeat(2,1fr)}.nav-links{display:none}}
+</style>
+</head>
+<body>
+<nav><div class="nav-inner">
+  <a href="pt.html" class="nav-brand"><span class="logo">SIGIL</span><span class="tagline">Signal Intelligence Lab</span></a>
+  <ul class="nav-links"><li><a href="pt.html" class="back-link">&larr; Voltar às Investigações</a></li><li><a href="pt.html#investigations">Todos os Casos</a></li><li class="lang-toggle"><a href="dentsu-deep-dive.html">EN</a><a href="dentsu-deep-dive-pt.html" class="active">PT</a></li></ul>
+</div></nav>
+
+<div class="deep-hero">
+  <div class="hero-badges">
+    <span class="status-tag unreported">NÃO REPORTADO</span>
+    <span class="risk-badge medium">MÉDIO-ALTO</span>
+  </div>
+  <h1>Dentsu / Turismo de Portugal</h1>
+  <p>Como um conglomerado de publicidade global capturou a máquina de promoção turística de Portugal — &euro;20M+ em contratos, vitórias repetidas, e um país onde 80% dos contratos públicos são atribuídos sem concorrência.</p>
+</div>
+
+<div class="content">
+  <div class="key-stats">
+    <div class="stat-card"><div class="number">&euro;20M+</div><div class="label">Valor de Contrato Confirmado</div></div>
+    <div class="stat-card"><div class="number">80%</div><div class="label">Taxa de Adjudicação Direta PT</div></div>
+    <div class="stat-card"><div class="number">&euro;9,4M</div><div class="label">Contrato de Mídia Único</div></div>
+    <div class="stat-card"><div class="number">9,7%</div><div class="label">Turismo como % do PIB</div></div>
+  </div>
+
+  <div class="section-block">
+    <h2>01 &mdash; O Império Dentsu em Portugal</h2>
+    <p>Dentsu Group (cotada em Tóquio, ~$10B receita) entrou no mercado português através da aquisição em 2018 de <strong>Partners</strong>, a maior agência criativa independente do país fundada por <strong>Tomás Froes</strong> em 2003. A aquisição integrou Partners na rede Dentsu como <strong>Dentsu Creative Portugal</strong>.</p>
+    <p>Em 2024, as operações foram reestruturadas em <strong>Dentsu Creative Iberia</strong>, mesclando Portugal e Espanha sob Froes como CEO e <strong>Lourenço Thomaz</strong> como Chief Creative Officer. Patrick Stilwell serve como Diretor Geral para Portugal.</p>
+
+    <div class="evidence-box orange">
+      <strong>A aquisição garantiu continuidade.</strong>
+      <p>Partners já tinha vencido múltiplos concursos Turismo de Portugal consecutivos antes de Dentsu adquiri-los. A aquisição não interrompeu a incumbência — reforçou-a com recursos globais. Como os próprios fundadores afirmaram: Dentsu "abrirá portas para o mundo."</p>
+    </div>
+  </div>
+
+  <div class="section-block">
+    <h2>02 &mdash; O Trilho de Dinheiro</h2>
+    <table class="data-table">
+      <thead><tr><th>Contrato</th><th>Valor</th><th>Agência</th><th>Ano</th><th>Tipo</th></tr></thead>
+      <tbody>
+        <tr><td>Serviços criativos</td><td style="color:var(--orange);font-family:'JetBrains Mono'">&euro;2,5M</td><td>Partners (marca pré-aquisição Dentsu)</td><td>2019</td><td>1ano + renovação 3anos</td></tr>
+        <tr><td>Serviços de mídia</td><td style="color:var(--orange);font-family:'JetBrains Mono'">&euro;9,4M</td><td>Omnicom Media Group</td><td>2020</td><td>1 ano</td></tr>
+        <tr><td>Publicidade digital</td><td style="color:var(--orange);font-family:'JetBrains Mono'">&euro;10M</td><td>Múltiplas</td><td>2020–2021</td><td>Orçamento 2 anos</td></tr>
+        <tr><td>Orçamento de promoção</td><td style="color:var(--orange);font-family:'JetBrains Mono'">&euro;10M</td><td>Múltiplas</td><td>2022–2023</td><td>Orçamento 2 anos</td></tr>
+      </tbody>
+    </table>
+
+    <div class="evidence-box">
+      <strong>Nota: Omnicom e Dentsu são empresas de holding rivais.</strong>
+      <p>Omnicom Media Group maneja compras de mídia enquanto Dentsu Creative maneja produção criativa para o mesmo cliente (Turismo de Portugal). Se esta divisão representa genuína concorrência ou conveniente coexistência entre duas empresas de holding dividindo uma conta governamental lucrativa justifica investigação.</p>
+    </div>
+  </div>
+
+  <div class="section-block">
+    <h2>03 &mdash; A Máquina de Incumbência</h2>
+    <p>Contratos de promoção turística criam vantagens de incumbência naturais: conhecimento profundo da marca de destino, relações de mídia estabelecidas, e o custo político de mudar direção criativa no meio da campanha. Partners/Dentsu explorou isto completamente.</p>
+
+    <div class="evidence-box orange">
+      <strong>A franquia "Can't Skip".</strong>
+      <p>A campanha "Can't Skip Portugal" / "Can't Skip Hope" (lançada março 2020 por Partners) venceu Ouro em Marketing Awards para Viagem & Turismo. O reconhecimento de campanha cria equity de marca — e torna politicamente difícil para Turismo de Portugal mudar agências sem aparecer abandonar uma plataforma criativa bem-sucedida.</p>
+    </div>
+
+    <h3>O Problema de 80%</h3>
+    <p>Portugal atribui aproximadamente <strong>80% dos contratos públicos sem concorrência</strong> (adjudicações diretas). Para concursos de património cultural especificamente, a taxa atinge 92%. Dos concursos competitivos restantes, 61% recebem apenas uma oferta. Isto não é um problema específico de Dentsu — é o sistema no qual Dentsu opera. Mas significa que mesmo quando concursos são realizados, a pressão competitiva é mínima.</p>
+  </div>
+
+  <div class="section-block">
+    <h2>04 &mdash; Dependência de Turismo</h2>
+    <p>As exportações de turismo de Portugal atingiram <strong>&euro;27,7 mil milhões em 2024</strong>, representando 9,7% do PIB. Isto torna Portugal uma das economias mais dependentes de turismo na UE (após Croácia, Malta e Chipre). A promoção de turismo português não é um item de linha menor — é uma prioridade estratégica nacional.</p>
+
+    <div class="evidence-box accent">
+      <strong>Altos riscos, transparência baixa.</strong>
+      <p>Quando uma indústria representa quase 10% do PIB, os contratos que a promovem deveriam enfrentar o nível mais elevado de escrutínio. Em vez disso, a despesa de promoção turística de Portugal flui através de um sistema de contratação onde a vasta maioria dos contratos contorna licitação competitiva completamente.</p>
+    </div>
+  </div>
+
+  <div class="section-block">
+    <h2>05 &mdash; O Que Ninguém Está a Falar</h2>
+    <div class="evidence-box">
+      <strong>1. Despesa total de vida desconhecida.</strong>
+      <p>O valor combinado de todos os contratos Partners/Dentsu com Turismo de Portugal em 10+ anos nunca foi calculado publicamente. O confirmado &euro;20M+ provavelmente representa apenas uma fração da relação total.</p>
+    </div>
+    <div class="evidence-box">
+      <strong>2. Nenhuma métrica de ROI de campanha publicada.</strong>
+      <p>Apesar de gastar dezenas de milhões em promoção turística, Turismo de Portugal nunca publicou custo-por-visitante-adquirido ou métricas de eficácia de campanha. Sem dados de ROI, é impossível avaliar se a despesa é justificada — muito menos se uma agência diferente poderia alcançar mais por menos.</p>
+    </div>
+    <div class="evidence-box">
+      <strong>3. Licitadores perdedores silenciados.</strong>
+      <p>Detalhes de ofertas em competição não são tipicamente divulgados em contratação portuguesa. Agências que perderam concursos para Partners/Dentsu não falaram publicamente — seja porque esperam futuros contratos ou porque o mercado é demasiado pequeno para arriscar antagonizar um cliente importante.</p>
+    </div>
+    <div class="evidence-box">
+      <strong>4. A questão de consolidação Iberia.</strong>
+      <p>A fusão 2024 em Dentsu Creative Iberia levanta uma questão: se a mesma liderança agora gere contas portuguesas e espanholas, como isto afeta dinâmicas competitivas quando Portugal e Espanha estão em competição pelos mesmos turistas?</p>
+    </div>
+  </div>
+
+  <div class="section-block">
+    <h2>06 &mdash; Fontes</h2>
+    <ul class="source-list">
+      <li><a href="https://www.dentsu.com/news-releases/partners-portugals-largest-creative-agency-joins-dentsu-aegis-network" target="_blank">Dentsu &mdash; Anúncio de aquisição Partners (2018)</a> <span class="source-type">Oficial</span></li>
+      <li><a href="https://www.meiosepublicidade.pt/2019/07/partners-vence-novo-concurso-do-turismo-portugal/" target="_blank">Meios & Publicidade &mdash; Partners vence concurso Turismo (&euro;2,5M, 2019)</a> <span class="source-type">Imprensa Especializada</span></li>
+      <li><a href="https://www.meiosepublicidade.pt/2019/12/turismo-portugal-adjudica-investimento-94-milhoes-ao-omnicom-media-group/" target="_blank">Meios & Publicidade &mdash; Omnicom vence contrato de mídia (&euro;9,4M, 2020)</a> <span class="source-type">Imprensa Especializada</span></li>
+      <li><a href="https://www.publituris.pt/2019/08/22/turismo-de-portugal-com-verba-de-10me-para-publicidade-digital-ate-2021/" target="_blank">Publituris &mdash; Orçamento publicidade digital &euro;10M (2020–2021)</a> <span class="source-type">Imprensa Especializada</span></li>
+      <li><a href="https://eco.sapo.pt/2022/01/14/turismo-pode-gastar-10-milhoes-a-promover-portugal-como-destino-ate-2023/" target="_blank">ECO &mdash; Orçamento promoção &euro;10M (2022–2023)</a> <span class="source-type">Notícia Negócios</span></li>
+      <li><a href="https://eco.sapo.pt/2024/02/15/vai-nascer-a-dentsu-creative-iberia-nova-estrutura-e-liderada-por-tomas-froes-e-lourenco-thomaz-fica-responsavel-pelo-trabalho-criativo/" target="_blank">ECO &mdash; Formação Dentsu Creative Iberia (2024)</a> <span class="source-type">Notícia Negócios</span></li>
+      <li><a href="https://www.legal500.com/guides/chapter/portugal-public-procurement/" target="_blank">Legal500 &mdash; Análise de Contratação Pública Portugal</a> <span class="source-type">Análise Legal</span></li>
+      <li><a href="https://www.adsoftheworld.com/campaigns/can-t-skip-hope" target="_blank">Ads of the World &mdash; Campanha "Can't Skip Hope"</a> <span class="source-type">Base de Dados de Indústria</span></li>
+    </ul>
+  </div>
+</div>
+
+<!-- AI DISCLAIMER & REPORT -->
+<div style="max-width:900px;margin:0 auto 2rem;padding:0 2rem;">
+  <div style="background:linear-gradient(135deg,rgba(255,71,87,0.12),rgba(255,165,2,0.08));border:1px solid rgba(255,71,87,0.3);border-radius:10px;padding:1.2rem 1.5rem;display:flex;align-items:flex-start;gap:1rem;">
+    <div style="font-size:1.4rem;flex-shrink:0;">⚠️</div>
+    <div style="font-size:0.82rem;color:#8892a8;line-height:1.6;">
+      <strong style="color:#ffa502;font-family:JetBrains Mono,monospace;font-size:0.75rem;letter-spacing:1px;">CONTEÚDO GERADO POR IA</strong><br>
+      Esta página foi gerada por IA e pode conter imprecisões. Todas as afirmações devem ser verificadas independentemente usando as fontes fornecidas.
+      <br><br>
+      <a href="https://github.com/pjcorreia/sigil/issues/new?labels=correction&amp;title=%5BCorrection%5D+" target="_blank" style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border:1px solid #ff4757;border-radius:4px;color:#ff4757;font-family:JetBrains Mono,monospace;font-size:0.6rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;text-decoration:none;">⚙ Reportar Erro no GitHub</a>
+      &nbsp;
+      <a href="mailto:pjcorreia@gmail.com?subject=%5BSIGIL%20Correction%5D" style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border:1px solid #00d4aa;border-radius:4px;color:#00d4aa;font-family:JetBrains Mono,monospace;font-size:0.6rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;text-decoration:none;">✉ Correção por Email</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p style="color:var(--accent);font-family:'JetBrains Mono',monospace;letter-spacing:2px;margin-bottom:0.5rem">SIGIL</p>
+  <p>Signal Intelligence Lab &mdash; Análise Portuguesa de Contratação Pública</p>
+  <p style="margin-top:0.5rem"><a href="pt.html" style="color:var(--accent);text-decoration:none">&larr; Voltar a todas as investigações</a></p>
+</footer>
+</body>
+</html>

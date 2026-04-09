@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIGIL | Redes Empresariais e Interligações — Investigação Completa</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+  :root{--bg-primary:#0a0e17;--bg-secondary:#111827;--bg-card:#1a2235;--bg-card-hover:#1f2a40;--accent:#00d4aa;--accent-dim:#00d4aa33;--accent-glow:#00d4aa22;--red:#ff4757;--red-dim:#ff475722;--orange:#ffa502;--orange-dim:#ffa50222;--yellow:#eccc68;--text-primary:#e8eaf0;--text-secondary:#8892a8;--text-muted:#4a5568;--border:#1e2a3a;--border-accent:#00d4aa44}
+  *{margin:0;padding:0;box-sizing:border-box}body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg-primary);color:var(--text-primary);line-height:1.7;overflow-x:hidden}body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,212,170,0.015) 2px,rgba(0,212,170,0.015) 4px);pointer-events:none;z-index:9999}
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,14,23,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 2rem}.nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:60px}.nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none}.nav-brand .logo{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.3rem;color:var(--accent);letter-spacing:3px}.nav-brand .tagline{font-size:0.7rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase}.nav-links{display:flex;gap:2rem;list-style:none;align-items:center}.nav-links a{color:var(--text-secondary);text-decoration:none;font-size:0.85rem;font-weight:500;transition:color 0.2s}.nav-links a:hover{color:var(--accent)}.back-link{color:var(--accent)!important;font-family:'JetBrains Mono',monospace;font-size:0.8rem!important}.lang-toggle{display:flex;gap:0;border:1px solid #1e2a3a;border-radius:4px;overflow:hidden;margin-left:1rem}.lang-toggle a{padding:4px 10px;font-family:'JetBrains Mono',monospace;font-size:0.65rem;font-weight:700;letter-spacing:1px;text-decoration:none;color:#4a5568;transition:all 0.2s}.lang-toggle a.active{background:#00d4aa;color:#0a0e17}.lang-toggle a:not(.active):hover{color:#00d4aa;background:#00d4aa33}
+  .deep-hero{padding:120px 2rem 60px;text-align:center;position:relative}.deep-hero::before{content:'';position:absolute;top:60px;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(circle,var(--orange-dim) 0%,transparent 70%);pointer-events:none}
+  .status-tag{font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:700;letter-spacing:1.5px;padding:3px 10px;border-radius:3px;text-transform:uppercase}.status-tag.unreported{background:rgba(255,71,87,0.15);color:var(--red);border:1px solid var(--red)}.risk-badge{font-family:'JetBrains Mono',monospace;font-size:0.65rem;font-weight:700;letter-spacing:1px;padding:4px 10px;border-radius:4px}.risk-badge.high{background:var(--orange-dim);color:var(--orange);border:1px solid var(--orange)}
+  .deep-hero h1{font-size:2.6rem;font-weight:700;line-height:1.2;margin:1rem 0;background:linear-gradient(135deg,var(--text-primary) 0%,var(--text-secondary) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}.deep-hero p{font-size:1.1rem;color:var(--text-secondary);max-width:700px;margin:0 auto;font-weight:300}.hero-badges{display:flex;gap:1rem;justify-content:center;margin-bottom:1rem}
+  .content{max-width:900px;margin:0 auto;padding:0 2rem 4rem}
+  .key-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin:2rem 0 3rem}.stat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:1.5rem;text-align:center}.stat-card .number{font-family:'JetBrains Mono',monospace;font-size:1.8rem;font-weight:700;color:var(--orange)}.stat-card .label{font-size:0.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+  .section-block{margin-bottom:3rem}.section-block h2{font-size:1.4rem;font-weight:700;color:var(--accent);margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border);font-family:'JetBrains Mono',monospace;letter-spacing:1px}.section-block h3{font-size:1.1rem;font-weight:600;color:var(--text-primary);margin:1.5rem 0 0.5rem}.section-block p{color:var(--text-secondary);font-size:0.92rem;margin-bottom:1rem}
+  .evidence-box{background:var(--bg-card);border-left:3px solid var(--red);border-radius:0 8px 8px 0;padding:1.2rem 1.5rem;margin:1rem 0}.evidence-box.orange{border-left-color:var(--orange)}.evidence-box.accent{border-left-color:var(--accent)}.evidence-box strong{color:var(--text-primary)}.evidence-box p{margin-bottom:0.3rem;color:var(--text-secondary);font-size:0.88rem}
+  .data-table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:0.85rem}.data-table th{text-align:left;padding:10px 14px;background:rgba(0,212,170,0.08);color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:0.7rem;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--border)}.data-table td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text-secondary)}.data-table tr:hover td{background:rgba(0,212,170,0.03)}
+  .source-list{list-style:none;margin:1rem 0}.source-list li{padding:0.5rem 0;border-bottom:1px solid var(--border)}.source-list a{color:var(--accent);text-decoration:none;font-size:0.85rem}.source-list a:hover{text-decoration:underline}.source-list .source-type{font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-left:0.5rem}
+  footer{text-align:center;padding:3rem 2rem;border-top:1px solid var(--border);color:var(--text-muted);font-size:0.8rem}
+  @media(max-width:768px){.deep-hero h1{font-size:1.8rem}.key-stats{grid-template-columns:repeat(2,1fr)}.nav-links{display:none}}
+</style>
+</head>
+<body>
+<nav><div class="nav-inner">
+  <a href="pt.html" class="nav-brand"><span class="logo">SIGIL</span><span class="tagline">Signal Intelligence Lab</span></a>
+  <ul class="nav-links"><li><a href="pt.html" class="back-link">&larr; Voltar às Investigações</a></li><li><a href="pt.html#investigations">Todos os Casos</a></li><li><div class="lang-toggle"><a href="corporate-networks-deep-dive.html">EN</a><a href="corporate-networks-deep-dive-pt.html" class="active">PT</a></div></li></ul>
+</div></nav>
+
+<div class="deep-hero">
+  <div class="hero-badges">
+    <span class="status-tag unreported">NÃO DIVULGADO</span>
+    <span class="risk-badge high">ALTO</span>
+  </div>
+  <h1>Redes Empresariais e Interligações</h1>
+  <p>Empresas casca com capital 0 euros. Diretores sentados em conselhos concorrentes. Um registo de propriedade beneficiária fechado a acesso público. A infraestrutura de opacidade que permite corrupção de contratação portuguesa.</p>
+</div>
+
+<div class="content">
+  <div class="key-stats">
+    <div class="stat-card"><div class="number">57/100</div><div class="label">Índice Corrupção PT</div></div>
+    <div class="stat-card"><div class="number">102</div><div class="label">Empresas Casca (Op. Ambrosia)</div></div>
+    <div class="stat-card"><div class="number">&euro;78M+</div><div class="label">Multas Cartel (2022–2024)</div></div>
+    <div class="stat-card"><div class="number">2025</div><div class="label">Acesso RCBE Restrito</div></div>
+  </div>
+
+  <div class="section-block">
+    <h2>01 &mdash; Interligações de Diretores: Legal Mas Perigoso</h2>
+    <p>A lei portuguesa não proíbe explicitamente diretores de participarem nos conselhos de múltiplas empresas — mesmo empresas que concorrem pelos mesmos contratos governamentais. Isto cria uma vulnerabilidade estrutural: indivíduos com deveres fiduciários a múltiplas entidades podem partilhar informação, coordenar estratégias, e alinhar preços entre competidores nominalmente independentes.</p>
+
+    <div class="evidence-box orange">
+      <strong>Sem proibição. Sem requisito de divulgação. Sem monitoramento.</strong>
+      <p>Ao contrário do Reino Unido (onde a Autoridade de Mercados e Concorrência monitora ativamente interligações de diretores) ou EUA (onde Secção 8 do Clayton Act proíbe diretores interligados entre empresas concorrentes acima certos limiares), Portugal não tem marco regulatório abordando este risco. Empresas concorrendo por contratos governamentais podem partilhar diretores — e ninguém está a verificar.</p>
+    </div>
+  </div>
+
+  <div class="section-block">
+    <h2>02 &mdash; Operação Picoas: O Esquema de Mais de 100 Milhões</h2>
+    <p><strong>Operação Picoas</strong> documentou um esquema de corrupção major envolvendo um estimado 60–100 empresas. A investigação revelou como redes corporativas foram usadas para gerar facturas falsas e canalizar dinheiro público através de estruturas casca.</p>
+
+    <div class="evidence-box">
+      <strong>Alexandre Fonseca: Mais de 380.000 euros em facturas falsas.</strong>
+      <p>O antigo CEO de Altice/MEO (maior telecom de Portugal) e membro conselho Siemens foi acusado depois de receber mais de 380.000 euros através de esquemas de facturação falsa. O caso exemplifica a porta giratória entre grandes corporações, posições consultoras governamentais, e papéis adjacentes a contratação.</p>
+    </div>
+
+    <p>A investigação alegou fraude excedendo 100 milhões de euros afetando contratação governamental, com a rede de empresas usada para criar aparência de transações comerciais legítimas enquanto realmente servindo como condutas para pagamentos corruptos.</p>
+  </div>
+
+  <div class="section-block">
+    <h2>03 &mdash; Operação Ambrosia: A Rede de 102 Empresas</h2>
+    <p><strong>Operação Ambrosia</strong> revelou uma rede de <strong>102 empresas</strong> — muitas com capitalização mínima — usadas para facilitar fraude de contratação. A investigação demonstrou como é fácil criar empresas casca em Portugal e usá-las para vencer contratos governamentais, subcontratar entre entidades de rede, e extrair dinheiro público.</p>
+
+    <div class="evidence-box orange">
+      <strong>Requisitos de capital baixo capacitam criação de casca.</strong>
+      <p>Formação de empresa em Portugal requer capital mínimo (tão baixo como 1 euro para alguns tipos de entidade). Combinado com a ausência de ferramentas de análise de rede automatizadas no registo comercial, isto cria um ambiente onde redes de empresa casca podem proliferar indetectadas. As 102 empresas em Operação Ambrosia foram identificadas apenas através de investigação criminal prolongada — não através de monitoramento regulatório rotineiro.</p>
+    </div>
+  </div>
+
+  <div class="section-block">
+    <h2>04 &mdash; O Buraco Negro de Propriedade Beneficiária</h2>
+    <p>Em outubro de 2025, Portugal alterou seu RCBE (Registo Central do Beneficiário Efetivo — Registo Central de Propriedade Beneficiária) de acesso público para acesso restrito <strong>"interesse legítimo"</strong>. Isto significa jornalistas, investigadores, e organizações da sociedade civil já não podem livremente questionar quem em última instância detém empresas portuguesas.</p>
+
+    <div class="evidence-box">
+      <strong>Um passo atrás em transparência — no pior tempo possível.</strong>
+      <p>Num tempo quando a análise de SIGIL revela uso generalizado de estruturas casca, diretores ocultos, e padrões de rede corporativa em contratação pública, Portugal tornou-o mais difícil — não mais fácil — investigar propriedade corporativa. A restrição foi implementada seguindo uma decisão de Tribunal de Justiça UE (C-37/20 e C-601/20) que encontrou acesso público ilimitado desproporcionado — mas a implementação de Portugal parece ir além do requerido.</p>
+    </div>
+
+    <h3>Comparação de Transparência</h3>
+    <table class="data-table">
+      <thead><tr><th>País</th><th>Acesso Propriedade Beneficiária</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Reino Unido</strong></td><td>Acesso público gratuito via Companies House</td><td style="color:var(--accent)">Aberto</td></tr>
+        <tr><td><strong>Dinamarca</strong></td><td>Acesso público gratuito via CVR</td><td style="color:var(--accent)">Aberto</td></tr>
+        <tr><td><strong>França</strong></td><td>Acesso pago via INPI; jornalistas podem solicitar</td><td style="color:var(--orange)">Semi-aberto</td></tr>
+        <tr><td><strong>Alemanha</strong></td><td>Acesso registado via Transparenzregister</td><td style="color:var(--orange)">Semi-aberto</td></tr>
+        <tr><td style="color:var(--red)"><strong>Portugal</strong></td><td style="color:var(--red)">Restrição "interesse legítimo" (Out 2025)</td><td style="color:var(--red)">Restrito</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-block">
+    <h2>05 &mdash; Cartéis Documentados: As Multas</h2>
+    <p>A Autoridade da Concorrência portuguesa processou vários cartéis de contratação, demonstrando que coordenação de propostas não é teórica — é provada e multada.</p>
+
+    <table class="data-table">
+      <thead><tr><th>Cartel</th><th>Ano</th><th>Multa</th><th>Setor</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Cartel Serviços Segurança</strong></td><td>2022</td><td style="color:var(--red);font-family:'JetBrains Mono'">41,3M euros</td><td>Segurança privada</td></tr>
+        <tr><td><strong>Cartel Teleradiologia</strong></td><td>2024</td><td style="color:var(--red);font-family:'JetBrains Mono'">6,9M euros</td><td>Saúde</td></tr>
+        <tr><td><strong>Cartel Manutenção Comboios</strong></td><td>Recente</td><td style="color:var(--red);font-family:'JetBrains Mono'">3,4M euros</td><td>Ferroviário</td></tr>
+        <tr><td><strong>Cartel Extintor Incêndio</strong></td><td>Recente</td><td style="color:var(--orange);font-family:'JetBrains Mono'">Menos de 5M euros</td><td>Equipamento segurança</td></tr>
+        <tr><td><strong>Cartel Marcação Estrada</strong></td><td>Confirmado</td><td style="color:var(--orange);font-family:'JetBrains Mono'">Pendente</td><td>Infraestrutura</td></tr>
+      </tbody>
+    </table>
+
+    <div class="evidence-box accent">
+      <strong>A Autoridade da Concorrência está a priorizar cartéis de contratação em 2026.</strong>
+      <p>A Autoridade da Concorrência afirmou publicamente que cartéis de contratação são prioridade para execução em 2026. Isto sinaliza consciência do problema — mas a questão permanece se execução pode acompanhar o ritmo da coordenação que estruturas de rede corporativa capacitam.</p>
+    </div>
+  </div>
+
+  <div class="section-block">
+    <h2>06 &mdash; Bandeiras Vermelhas de Empresa Casca</h2>
+    <p>SIGIL identificou vários indicadores que correlacionam com redes de empresa casca em contratação pública portuguesa:</p>
+
+    <table class="data-table">
+      <thead><tr><th>Indicador</th><th>O Que Sugere</th><th>Prevalência</th></tr></thead>
+      <tbody>
+        <tr><td>Capitalização mínima (0–9 euros)</td><td>Entidade existe para separação de responsabilidade, não negócio genuíno</td><td style="color:var(--red)">Comum</td></tr>
+        <tr><td>Mesmo endereço registado para múltiplas entidades</td><td>Propriedade/controlo comum não divulgado</td><td style="color:var(--red)">Comum</td></tr>
+        <tr><td>Mudança de nome recente</td><td>Distanciamento de desempenho passado ou investigações</td><td style="color:var(--orange)">Moderado</td></tr>
+        <tr><td>Diretores ocultos de fontes públicas</td><td>Opacidade deliberada sobre controlo</td><td style="color:var(--orange)">Moderado</td></tr>
+        <tr><td>Estrutura ACE/consórcio para serviços rotineiros</td><td>Complexidade desnecessária para tipo de serviço</td><td style="color:var(--orange)">Moderado</td></tr>
+        <tr><td>Fragmentação subsidiária regional (Norte/Sul/II)</td><td>Capacidade de divisão de contrato</td><td style="color:var(--red)">Comum em limpeza/segurança</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-block">
+    <h2>07 &mdash; O Que Ninguém Está a Falar</h2>
+    <div class="evidence-box">
+      <strong>1. Sem detecção de rede automatizada.</strong>
+      <p>Portugal não tem sistema que automaticamente identifica quando múltiplas empresas concorrendo no mesmo contrato partilham diretores, endereços, ou proprietários beneficiários. Cada detecção de cartel requer investigação manual — reativa, lenta, e dispendiosa.</p>
+    </div>
+    <div class="evidence-box">
+      <strong>2. A restrição RCBE ajuda as pessoas erradas.</strong>
+      <p>Restringir acesso de propriedade beneficiária protege operadores de empresa casca mais do que protege privacidade. Negócios legítimos não têm nada a esconder de escrutínio público; entidades usando estruturas opacas para vencer contratos governamentais têm tudo a esconder.</p>
+    </div>
+    <div class="evidence-box">
+      <strong>3. Monitoramento de interligação de diretores não existe.</strong>
+      <p>Nenhuma instituição portuguesa monitora se diretores de empresas concorrendo no mesmo contrato governamental partilham assentos de conselho. Esta informação existe em registos comerciais mas nunca é referenciada cruzada contra dados de contratação.</p>
+    </div>
+    <div class="evidence-box">
+      <strong>4. Jornalismo investigativo português é frágil.</strong>
+      <p>Plataformas como Divergente e Fumaça fazem trabalho importante mas enfrentam fragilidade económica. Instituições portuguesas exibem o que jornalistas descreveram como opacidade "surreal" em pedidos de Acesso a Informação. A infraestrutura para responsabilidade — tanto jornalística como institucional — é ela própria sob-recurso.</p>
+    </div>
+  </div>
+
+  <div class="section-block">
+    <h2>08 &mdash; Fontes</h2>
+    <ul class="source-list">
+      <li><a href="https://www.concorrencia.pt" target="_blank">Autoridade da Concorrência &mdash; Autoridade de Concorrência Portuguesa</a> <span class="source-type">Oficial</span></li>
+      <li><a href="https://www.transparency.org/en/cpi/2024" target="_blank">Transparency International &mdash; Índice de Perceção de Corrupção 2024</a> <span class="source-type">Internacional</span></li>
+      <li><a href="https://rcbe.justica.gov.pt" target="_blank">RCBE &mdash; Registo Central de Propriedade Beneficiária</a> <span class="source-type">Oficial</span></li>
+      <li><a href="https://curia.europa.eu/juris/liste.jsf?num=C-37/20" target="_blank">TJUE &mdash; Caso C-37/20 (Acesso Propriedade Beneficiária)</a> <span class="source-type">Tribunal UE</span></li>
+      <li><a href="https://www.base.gov.pt" target="_blank">BASE.gov.pt &mdash; Portal de Contratação Pública Portuguesa</a> <span class="source-type">Base de Dados</span></li>
+    </ul>
+  </div>
+</div>
+
+<!-- AI DISCLAIMER & REPORT -->
+<div style="max-width:900px;margin:0 auto 2rem;padding:0 2rem;">
+  <div style="background:linear-gradient(135deg,rgba(255,71,87,0.12),rgba(255,165,2,0.08));border:1px solid rgba(255,71,87,0.3);border-radius:10px;padding:1.2rem 1.5rem;display:flex;align-items:flex-start;gap:1rem;">
+    <div style="font-size:1.4rem;flex-shrink:0;">&#9888;&#65039;</div>
+    <div style="font-size:0.82rem;color:#8892a8;line-height:1.6;">
+      <strong style="color:#ffa502;font-family:JetBrains Mono,monospace;font-size:0.75rem;letter-spacing:1px;">CONTEÚDO GERADO POR IA</strong><br>
+      Esta página foi gerada por IA e pode conter imprecisões. Todas as afirmações devem ser verificadas independentemente usando as fontes fornecidas.
+      <br><br>
+      <a href="https://github.com/pjcorreia/sigil/issues/new?labels=correction&amp;title=%5BCorrection%5D+" target="_blank" style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border:1px solid #ff4757;border-radius:4px;color:#ff4757;font-family:JetBrains Mono,monospace;font-size:0.6rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;text-decoration:none;">&#9873; Reportar Erro no GitHub</a>
+      &nbsp;
+      <a href="mailto:pjcorreia@gmail.com?subject=%5BSIGIL%20Correction%5D" style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border:1px solid #00d4aa;border-radius:4px;color:#00d4aa;font-family:JetBrains Mono,monospace;font-size:0.6rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;text-decoration:none;">&#9993; Correção por Email</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p style="color:var(--accent);font-family:'JetBrains Mono',monospace;letter-spacing:2px;margin-bottom:0.5rem">SIGIL</p>
+  <p>Signal Intelligence Lab &mdash; Análise de Contratação Pública Portuguesa</p>
+  <p style="margin-top:0.5rem"><a href="pt.html" style="color:var(--accent);text-decoration:none">&larr; Voltar a todas as investigações</a></p>
+</footer>
+</body>
+</html>
