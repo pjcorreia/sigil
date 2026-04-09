@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a0f1a"/>
+      <stop offset="100%" style="stop-color:#111827"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#00ff88;stop-opacity:0"/>
+      <stop offset="50%" style="stop-color:#00ff88;stop-opacity:0.3"/>
+      <stop offset="100%" style="stop-color:#00ff88;stop-opacity:0"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <!-- Subtle grid -->
+  <g opacity="0.04" stroke="#00ff88" stroke-width="0.5">
+    <line x1="0" y1="100" x2="1200" y2="100"/><line x1="0" y1="200" x2="1200" y2="200"/>
+    <line x1="0" y1="300" x2="1200" y2="300"/><line x1="0" y1="400" x2="1200" y2="400"/>
+    <line x1="0" y1="500" x2="1200" y2="500"/>
+    <line x1="200" y1="0" x2="200" y2="630"/><line x1="400" y1="0" x2="400" y2="630"/>
+    <line x1="600" y1="0" x2="600" y2="630"/><line x1="800" y1="0" x2="800" y2="630"/>
+    <line x1="1000" y1="0" x2="1000" y2="630"/>
+  </g>
+  <!-- Accent line -->
+  <rect x="0" y="0" width="1200" height="3" fill="url(#glow)"/>
+  <rect x="0" y="627" width="1200" height="3" fill="url(#glow)"/>
+  <!-- Data dots decoration -->
+  <circle cx="150" cy="180" r="3" fill="#00ff88" opacity="0.2"/>
+  <circle cx="280" cy="220" r="2" fill="#00ff88" opacity="0.15"/>
+  <circle cx="950" cy="160" r="4" fill="#00ff88" opacity="0.1"/>
+  <circle cx="1050" cy="250" r="2.5" fill="#00ff88" opacity="0.18"/>
+  <circle cx="180" cy="450" r="2" fill="#ff4757" opacity="0.15"/>
+  <circle cx="1020" cy="420" r="3" fill="#ff4757" opacity="0.12"/>
+  <!-- Connection lines -->
+  <line x1="150" y1="180" x2="280" y2="220" stroke="#00ff88" stroke-width="0.5" opacity="0.08"/>
+  <line x1="950" y1="160" x2="1050" y2="250" stroke="#00ff88" stroke-width="0.5" opacity="0.08"/>
+  <!-- Main title -->
+  <text x="600" y="235" font-family="monospace" font-weight="bold" font-size="72" fill="#00ff88" text-anchor="middle" letter-spacing="12">SIGIL</text>
+  <!-- Subtitle -->
+  <text x="600" y="290" font-family="monospace" font-size="18" fill="#64748b" text-anchor="middle" letter-spacing="4">SIGNAL INTELLIGENCE LAB</text>
+  <!-- Divider -->
+  <rect x="450" y="315" width="300" height="1" fill="#00ff88" opacity="0.3"/>
+  <!-- Description -->
+  <text x="600" y="365" font-family="sans-serif" font-size="22" fill="#94a3b8" text-anchor="middle">Análise Investigativa da Contratação Pública Portuguesa</text>
+  <!-- Stats bar -->
+  <g transform="translate(200,420)">
+    <text x="0" y="0" font-family="monospace" font-size="36" fill="#00ff88" font-weight="bold">7</text>
+    <text x="0" y="25" font-family="sans-serif" font-size="13" fill="#64748b">Investigações</text>
+  </g>
+  <g transform="translate(400,420)">
+    <text x="0" y="0" font-family="monospace" font-size="36" fill="#ffa502" font-weight="bold">€2.8B+</text>
+    <text x="0" y="25" font-family="sans-serif" font-size="13" fill="#64748b">Em contratos analisados</text>
+  </g>
+  <g transform="translate(720,420)">
+    <text x="0" y="0" font-family="monospace" font-size="36" fill="#ff4757" font-weight="bold">100%</text>
+    <text x="0" y="25" font-family="sans-serif" font-size="13" fill="#64748b">Dados públicos e abertos</text>
+  </g>
+  <!-- URL -->
+  <text x="600" y="560" font-family="monospace" font-size="16" fill="#00ff88" text-anchor="middle" opacity="0.6">sigil.pt</text>
+  <!-- Border -->
+  <rect x="2" y="2" width="1196" height="626" fill="none" stroke="#00ff88" stroke-width="1" opacity="0.1" rx="4"/>
+</svg>
