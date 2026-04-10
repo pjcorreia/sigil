@@ -885,7 +885,7 @@ class Node {
 class SimulationNode extends THREE.Group {
   constructor(id, data) {
     super();
-    this.id = id;
+    this.nodeId = id;
     this.data = data;
     this.physicsNode = null;
     this.mesh = null;
@@ -1290,7 +1290,7 @@ function onMouseMove(event) {
 
       // Show tooltip
       tooltip.classList.add('visible');
-      tooltip.innerHTML = `<div class="tooltip-title">${NODE_DATA[simNode.id].label || simNode.id}</div>`;
+      tooltip.innerHTML = `<div class="tooltip-title">${NODE_DATA[simNode.nodeId].label || simNode.nodeId}</div>`;
 
       if (simNode.data.value > 0) {
         tooltip.innerHTML += `<div style="color: var(--accent); font-family: 'JetBrains Mono', monospace;">€${simNode.data.value}M</div>`;
@@ -1337,7 +1337,7 @@ document.addEventListener('click', (event) => {
 
 function showInfoPanel(node) {
   const panel = document.getElementById('info-panel');
-  const data = NODE_DATA[node.id] || node.data;
+  const data = NODE_DATA[node.nodeId] || node.data;
 
   document.getElementById('info-name').textContent = data.label || node.id;
   document.getElementById('info-type').textContent = {
@@ -1349,7 +1349,7 @@ function showInfoPanel(node) {
 
   document.getElementById('info-value').textContent = data.value > 0 ? `€${data.value}M` : '—';
 
-  const connectedEdges = EDGES.filter(e => e.source === node.id || e.target === node.id);
+  const connectedEdges = EDGES.filter(e => e.source === node.id || e.target === node.nodeId);
   document.getElementById('info-connections-count').textContent = connectedEdges.length;
 
   const connectionsList = document.getElementById('info-connections-list');
@@ -1402,7 +1402,7 @@ document.getElementById('search-input').addEventListener('input', (e) => {
   if (!query) return;
 
   for (const node of nodes) {
-    const label = (NODE_DATA[node.id].label || node.id).toLowerCase();
+    const label = (NODE_DATA[node.nodeId].label || node.nodeId).toLowerCase();
     if (label.includes(query)) {
       onNodeClick(node);
       break;
