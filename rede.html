@@ -1349,14 +1349,14 @@ function showInfoPanel(node) {
 
   document.getElementById('info-value').textContent = data.value > 0 ? `€${data.value}M` : '—';
 
-  const connectedEdges = EDGES.filter(e => e.source === node.id || e.target === node.nodeId);
+  const connectedEdges = EDGES.filter(e => e.source === node.nodeId || e.target === node.nodeId);
   document.getElementById('info-connections-count').textContent = connectedEdges.length;
 
   const connectionsList = document.getElementById('info-connections-list');
   connectionsList.innerHTML = '';
 
   for (const edge of connectedEdges) {
-    const targetId = edge.source === node.id ? edge.target : edge.source;
+    const targetId = edge.source === node.nodeId ? edge.target : edge.source;
     const targetData = NODE_DATA[targetId];
 
     const item = document.createElement('div');
