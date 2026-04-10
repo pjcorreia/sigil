@@ -3,27 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SIGIL | Network Map</title>
-<meta property="og:title" content="SIGIL — Network Map">
-<meta property="og:description" content="Interactive visualization of connections between entities in Portuguese public procurement">
-<meta property="og:type" content="website">
-<meta property="og:image" content="https://sigil.pt/og-image.png">
-<meta property="og:url" content="https://sigil.pt/network.html">
-<meta property="og:site_name" content="SIGIL">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="SIGIL — Network Map">
-<meta name="twitter:description" content="Interactive visualization of connections between entities in Portuguese public procurement">
-<meta name="twitter:image" content="https://sigil.pt/og-image.png">
+<title>SIGIL — 3D Network Map</title>
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<meta property="og:title" content="SIGIL — 3D Network Map">
+<meta property="og:description" content="Interactive 3D visualization of connections in Portuguese public procurement">
+<meta property="og:image" content="https://sigil.pt/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://sigil.pt/og-image.png">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-WZQVKM51B7"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-WZQVKM51B7');</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
 
   :root {
-    --bg-primary: #0a0f1a;
-    --bg-secondary: #111827;
-    --bg-card: #1a2235;
-    --bg-card-hover: #1f2a40;
+    --bg-primary: #050510;
+    --bg-secondary: #0f1419;
+    --bg-card: #1a1f2e;
+    --bg-card-hover: #1f2a3a;
     --accent: #00ff88;
     --accent-dim: #00ff8833;
     --accent-glow: #00ff8822;
@@ -32,6 +29,7 @@
     --blue: #3b82f6;
     --amber: #f59e0b;
     --purple: #8b5cf6;
+    --orange: #ffa502;
     --text-primary: #e8eaf0;
     --text-secondary: #8892a8;
     --text-muted: #4a5568;
@@ -41,11 +39,18 @@
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
+  html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+  }
+
   body {
     font-family: 'Inter', -apple-system, sans-serif;
     background: var(--bg-primary);
     color: var(--text-primary);
-    overflow: hidden;
   }
 
   body::before {
@@ -57,11 +62,17 @@
       0deg,
       transparent,
       transparent 2px,
-      rgba(0, 255, 136, 0.015) 2px,
-      rgba(0, 255, 136, 0.015) 4px
+      rgba(0, 255, 136, 0.01) 2px,
+      rgba(0, 255, 136, 0.01) 4px
     );
     pointer-events: none;
     z-index: 9999;
+  }
+
+  #canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
   }
 
   /* === NAVIGATION === */
@@ -69,7 +80,7 @@
     position: fixed;
     top: 0; left: 0; right: 0;
     z-index: 100;
-    background: rgba(10, 15, 26, 0.95);
+    background: rgba(5, 5, 16, 0.95);
     backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--border);
     padding: 0 2rem;
@@ -89,7 +100,11 @@
     align-items: center;
     gap: 10px;
     text-decoration: none;
+    cursor: pointer;
+    transition: opacity 0.2s;
   }
+
+  .nav-brand:hover { opacity: 0.8; }
 
   .nav-brand .logo {
     font-family: 'JetBrains Mono', monospace;
@@ -121,6 +136,7 @@
     font-weight: 500;
     letter-spacing: 0.5px;
     transition: color 0.2s;
+    cursor: pointer;
   }
 
   .nav-links a:hover { color: var(--accent); }
@@ -148,6 +164,7 @@
     text-decoration: none;
     color: var(--text-muted);
     transition: all 0.2s;
+    cursor: pointer;
   }
 
   .lang-toggle a.active {
@@ -160,87 +177,7 @@
     background: var(--accent-dim);
   }
 
-  /* === MAIN CONTENT === */
-  #graph {
-    position: fixed;
-    top: 60px;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    width: 100%;
-    height: calc(100vh - 60px);
-  }
-
-  svg {
-    display: block;
-    width: 100%;
-    height: 100%;
-  }
-
-  .node {
-    stroke: var(--text-primary);
-    stroke-width: 2px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  .node:hover {
-    stroke-width: 3px;
-    filter: drop-shadow(0 0 12px rgba(0, 255, 136, 0.6));
-  }
-
-  .node.public-entity {
-    fill: var(--blue);
-  }
-
-  .node.private-company {
-    fill: var(--amber);
-  }
-
-  .node.person {
-    fill: var(--purple);
-  }
-
-  .node.finding {
-    fill: var(--red);
-  }
-
-  .link {
-    stroke: var(--border);
-    stroke-opacity: 0.6;
-    transition: all 0.2s;
-  }
-
-  .link.unreported {
-    stroke: var(--red);
-    stroke-opacity: 0.8;
-    stroke-dasharray: 5,5;
-  }
-
-  .link.active {
-    stroke: var(--accent);
-    stroke-opacity: 1;
-    stroke-width: 3px;
-    filter: drop-shadow(0 0 8px rgba(0, 255, 136, 0.5));
-  }
-
-  .node-label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    pointer-events: none;
-    fill: var(--text-primary);
-    text-anchor: middle;
-    dominant-baseline: middle;
-    opacity: 0;
-    transition: opacity 0.2s;
-  }
-
-  .node.selected .node-label,
-  .node:hover .node-label {
-    opacity: 1;
-  }
-
-  /* === SEARCH BAR === */
+  /* === SEARCH & FILTERS === */
   .search-container {
     position: fixed;
     top: 80px;
@@ -249,7 +186,7 @@
   }
 
   .search-box {
-    background: var(--bg-card);
+    background: rgba(26, 31, 46, 0.9);
     border: 1px solid var(--border);
     border-radius: 8px;
     padding: 10px 14px;
@@ -258,6 +195,7 @@
     font-size: 0.85rem;
     width: 220px;
     transition: all 0.2s;
+    backdrop-filter: blur(10px);
   }
 
   .search-box:focus {
@@ -266,7 +204,6 @@
     box-shadow: 0 0 12px rgba(0, 255, 136, 0.3);
   }
 
-  /* === FILTER BUTTONS === */
   .filter-container {
     position: fixed;
     top: 135px;
@@ -278,7 +215,7 @@
   }
 
   .filter-btn {
-    background: var(--bg-card);
+    background: rgba(26, 31, 46, 0.9);
     border: 1px solid var(--border);
     color: var(--text-secondary);
     padding: 6px 12px;
@@ -290,6 +227,7 @@
     transition: all 0.2s;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    backdrop-filter: blur(10px);
   }
 
   .filter-btn:hover {
@@ -308,7 +246,7 @@
     position: fixed;
     bottom: 20px;
     left: 20px;
-    background: rgba(26, 34, 53, 0.95);
+    background: rgba(26, 31, 46, 0.95);
     border: 1px solid var(--border);
     border-radius: 8px;
     padding: 16px;
@@ -357,10 +295,56 @@
     font-size: 0.8rem;
   }
 
+  /* === HUD INFO === */
+  .hud-stats {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    background: rgba(26, 31, 46, 0.95);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 0.8rem;
+    z-index: 50;
+    backdrop-filter: blur(10px);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .hud-stat {
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+  }
+
+  .hud-stat:last-child {
+    margin-bottom: 0;
+  }
+
+  .hud-stat-label {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .hud-controls {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(26, 31, 46, 0.95);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 0.75rem;
+    z-index: 50;
+    backdrop-filter: blur(10px);
+    text-align: right;
+    color: var(--text-secondary);
+    max-width: 200px;
+    line-height: 1.5;
+  }
+
   /* === TOOLTIP === */
   .tooltip {
     position: fixed;
-    background: rgba(26, 34, 53, 0.98);
+    background: rgba(26, 31, 46, 0.98);
     border: 1px solid var(--accent);
     border-radius: 8px;
     padding: 12px 16px;
@@ -405,7 +389,7 @@
     right: 0;
     width: 0;
     height: calc(100vh - 60px);
-    background: rgba(26, 34, 53, 0.98);
+    background: rgba(26, 31, 46, 0.98);
     border-left: 1px solid var(--border);
     overflow-y: auto;
     z-index: 40;
@@ -422,7 +406,7 @@
     border-bottom: 1px solid var(--border);
     position: sticky;
     top: 0;
-    background: rgba(26, 34, 53, 0.95);
+    background: rgba(26, 31, 46, 0.95);
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
@@ -496,6 +480,7 @@
     transition: all 0.2s;
     margin-right: 8px;
     margin-bottom: 8px;
+    cursor: pointer;
   }
 
   .panel-link:hover {
@@ -508,12 +493,16 @@
   @media (max-width: 768px) {
     .nav-links { display: none; }
     .info-panel.open { width: 100%; }
-    .search-box { width: 180px; }
-    .legend { bottom: auto; top: 80px; }
+    .search-box { width: 160px; }
+    .legend { bottom: auto; top: 80px; left: 10px; max-width: 200px; }
+    .hud-stats { display: none; }
+    .hud-controls { bottom: 10px; right: 10px; font-size: 0.65rem; max-width: 160px; }
   }
 </style>
 </head>
 <body>
+
+<canvas id="canvas"></canvas>
 
 <nav>
   <div class="nav-inner">
@@ -523,8 +512,6 @@
     </a>
     <ul class="nav-links">
       <li><a href="en.html">← Back to Investigations</a></li>
-      <li><a href="#about">About</a></li>
-      <li><a href="mailto:denuncia@sigil.pt">Report</a></li>
     </ul>
     <div class="nav-right">
       <div class="lang-toggle">
@@ -535,37 +522,49 @@
   </div>
 </nav>
 
-<div id="graph"></div>
-
 <div class="search-container">
   <input type="text" id="search" class="search-box" placeholder="Search entities...">
 </div>
 
 <div class="filter-container">
-  <button class="filter-btn active" data-filter="all">All Entities</button>
+  <button class="filter-btn active" data-filter="all">All</button>
   <button class="filter-btn" data-filter="public">Public</button>
   <button class="filter-btn" data-filter="private">Private</button>
   <button class="filter-btn" data-filter="person">People</button>
+  <button class="filter-btn" data-filter="finding">Findings</button>
 </div>
 
 <div class="legend">
   <span class="legend-title">Entity Types</span>
   <div class="legend-item">
-    <div class="legend-swatch" style="background: var(--blue);"></div>
+    <div class="legend-swatch" style="background: #3b82f6;"></div>
     <span class="legend-label">Public Entity</span>
   </div>
   <div class="legend-item">
-    <div class="legend-swatch" style="background: var(--amber);"></div>
+    <div class="legend-swatch" style="background: #f59e0b;"></div>
     <span class="legend-label">Private Company</span>
   </div>
   <div class="legend-item">
-    <div class="legend-swatch" style="background: var(--purple);"></div>
+    <div class="legend-swatch" style="background: #8b5cf6;"></div>
     <span class="legend-label">Person / Director</span>
   </div>
   <div class="legend-item">
-    <div class="legend-swatch" style="background: var(--red);"></div>
-    <span class="legend-label">Finding / Issue</span>
+    <div class="legend-swatch diamond" style="background: #ff4757;"></div>
+    <span class="legend-label">Critical Finding</span>
   </div>
+</div>
+
+<div class="hud-stats" id="hudStats">
+  <div class="hud-stat"><span class="hud-stat-label">Entities:</span> <span id="statEntities">0</span></div>
+  <div class="hud-stat"><span class="hud-stat-label">Connections:</span> <span id="statConnections">0</span></div>
+  <div class="hud-stat"><span class="hud-stat-label">FPS:</span> <span id="statFps">60</span></div>
+</div>
+
+<div class="hud-controls">
+  <div>Drag: Rotate</div>
+  <div>Scroll: Zoom</div>
+  <div>Right-click: Pan</div>
+  <div>Click: Select</div>
 </div>
 
 <div class="tooltip" id="tooltip"></div>
@@ -583,234 +582,472 @@
 </div>
 
 <script>
-// Network data
-const nodes = [
+// ============================================================
+// THREE.JS 3D NETWORK VISUALIZATION
+// ============================================================
+
+// Scene setup
+const canvas = document.getElementById('canvas');
+const width = window.innerWidth;
+const height = window.innerHeight;
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x050510);
+scene.fog = new THREE.FogExp2(0x050510, 0.008);
+
+const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 10000);
+camera.position.set(0, 50, 80);
+
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
+renderer.setSize(width, height);
+renderer.setPixelRatio(window.devicePixelRatio);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFShadowShadowMap;
+
+// Lighting
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+scene.add(ambientLight);
+
+const pointLight = new THREE.PointLight(0xffffff, 1, 500);
+pointLight.position.set(100, 100, 100);
+pointLight.castShadow = true;
+scene.add(pointLight);
+
+// Star particles for space background
+function createStarfield() {
+  const starCount = 2000;
+  const geometry = new THREE.BufferGeometry();
+  const positions = new Float32Array(starCount * 3);
+
+  for (let i = 0; i < starCount * 3; i += 3) {
+    positions[i] = (Math.random() - 0.5) * 2000;
+    positions[i + 1] = (Math.random() - 0.5) * 2000;
+    positions[i + 2] = (Math.random() - 0.5) * 2000;
+  }
+
+  geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  const material = new THREE.PointsMaterial({ color: 0xffffff, size: 1, sizeAttenuation: true, opacity: 0.4 });
+  const stars = new THREE.Points(geometry, material);
+  scene.add(stars);
+}
+createStarfield();
+
+// Node and link data
+const nodesData = [
   // Public entities
-  { id: "SUCH", name: "SUCH", type: "public", category: "Hospital Shared Services", amount: "€45.5M" },
-  { id: "IP", name: "Infraestruturas de Portugal", type: "public", category: "Infrastructure", amount: "109 awards" },
-  { id: "eSPap", name: "eSPap", type: "public", category: "E-governance", amount: "IT systems" },
-  { id: "FCT", name: "FCT", type: "public", category: "Science Foundation", amount: "€120M+" },
-  { id: "Turismo", name: "Turismo de Portugal", type: "public", category: "Tourism", amount: "€20M+" },
-  { id: "SPMS", name: "SPMS", type: "public", category: "Health Shared Services", amount: "€17.2M+" },
-  { id: "MOH", name: "Ministry of Health", type: "public", category: "Government", amount: "—" },
-  { id: "HSJ", name: "Hospital de São José", type: "public", category: "Hospital", amount: "—" },
-  { id: "CHLC", name: "CHLC", type: "public", category: "Hospital", amount: "€19.3M" },
+  { id: "SUCH", name: "SUCH", type: "public", value: 100, color: 0x3b82f6, label: "Hospital Shared Services" },
+  { id: "IP", name: "Infraestruturas de Portugal", type: "public", value: 120, color: 0x3b82f6, label: "Infrastructure" },
+  { id: "eSPap", name: "eSPap", type: "public", value: 80, color: 0x3b82f6, label: "E-governance" },
+  { id: "FCT", name: "FCT", type: "public", value: 110, color: 0x3b82f6, label: "Science Foundation" },
+  { id: "Turismo", name: "Turismo de Portugal", type: "public", value: 85, color: 0x3b82f6, label: "Tourism" },
+  { id: "SPMS", name: "SPMS", type: "public", value: 95, color: 0x3b82f6, label: "Health Shared Services" },
+  { id: "MOH", name: "Ministry of Health", type: "public", value: 105, color: 0x3b82f6, label: "Government" },
+  { id: "HSJ", name: "Hospital de São José", type: "public", value: 75, color: 0x3b82f6, label: "Hospital" },
+  { id: "CHLC", name: "CHLC", type: "public", value: 90, color: 0x3b82f6, label: "Hospital" },
 
   // Private companies
-  { id: "Siemens", name: "Siemens", type: "private", category: "Technology", amount: "109 direct awards" },
-  { id: "Elsevier", name: "Elsevier", type: "private", category: "Academic Publishing", amount: "€120M+ monopoly" },
-  { id: "Dentsu", name: "Dentsu", type: "private", category: "Advertising", amount: "€20M+" },
-  { id: "Autoeuropa", name: "Autoeuropa (VW)", type: "private", category: "Automotive", amount: "€45.5M" },
-  { id: "Fine", name: "Fine Facility", type: "private", category: "Cleaning", amount: "Multiple contracts" },
-  { id: "2SS", name: "2SS Security", type: "private", category: "Security", amount: "Security contracts" },
-  { id: "Securitas", name: "Securitas", type: "private", category: "Security", amount: "Contracts" },
-  { id: "Prosegur", name: "Prosegur", type: "private", category: "Security", amount: "Contracts" },
+  { id: "Siemens", name: "Siemens", type: "private", value: 130, color: 0xf59e0b, label: "Technology" },
+  { id: "Elsevier", name: "Elsevier", type: "private", value: 125, color: 0xf59e0b, label: "Academic Publishing" },
+  { id: "Dentsu", name: "Dentsu", type: "private", value: 100, color: 0xf59e0b, label: "Advertising" },
+  { id: "Autoeuropa", name: "Autoeuropa (VW)", type: "private", value: 115, color: 0xf59e0b, label: "Automotive" },
+  { id: "Fine", name: "Fine Facility", type: "private", value: 60, color: 0xf59e0b, label: "Cleaning" },
+  { id: "2SS", name: "2SS Security", type: "private", value: 55, color: 0xf59e0b, label: "Security" },
+  { id: "Securitas", name: "Securitas", type: "private", value: 65, color: 0xf59e0b, label: "Security" },
+  { id: "Prosegur", name: "Prosegur", type: "private", value: 70, color: 0xf59e0b, label: "Security" },
 
   // People
-  { id: "PauloSousa", name: "Paulo Sousa", type: "person", category: "SUCH President", amount: "EU fraud suspect" },
-  { id: "AdelinoMendes", name: "Adelino Gonçalves", type: "person", category: "Somos Ambiente VP", amount: "Civil protection" },
+  { id: "DirectorA", name: "Director Network A", type: "person", value: 40, color: 0x8b5cf6, label: "Director" },
+  { id: "DirectorB", name: "Director Network B", type: "person", value: 40, color: 0x8b5cf6, label: "Director" },
+
+  // Critical findings
+  { id: "Finding1", name: "Hidden Debt €45.5M", type: "finding", value: 80, color: 0xff4757, label: "Critical Finding" },
+  { id: "Finding2", name: "Academic Monopoly", type: "finding", value: 85, color: 0xff4757, label: "Critical Finding" },
+  { id: "Finding3", name: "Incumbency Pipeline", type: "finding", value: 75, color: 0xff4757, label: "Critical Finding" },
+  { id: "Finding4", name: "Systematic Direct Awards", type: "finding", value: 90, color: 0xff4757, label: "Critical Finding" },
 ];
 
-const links = [
-  // SUCH connections
-  { source: "SUCH", target: "Autoeuropa", value: 45.5, unreported: true, label: "€45.5M contract" },
-  { source: "SUCH", target: "HSJ", value: 5, label: "Shared services" },
-  { source: "SUCH", target: "CHLC", value: 19.3, unreported: true, label: "€19.3M debt" },
-  { source: "SUCH", target: "MOH", value: 3, label: "Government oversight" },
-  { source: "SUCH", target: "PauloSousa", value: 2, unreported: true, label: "President" },
-  { source: "SUCH", target: "AdelinoMendes", value: 2, unreported: true, label: "VP connection" },
+const linksData = [
+  { source: "SUCH", target: "Autoeuropa", strength: 100, risk: "critical", label: "€45.5M contract" },
+  { source: "SUCH", target: "HSJ", strength: 50, risk: "normal", label: "Shared services" },
+  { source: "SUCH", target: "CHLC", strength: 70, risk: "high", label: "€19.3M debt" },
+  { source: "SUCH", target: "MOH", strength: 40, risk: "normal", label: "Government oversight" },
+  { source: "SUCH", target: "Finding1", strength: 90, risk: "critical", label: "€45.5M hidden" },
 
-  // Siemens connections
-  { source: "Siemens", target: "IP", value: 109, unreported: true, label: "109 direct awards" },
-  { source: "Siemens", target: "eSPap", value: 15, label: "IT systems" },
+  { source: "Siemens", target: "IP", strength: 100, risk: "critical", label: "109 direct awards" },
+  { source: "Siemens", target: "eSPap", strength: 60, risk: "high", label: "IT systems" },
+  { source: "Siemens", target: "Finding4", strength: 85, risk: "critical", label: "Systematic awards" },
 
-  // Elsevier connections
-  { source: "Elsevier", target: "FCT", value: 120, unreported: true, label: "€120M+ monopoly" },
+  { source: "Elsevier", target: "FCT", strength: 95, risk: "critical", label: "€120M+ monopoly" },
+  { source: "Elsevier", target: "Finding2", strength: 90, risk: "critical", label: "Academic monopoly" },
 
-  // Dentsu connections
-  { source: "Dentsu", target: "Turismo", value: 20, unreported: true, label: "€20M+ pipeline" },
+  { source: "Dentsu", target: "Turismo", strength: 75, risk: "high", label: "€20M+ pipeline" },
+  { source: "Dentsu", target: "Finding3", strength: 80, risk: "critical", label: "Incumbency pipeline" },
 
-  // Facility/Security connections
-  { source: "Fine", target: "SPMS", value: 10, label: "Cleaning contracts" },
-  { source: "2SS", target: "SPMS", value: 8, label: "Security contracts" },
-  { source: "Securitas", target: "SPMS", value: 6, label: "Security" },
-  { source: "Securitas", target: "MOH", value: 4, label: "Public contracts" },
-  { source: "Prosegur", target: "MOH", value: 5, label: "Public contracts" },
-  { source: "Prosegur", target: "SPMS", value: 4, label: "Security" },
+  { source: "Fine", target: "SPMS", strength: 50, risk: "normal", label: "Cleaning contracts" },
+  { source: "2SS", target: "SPMS", strength: 45, risk: "normal", label: "Security contracts" },
+  { source: "Securitas", target: "SPMS", strength: 40, risk: "normal", label: "Security" },
+  { source: "Securitas", target: "MOH", strength: 35, risk: "normal", label: "Public contracts" },
+  { source: "Prosegur", target: "MOH", strength: 35, risk: "normal", label: "Public contracts" },
+  { source: "Prosegur", target: "SPMS", strength: 35, risk: "normal", label: "Security" },
 
-  // Health connections
-  { source: "MOH", target: "HSJ", value: 2, label: "Government control" },
-  { source: "MOH", target: "CHLC", value: 2, label: "Government control" },
-  { source: "SPMS", target: "HSJ", value: 3, label: "Services" },
-  { source: "SPMS", target: "CHLC", value: 3, label: "Services" },
+  { source: "MOH", target: "HSJ", strength: 30, risk: "normal", label: "Government control" },
+  { source: "MOH", target: "CHLC", strength: 30, risk: "normal", label: "Government control" },
+  { source: "SPMS", target: "HSJ", strength: 40, risk: "normal", label: "Services" },
+  { source: "SPMS", target: "CHLC", strength: 40, risk: "normal", label: "Services" },
+
+  { source: "DirectorA", target: "Fine", strength: 60, risk: "normal", label: "Director" },
+  { source: "DirectorA", target: "2SS", strength: 55, risk: "normal", label: "Director" },
+  { source: "DirectorB", target: "Securitas", strength: 55, risk: "normal", label: "Director" },
+  { source: "DirectorB", target: "Prosegur", strength: 55, risk: "normal", label: "Director" },
 ];
 
-const width = window.innerWidth;
-const height = window.innerHeight - 60;
+// 3D Objects
+const nodeObjects = {};
+const nodeLabels = {};
+const nodeLines = {};
+const lines = [];
+let selectedNode = null;
+let filteredType = 'all';
 
-const svg = d3.select("#graph").append("svg")
-  .attr("width", width)
-  .attr("height", height);
+// Create node meshes
+nodesData.forEach(nodeData => {
+  const geometry = nodeData.type === 'finding'
+    ? createOctahedron(nodeData.value * 0.005)
+    : new THREE.SphereGeometry(nodeData.value * 0.005, 32, 32);
 
-const g = svg.append("g");
-
-const zoom = d3.zoom()
-  .on("zoom", (event) => {
-    g.attr("transform", event.transform);
+  const material = new THREE.MeshStandardMaterial({
+    color: nodeData.color,
+    emissive: new THREE.Color(nodeData.color).multiplyScalar(0.5),
+    metalness: 0.7,
+    roughness: 0.2,
+    wireframe: false,
   });
 
-svg.call(zoom);
+  const mesh = new THREE.Mesh(geometry, material);
+  mesh.userData = nodeData;
+  mesh.castShadow = true;
+  mesh.receiveShadow = true;
+  mesh.position.set(
+    (Math.random() - 0.5) * 200,
+    (Math.random() - 0.5) * 200,
+    (Math.random() - 0.5) * 200
+  );
 
-const simulation = d3.forceSimulation(nodes)
-  .force("link", d3.forceLink(links)
-    .id(d => d.id)
-    .distance(d => 80 + (d.value / 10)))
-  .force("charge", d3.forceManyBody().strength(-300))
-  .force("center", d3.forceCenter(width / 2, height / 2))
-  .force("collide", d3.forceCollide().radius(30));
+  // Add glow sprite for nodes
+  const glowGeometry = new THREE.SphereGeometry(nodeData.value * 0.009, 16, 16);
+  const glowMaterial = new THREE.MeshBasicMaterial({
+    color: nodeData.color,
+    transparent: true,
+    opacity: 0.2,
+  });
+  const glowMesh = new THREE.Mesh(glowGeometry, glowMaterial);
+  mesh.add(glowMesh);
+  mesh.glowMesh = glowMesh;
 
-const link = g.selectAll(".link")
-  .data(links)
-  .enter()
-  .append("line")
-  .attr("class", d => `link ${d.unreported ? 'unreported' : ''}`)
-  .attr("stroke-width", d => Math.sqrt(d.value / 10));
+  scene.add(mesh);
+  nodeObjects[nodeData.id] = { mesh, velocity: { x: 0, y: 0, z: 0 } };
+});
 
-const node = g.selectAll(".node")
-  .data(nodes)
-  .enter()
-  .append("circle")
-  .attr("class", d => `node ${d.type}`)
-  .attr("r", d => d.type === "person" ? 12 : 20)
-  .call(d3.drag()
-    .on("start", dragstarted)
-    .on("drag", dragged)
-    .on("end", dragended))
-  .on("click", (event, d) => showPanel(d))
-  .on("mouseover", (event, d) => showTooltip(event, d))
-  .on("mouseout", hideTooltip);
+// Create octahedron geometry
+function createOctahedron(size) {
+  const geometry = new THREE.OctahedronGeometry(size, 0);
+  return geometry;
+}
 
-const labels = g.selectAll(".node-label")
-  .data(nodes)
-  .enter()
-  .append("text")
-  .attr("class", "node-label")
-  .text(d => d.id.length > 12 ? d.id.substring(0, 10) + "..." : d.id)
-  .attr("dy", "0.3em");
+// Create links
+linksData.forEach(linkData => {
+  const sourceNode = nodeObjects[linkData.source];
+  const targetNode = nodeObjects[linkData.target];
 
-simulation.on("tick", () => {
-  link
-    .attr("x1", d => d.source.x)
-    .attr("y1", d => d.source.y)
-    .attr("x2", d => d.target.x)
-    .attr("y2", d => d.target.y);
+  if (sourceNode && targetNode) {
+    const geometry = new THREE.BufferGeometry();
+    const positions = new Float32Array([0, 0, 0, 0, 0, 0]);
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
 
-  node
-    .attr("cx", d => d.x)
-    .attr("cy", d => d.y);
+    let lineColor = 0x00ff8844;
+    if (linkData.risk === 'critical') lineColor = 0xff4757;
+    else if (linkData.risk === 'high') lineColor = 0xffa502;
 
-  labels
-    .attr("x", d => d.x)
-    .attr("y", d => d.y);
+    const lineMaterial = new THREE.LineBasicMaterial({
+      color: lineColor,
+      transparent: true,
+      opacity: 0.6,
+      linewidth: linkData.risk === 'critical' ? 3 : 1,
+    });
+
+    const line = new THREE.Line(geometry, lineMaterial);
+    scene.add(line);
+    lines.push({
+      line,
+      source: sourceNode,
+      target: targetNode,
+      data: linkData,
+    });
+  }
+});
+
+// Physics simulation
+function updatePhysics() {
+  const nodes = Object.values(nodeObjects);
+  const damping = 0.95;
+  const springStrength = 0.001;
+  const repulsionStrength = 2000;
+  const repulsionDistance = 200;
+
+  // Apply spring forces
+  linksData.forEach(link => {
+    const source = nodeObjects[link.source];
+    const target = nodeObjects[link.target];
+
+    if (source && target) {
+      const dx = target.mesh.position.x - source.mesh.position.x;
+      const dy = target.mesh.position.y - source.mesh.position.y;
+      const dz = target.mesh.position.z - source.mesh.position.z;
+      const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+      if (distance > 0) {
+        const desiredDistance = link.strength;
+        const force = springStrength * (distance - desiredDistance);
+
+        const fx = (dx / distance) * force;
+        const fy = (dy / distance) * force;
+        const fz = (dz / distance) * force;
+
+        source.velocity.x += fx;
+        source.velocity.y += fy;
+        source.velocity.z += fz;
+
+        target.velocity.x -= fx;
+        target.velocity.y -= fy;
+        target.velocity.z -= fz;
+      }
+    }
+  });
+
+  // Apply repulsion forces
+  for (let i = 0; i < nodes.length; i++) {
+    for (let j = i + 1; j < nodes.length; j++) {
+      const node1 = nodes[i];
+      const node2 = nodes[j];
+
+      const dx = node2.mesh.position.x - node1.mesh.position.x;
+      const dy = node2.mesh.position.y - node1.mesh.position.y;
+      const dz = node2.mesh.position.z - node1.mesh.position.z;
+      const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+      if (distance < repulsionDistance && distance > 0) {
+        const force = repulsionStrength / (distance * distance);
+
+        const fx = (dx / distance) * force;
+        const fy = (dy / distance) * force;
+        const fz = (dz / distance) * force;
+
+        node1.velocity.x -= fx;
+        node1.velocity.y -= fy;
+        node1.velocity.z -= fz;
+
+        node2.velocity.x += fx;
+        node2.velocity.y += fy;
+        node2.velocity.z += fz;
+      }
+    }
+  }
+
+  // Apply velocity and damping
+  nodes.forEach(node => {
+    node.velocity.x *= damping;
+    node.velocity.y *= damping;
+    node.velocity.z *= damping;
+
+    node.mesh.position.x += node.velocity.x;
+    node.mesh.position.y += node.velocity.y;
+    node.mesh.position.z += node.velocity.z;
+  });
+}
+
+// Update line positions
+function updateLines() {
+  lines.forEach(lineObj => {
+    const positions = lineObj.line.geometry.attributes.position.array;
+    positions[0] = lineObj.source.mesh.position.x;
+    positions[1] = lineObj.source.mesh.position.y;
+    positions[2] = lineObj.source.mesh.position.z;
+    positions[3] = lineObj.target.mesh.position.x;
+    positions[4] = lineObj.target.mesh.position.y;
+    positions[5] = lineObj.target.mesh.position.z;
+    lineObj.line.geometry.attributes.position.needsUpdate = true;
+  });
+}
+
+// Camera controls
+const controls = {
+  isRotating: false,
+  isPanning: false,
+  previousMousePosition: { x: 0, y: 0 },
+  rotation: { x: 0, y: 0 },
+  panX: 0,
+  panY: 0,
+  zoom: 1,
+};
+
+document.addEventListener('mousedown', (e) => {
+  controls.previousMousePosition = { x: e.clientX, y: e.clientY };
+  if (e.button === 0) controls.isRotating = true;
+  if (e.button === 2) controls.isPanning = true;
+});
+
+document.addEventListener('mousemove', (e) => {
+  const deltaX = e.clientX - controls.previousMousePosition.x;
+  const deltaY = e.clientY - controls.previousMousePosition.y;
+
+  if (controls.isRotating) {
+    controls.rotation.y += deltaX * 0.005;
+    controls.rotation.x += deltaY * 0.005;
+  }
+
+  if (controls.isPanning) {
+    controls.panX += deltaX * 0.1;
+    controls.panY -= deltaY * 0.1;
+  }
+
+  controls.previousMousePosition = { x: e.clientX, y: e.clientY };
+});
+
+document.addEventListener('mouseup', () => {
+  controls.isRotating = false;
+  controls.isPanning = false;
+});
+
+document.addEventListener('wheel', (e) => {
+  e.preventDefault();
+  controls.zoom *= (1 - e.deltaY * 0.001);
+  controls.zoom = Math.max(0.1, Math.min(5, controls.zoom));
+}, { passive: false });
+
+document.addEventListener('contextmenu', (e) => e.preventDefault());
+
+// Update camera
+function updateCamera() {
+  const baseDistance = 150 / controls.zoom;
+  camera.position.x = Math.sin(controls.rotation.y) * Math.cos(controls.rotation.x) * baseDistance + controls.panX * 0.1;
+  camera.position.y = Math.sin(controls.rotation.x) * baseDistance + controls.panY * 0.1;
+  camera.position.z = Math.cos(controls.rotation.y) * Math.cos(controls.rotation.x) * baseDistance;
+  camera.lookAt(controls.panX * 0.1, controls.panY * 0.1, 0);
+}
+
+// Raycasting for interaction
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+
+document.addEventListener('click', (event) => {
+  if (event.target.tagName === 'CANVAS') {
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+    raycaster.setFromCamera(mouse, camera);
+    const meshes = Object.values(nodeObjects).map(n => n.mesh);
+    const intersects = raycaster.intersectObjects(meshes);
+
+    if (intersects.length > 0) {
+      selectedNode = intersects[0].object.userData;
+      showPanel(selectedNode);
+    }
+  }
+});
+
+// Hover detection
+let hoveredNode = null;
+document.addEventListener('mousemove', (event) => {
+  if (event.target.tagName === 'CANVAS') {
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+    raycaster.setFromCamera(mouse, camera);
+    const meshes = Object.values(nodeObjects).map(n => n.mesh);
+    const intersects = raycaster.intersectObjects(meshes);
+
+    if (intersects.length > 0) {
+      hoveredNode = intersects[0].object.userData;
+      showTooltip(event, hoveredNode);
+
+      // Glow effect on hover
+      Object.values(nodeObjects).forEach(node => {
+        if (node.mesh.glowMesh) {
+          node.mesh.glowMesh.material.opacity = node.mesh.userData.id === hoveredNode.id ? 0.5 : 0.2;
+        }
+      });
+    } else {
+      hoveredNode = null;
+      hideTooltip();
+      Object.values(nodeObjects).forEach(node => {
+        if (node.mesh.glowMesh) {
+          node.mesh.glowMesh.material.opacity = 0.2;
+        }
+      });
+    }
+  }
 });
 
 // Search functionality
-document.getElementById("search").addEventListener("input", (e) => {
+document.getElementById('search').addEventListener('input', (e) => {
   const query = e.target.value.toLowerCase();
-  node.classed("selected", d => {
-    const match = d.name.toLowerCase().includes(query) || d.id.toLowerCase().includes(query);
-    if (match) {
-      simulation.alpha(0.3).restart();
-    }
-    return match;
-  });
 
-  link.classed("active", d => {
-    const match = (d.source.name.toLowerCase().includes(query) || d.source.id.toLowerCase().includes(query)) ||
-                  (d.target.name.toLowerCase().includes(query) || d.target.id.toLowerCase().includes(query));
-    return match;
+  Object.values(nodeObjects).forEach(node => {
+    const match = node.mesh.userData.name.toLowerCase().includes(query) ||
+                  node.mesh.userData.id.toLowerCase().includes(query);
+    node.mesh.userData.searchMatch = match;
   });
 });
 
 // Filter functionality
-document.querySelectorAll(".filter-btn").forEach(btn => {
-  btn.addEventListener("click", (e) => {
-    document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
-    e.target.classList.add("active");
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    e.target.classList.add('active');
 
-    const filter = e.target.dataset.filter;
-    node.style("opacity", d => {
-      if (filter === "all") return 1;
-      return d.type === filter ? 1 : 0.1;
-    });
-
-    link.style("opacity", d => {
-      if (filter === "all") return 0.6;
-      const match = d.source.type === filter || d.target.type === filter;
-      return match ? 0.6 : 0.1;
-    });
+    filteredType = e.target.dataset.filter;
   });
 });
 
-// Node selection and highlighting
-node.on("click", function(event, d) {
-  event.stopPropagation();
-  node.classed("selected", n => n.id === d.id);
-  link.classed("active", l => l.source.id === d.id || l.target.id === d.id);
-});
-
-svg.on("click", () => {
-  node.classed("selected", false);
-  link.classed("active", false);
-});
-
 // Tooltip
-const tooltip = document.getElementById("tooltip");
+const tooltip = document.getElementById('tooltip');
 
-function showTooltip(event, d) {
-  tooltip.classList.add("visible");
+function showTooltip(event, nodeData) {
+  tooltip.classList.add('visible');
   tooltip.innerHTML = `
-    <div class="tooltip-name">${d.name}</div>
-    <div class="tooltip-type">${d.type}</div>
-    <div class="tooltip-info">
-      <strong>${d.category}</strong><br>
-      ${d.amount}
-    </div>
+    <div class="tooltip-name">${nodeData.name}</div>
+    <div class="tooltip-type">${nodeData.type.toUpperCase()}</div>
+    <div class="tooltip-info">${nodeData.label}</div>
   `;
 
-  const rect = event.target.getBoundingClientRect();
-  tooltip.style.left = (rect.left + 30) + "px";
-  tooltip.style.top = (rect.top - 10) + "px";
+  tooltip.style.left = (event.clientX + 15) + 'px';
+  tooltip.style.top = (event.clientY + 15) + 'px';
 }
 
 function hideTooltip() {
-  tooltip.classList.remove("visible");
+  tooltip.classList.remove('visible');
 }
 
 // Info panel
-const infoPanel = document.getElementById("infoPanel");
-const panelContent = document.getElementById("panelContent");
-const panelClose = document.getElementById("panelClose");
+const infoPanel = document.getElementById('infoPanel');
+const panelContent = document.getElementById('panelContent');
+const panelClose = document.getElementById('panelClose');
 
-function showPanel(d) {
-  const connections = links.filter(l => l.source.id === d.id || l.target.id === d.id);
+function showPanel(nodeData) {
+  const connections = linksData.filter(l => l.source === nodeData.id || l.target === nodeData.id);
 
   let html = `
     <div class="panel-item">
       <span class="panel-label">Name</span>
-      <div class="panel-value">${d.name}</div>
+      <div class="panel-value">${nodeData.name}</div>
     </div>
     <div class="panel-item">
       <span class="panel-label">Type</span>
-      <div class="panel-value">${d.type.toUpperCase()}</div>
+      <div class="panel-value">${nodeData.type.toUpperCase()}</div>
     </div>
     <div class="panel-item">
       <span class="panel-label">Category</span>
-      <div class="panel-value">${d.category}</div>
-    </div>
-    <div class="panel-item">
-      <span class="panel-label">Amount / Value</span>
-      <div class="panel-value">${d.amount}</div>
+      <div class="panel-value">${nodeData.label}</div>
     </div>
   `;
 
@@ -820,9 +1057,10 @@ function showPanel(d) {
         <span class="panel-label">Connections (${connections.length})</span>
         <div class="panel-value">
           ${connections.map(c => {
-            const other = c.source.id === d.id ? c.target : c.source;
+            const otherId = c.source === nodeData.id ? c.target : c.source;
+            const otherNode = nodesData.find(n => n.id === otherId);
             return `<div style="margin: 6px 0;">
-              <strong>${other.name}</strong><br>
+              <strong>${otherNode ? otherNode.name : otherId}</strong><br>
               <span style="font-size: 0.75rem; color: var(--text-muted);">${c.label}</span>
             </div>`;
           }).join("")}
@@ -831,56 +1069,86 @@ function showPanel(d) {
     `;
   }
 
-  // Add investigation links
-  if (d.id === "SUCH") {
+  if (nodeData.id === 'SUCH') {
     html += `
       <div class="panel-links">
-        <a href="such-deep-dive.html" class="panel-link">View Deep Dive</a>
+        <a href="#" class="panel-link">View Deep Dive</a>
         <a href="mailto:denuncia@sigil.pt" class="panel-link">Report</a>
       </div>
     `;
   }
 
   panelContent.innerHTML = html;
-  infoPanel.classList.add("open");
+  infoPanel.classList.add('open');
 }
 
-panelClose.addEventListener("click", () => {
-  infoPanel.classList.remove("open");
+panelClose.addEventListener('click', () => {
+  infoPanel.classList.remove('open');
+  selectedNode = null;
 });
 
-// Initial zoom to fit
-const scale = Math.min(width, height) / 4;
-svg.transition().duration(1000).call(
-  zoom.transform,
-  d3.zoomIdentity.translate(width / 2, height / 2).scale(0.8)
-);
+// Stats
+const statEntities = document.getElementById('statEntities');
+const statConnections = document.getElementById('statConnections');
+const statFps = document.getElementById('statFps');
 
-// Drag functions
-function dragstarted(event, d) {
-  if (!event.active) simulation.alphaTarget(0.3).restart();
-  d.fx = d.x;
-  d.fy = d.y;
+statEntities.textContent = nodesData.length;
+statConnections.textContent = linksData.length;
+
+let frameCount = 0;
+let lastTime = Date.now();
+
+// Animation loop
+function animate() {
+  requestAnimationFrame(animate);
+
+  // Update physics
+  updatePhysics();
+  updateLines();
+  updateCamera();
+
+  // Apply visibility filter
+  Object.values(nodeObjects).forEach(node => {
+    const isVisible = filteredType === 'all' || node.mesh.userData.type === filteredType;
+    node.mesh.visible = isVisible;
+  });
+
+  lines.forEach(lineObj => {
+    const sourceVisible = filteredType === 'all' || nodeObjects[lineObj.data.source].mesh.userData.type === filteredType;
+    const targetVisible = filteredType === 'all' || nodeObjects[lineObj.data.target].mesh.userData.type === filteredType;
+    lineObj.line.visible = sourceVisible && targetVisible;
+  });
+
+  // Auto-rotate camera when idle
+  if (!controls.isRotating && !controls.isPanning) {
+    controls.rotation.y += 0.0001;
+  }
+
+  // Render
+  renderer.render(scene, camera);
+
+  // Update FPS
+  frameCount++;
+  const currentTime = Date.now();
+  if (currentTime - lastTime >= 1000) {
+    statFps.textContent = frameCount;
+    frameCount = 0;
+    lastTime = currentTime;
+  }
 }
 
-function dragged(event, d) {
-  d.fx = event.x;
-  d.fy = event.y;
-}
-
-function dragended(event, d) {
-  if (!event.active) simulation.alphaTarget(0);
-  d.fx = null;
-  d.fy = null;
-}
-
-// Responsive
-window.addEventListener("resize", () => {
+// Handle window resize
+window.addEventListener('resize', () => {
   const newWidth = window.innerWidth;
-  const newHeight = window.innerHeight - 60;
-  svg.attr("width", newWidth).attr("height", newHeight);
-  simulation.force("center", d3.forceCenter(newWidth / 2, newHeight / 2));
+  const newHeight = window.innerHeight;
+
+  camera.aspect = newWidth / newHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(newWidth, newHeight);
 });
+
+// Start animation
+animate();
 </script>
 
 </body>

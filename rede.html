@@ -3,18 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SIGIL | Mapa de Rede</title>
-<meta property="og:title" content="SIGIL — Mapa de Rede">
-<meta property="og:description" content="Visualização interativa das ligações entre entidades na contratação pública portuguesa">
+<title>SIGIL — Mapa de Rede 3D</title>
+<meta property="og:title" content="SIGIL — Mapa de Rede 3D">
+<meta property="og:description" content="Visualização 3D interativa das ligações entre entidades na contratação pública portuguesa">
 <meta property="og:image" content="https://sigil.pt/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="SIGIL — Mapa de Rede">
-<meta name="twitter:description" content="Visualização interativa das ligações entre entidades na contratação pública portuguesa">
 <meta name="twitter:image" content="https://sigil.pt/og-image.png">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
-<meta name="description" content="Visualização interativa das redes de contratação pública em Portugal">
 
-<!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZQVKM51B7"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -23,25 +19,21 @@
   gtag('config', 'G-WZQVKM51B7');
 </script>
 
-<!-- D3.js from CDN -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
 <style>
   @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
 
   :root {
-    --bg-primary: #0a0e17;
-    --bg-secondary: #111827;
-    --bg-card: #1a2235;
-    --bg-card-hover: #1f2a40;
+    --bg-primary: #050510;
+    --bg-secondary: #0a0d1a;
+    --bg-card: #1a1f2e;
     --accent: #00d4aa;
     --accent-dim: #00d4aa33;
-    --accent-glow: #00d4aa22;
     --blue: #3b82f6;
     --amber: #f59e0b;
     --purple: #8b5cf6;
     --red: #ff4757;
-    --red-dim: #ff475722;
     --orange: #ffa502;
     --text-primary: #e8eaf0;
     --text-secondary: #8892a8;
@@ -52,13 +44,19 @@
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
+  html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
   body {
     font-family: 'Inter', -apple-system, sans-serif;
     background: var(--bg-primary);
     color: var(--text-primary);
-    overflow: hidden;
   }
 
+  /* === SCANLINES OVERLAY === */
   body::before {
     content: '';
     position: fixed;
@@ -68,11 +66,18 @@
       0deg,
       transparent,
       transparent 2px,
-      rgba(0, 212, 170, 0.015) 2px,
-      rgba(0, 212, 170, 0.015) 4px
+      rgba(0, 212, 170, 0.01) 2px,
+      rgba(0, 212, 170, 0.01) 4px
     );
     pointer-events: none;
     z-index: 9999;
+  }
+
+  /* === THREE.JS CANVAS === */
+  #canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
   }
 
   /* === NAVIGATION === */
@@ -80,7 +85,7 @@
     position: fixed;
     top: 0; left: 0; right: 0;
     z-index: 100;
-    background: rgba(10, 14, 23, 0.92);
+    background: rgba(5, 5, 16, 0.92);
     backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--border);
     padding: 0 2rem;
@@ -166,33 +171,13 @@
     background: var(--accent-dim);
   }
 
-  /* === GRAPH CONTAINER === */
-  #graph-container {
-    position: absolute;
-    top: 60px;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    width: 100%;
-    height: calc(100vh - 60px);
-    background: var(--bg-primary);
-  }
-
-  svg {
-    width: 100%;
-    height: 100%;
-  }
-
   /* === SEARCH BAR === */
   .search-container {
     position: fixed;
     top: 90px;
-    left: 50%;
-    transform: translateX(-50%);
+    left: 2rem;
     z-index: 200;
-    width: 100%;
-    max-width: 500px;
-    padding: 0 2rem;
+    width: 280px;
   }
 
   .search-box {
@@ -205,7 +190,7 @@
     padding: 10px 16px 10px 40px;
     font-family: 'Inter', sans-serif;
     font-size: 0.9rem;
-    background: rgba(26, 34, 53, 0.8);
+    background: rgba(26, 31, 46, 0.85);
     border: 1px solid var(--border);
     border-radius: 8px;
     color: var(--text-primary);
@@ -216,7 +201,7 @@
   .search-input:focus {
     outline: none;
     border-color: var(--accent);
-    background: rgba(26, 34, 53, 0.95);
+    background: rgba(26, 31, 46, 0.95);
     box-shadow: 0 0 20px rgba(0, 212, 170, 0.2);
   }
 
@@ -238,6 +223,7 @@
     display: flex;
     gap: 0.5rem;
     flex-direction: column;
+    margin-top: 50px;
   }
 
   .filter-btn {
@@ -247,7 +233,7 @@
     font-weight: 700;
     letter-spacing: 1px;
     text-transform: uppercase;
-    background: rgba(26, 34, 53, 0.8);
+    background: rgba(26, 31, 46, 0.85);
     border: 1px solid var(--border);
     color: var(--text-secondary);
     border-radius: 4px;
@@ -273,7 +259,7 @@
     bottom: 2rem;
     left: 2rem;
     z-index: 200;
-    background: rgba(26, 34, 53, 0.9);
+    background: rgba(26, 31, 46, 0.92);
     border: 1px solid var(--border);
     border-radius: 8px;
     padding: 1.2rem;
@@ -307,26 +293,54 @@
     flex-shrink: 0;
   }
 
-  .legend-item.edge {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
   .legend-line {
     width: 20px;
     height: 2px;
     flex-shrink: 0;
   }
 
+  /* === STATS PANEL === */
+  .stats-container {
+    position: fixed;
+    top: 90px;
+    right: 2rem;
+    z-index: 200;
+    background: rgba(26, 31, 46, 0.85);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem;
+    backdrop-filter: blur(10px);
+    font-size: 0.75rem;
+    min-width: 200px;
+  }
+
+  .stat-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.6rem;
+    align-items: center;
+  }
+
+  .stat-label {
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .stat-value {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent);
+    font-weight: 700;
+  }
+
   /* === INFO PANEL === */
   .info-panel {
     position: fixed;
-    right: -400px;
+    right: -420px;
     top: 60px;
     width: 400px;
     height: calc(100vh - 60px);
-    background: rgba(26, 34, 53, 0.95);
+    background: rgba(26, 31, 46, 0.95);
     border-left: 1px solid var(--border);
     backdrop-filter: blur(20px);
     z-index: 150;
@@ -457,16 +471,6 @@
     margin-bottom: 1.5rem;
   }
 
-  .info-risk-title {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.7rem;
-    color: var(--accent);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 0.5rem;
-    display: block;
-  }
-
   .risk-level {
     display: inline-block;
     padding: 4px 8px;
@@ -476,19 +480,19 @@
   }
 
   .risk-level.high {
-    background: var(--red-dim);
+    background: rgba(255, 71, 87, 0.2);
     color: var(--red);
     border: 1px solid var(--red);
   }
 
   .risk-level.medium {
-    background: rgba(255, 165, 2, 0.15);
+    background: rgba(255, 165, 2, 0.2);
     color: var(--orange);
     border: 1px solid var(--orange);
   }
 
   .risk-level.low {
-    background: rgba(61, 130, 246, 0.15);
+    background: rgba(61, 130, 246, 0.2);
     color: var(--blue);
     border: 1px solid var(--blue);
   }
@@ -504,17 +508,12 @@
   .info-footer a {
     color: var(--accent);
     text-decoration: none;
-    transition: color 0.2s;
   }
 
-  .info-footer a:hover {
-    text-decoration: underline;
-  }
-
-  /* === TOOLTIPS === */
+  /* === TOOLTIP === */
   .tooltip {
-    position: absolute;
-    background: rgba(10, 14, 23, 0.95);
+    position: fixed;
+    background: rgba(5, 5, 16, 0.95);
     border: 1px solid var(--border);
     border-radius: 6px;
     padding: 0.8rem;
@@ -525,6 +524,11 @@
     max-width: 200px;
     backdrop-filter: blur(10px);
     box-shadow: 0 8px 32px rgba(0, 212, 170, 0.1);
+    display: none;
+  }
+
+  .tooltip.visible {
+    display: block;
   }
 
   .tooltip-title {
@@ -533,9 +537,22 @@
     margin-bottom: 0.3rem;
   }
 
-  .tooltip-value {
-    font-family: 'JetBrains Mono', monospace;
-    color: var(--red);
+  /* === INSTRUCTIONS === */
+  .instructions {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 200;
+    background: rgba(26, 31, 46, 0.85);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem;
+    backdrop-filter: blur(10px);
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    text-align: right;
+    line-height: 1.5;
+    max-width: 220px;
   }
 
   /* === FOOTER === */
@@ -545,16 +562,12 @@
     left: 0;
     right: 0;
     height: auto;
-    background: rgba(10, 14, 23, 0.9);
+    background: rgba(5, 5, 16, 0.9);
     border-top: 1px solid var(--border);
     padding: 0.8rem 2rem;
     font-size: 0.65rem;
     color: var(--text-muted);
     z-index: 50;
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-    justify-content: center;
   }
 
   footer a {
@@ -562,78 +575,21 @@
     text-decoration: none;
   }
 
-  footer a:hover {
-    text-decoration: underline;
-  }
-
   /* === RESPONSIVE === */
   @media (max-width: 768px) {
     .filter-container { display: none; }
     .legend-container { bottom: 80px; left: 1rem; max-width: 200px; }
-    .search-container { max-width: calc(100% - 2rem); }
+    .stats-container { display: none; }
+    .search-container { width: calc(100% - 4rem); left: 2rem; right: 2rem; max-width: none; }
     .info-panel { width: 100%; right: -100%; }
-    footer { flex-wrap: wrap; padding: 1rem; }
-  }
-
-  /* === NODE STYLES === */
-  .node {
-    stroke: var(--bg-primary);
-    stroke-width: 2px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  .node:hover {
-    stroke-width: 3px;
-    filter: brightness(1.3);
-  }
-
-  .node.selected {
-    stroke-width: 4px;
-    filter: drop-shadow(0 0 12px currentColor);
-  }
-
-  .node.dimmed {
-    opacity: 0.2;
-  }
-
-  .node.highlighted {
-    opacity: 1;
-  }
-
-  /* === LINK STYLES === */
-  .link {
-    stroke-width: 2px;
-    opacity: 0.6;
-    transition: all 0.2s;
-  }
-
-  .link.dimmed {
-    opacity: 0.1;
-  }
-
-  .link.red { stroke: var(--red); }
-  .link.orange { stroke: var(--orange); }
-  .link.accent { stroke: var(--accent); }
-
-  /* === LABELS === */
-  .node-label {
-    font-family: 'Inter', sans-serif;
-    font-size: 0.7rem;
-    fill: var(--text-primary);
-    pointer-events: none;
-    text-anchor: middle;
-    dominant-baseline: middle;
-    font-weight: 500;
-  }
-
-  .node-label.dimmed {
-    opacity: 0.2;
+    .instructions { display: none; }
   }
 </style>
 
 </head>
 <body>
+
+<canvas id="canvas"></canvas>
 
 <nav>
   <div class="nav-inner">
@@ -642,8 +598,7 @@
       <span class="tagline">Signal Intelligence Lab</span>
     </a>
     <ul class="nav-links">
-      <li><a href="index.html">← Voltar ao Índice</a></li>
-      <li><a href="index.html#investigations">Investigações</a></li>
+      <li><a href="index.html">← Voltar às Investigações</a></li>
     </ul>
     <div class="lang-toggle">
       <a href="network.html">EN</a>
@@ -651,8 +606,6 @@
     </div>
   </div>
 </nav>
-
-<div id="graph-container"></div>
 
 <div class="search-container">
   <div class="search-box">
@@ -666,7 +619,7 @@
   <button class="filter-btn" data-filter="public">Públicas</button>
   <button class="filter-btn" data-filter="private">Privadas</button>
   <button class="filter-btn" data-filter="people">Pessoas</button>
-  <button class="filter-btn" data-filter="findings">Achados</button>
+  <button class="filter-btn" data-filter="findings">Descobertas</button>
 </div>
 
 <div class="legend-container">
@@ -689,14 +642,14 @@
 
   <div class="legend-item">
     <div class="legend-dot" style="background: var(--red);"></div>
-    <span>Achados Críticos</span>
+    <span>Descobertas Críticas</span>
   </div>
 
   <span class="legend-title" style="margin-top: 1rem;">Tipo de Ligação</span>
 
   <div class="legend-item edge">
     <div class="legend-line" style="background: var(--red);"></div>
-    <span>Não Reportado</span>
+    <span>Crítica</span>
   </div>
 
   <div class="legend-item edge">
@@ -710,475 +663,799 @@
   </div>
 </div>
 
-<div class="info-panel" id="info-panel">
-  <div class="info-panel-header">
-    <div></div>
-    <button class="close-panel" onclick="closePanel()">&times;</button>
+<div class="stats-container">
+  <div class="stat-row">
+    <span class="stat-label">Total de Nós</span>
+    <span class="stat-value" id="stat-nodes">42</span>
   </div>
-  <div id="panel-content"></div>
+  <div class="stat-row">
+    <span class="stat-label">Ligações</span>
+    <span class="stat-value" id="stat-edges">48</span>
+  </div>
+  <div class="stat-row">
+    <span class="stat-label">Valor Total</span>
+    <span class="stat-value">€245M+</span>
+  </div>
 </div>
 
+<div class="instructions">
+  <div>Arraste para rodar</div>
+  <div>Scroll para zoom</div>
+  <div>Clique para selecionar</div>
+  <div style="margin-top: 0.5rem; font-size: 0.65rem; color: var(--text-muted);">Botão direito para pan</div>
+</div>
+
+<div class="info-panel" id="info-panel">
+  <div class="info-panel-header">
+    <div>
+      <div class="info-entity-type" id="info-type">Entidade Pública</div>
+      <div class="info-entity-name" id="info-name">Nome da Entidade</div>
+    </div>
+    <button class="close-panel" id="close-panel">✕</button>
+  </div>
+
+  <div class="info-stat">
+    <div class="info-stat-item">
+      <div class="info-stat-value" id="info-value">€0M</div>
+      <div class="info-stat-label">Valor Total</div>
+    </div>
+    <div class="info-stat-item">
+      <div class="info-stat-value" id="info-connections-count">0</div>
+      <div class="info-stat-label">Ligações</div>
+    </div>
+  </div>
+
+  <div class="info-risk" id="info-risk-container" style="display: none;">
+    <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--accent); text-transform: uppercase; letter-spacing: 1px;">Nível de Risco</span>
+    <div style="margin-top: 0.5rem;">
+      <span class="risk-level high" id="info-risk">Alto</span>
+    </div>
+  </div>
+
+  <div class="info-connections">
+    <span class="info-connections-title">Entidades Conectadas</span>
+    <div id="info-connections-list"></div>
+  </div>
+
+  <div class="info-footer">
+    Clique em entidades para explorar conexões • Passe com o rato para mais detalhes
+  </div>
+</div>
+
+<div class="tooltip" id="tooltip"></div>
+
 <footer>
-  <span>Dúvidas ou correções? Contacte <a href="mailto:denuncia@sigil.pt">denuncia@sigil.pt</a></span>
-  <span>|</span>
-  <span>⚠ Análise de inteligência artificial sobre dados públicos — <a href="index.html#disclaimer">Isenção de responsabilidade</a></span>
+  Visualização 3D interativa de relações em contratação pública • Dados para análise apenas • IA-gerado com Claude
 </footer>
 
 <script>
-// Network data structure
-const networkData = {
-  nodes: [
-    // Public Entities (Blue)
-    { id: 'such', name: 'SUCH', type: 'public', category: 'entity', contracts: 45500000, connections: 8, risk: 'critical' },
-    { id: 'ip', name: 'Infraestruturas de Portugal', type: 'public', category: 'entity', contracts: 89000000, connections: 4, risk: 'high' },
-    { id: 'espap', name: 'eSPap', type: 'public', category: 'entity', contracts: 12000000, connections: 3, risk: 'high' },
-    { id: 'fct', name: 'FCT', type: 'public', category: 'entity', contracts: 120000000, connections: 2, risk: 'high' },
-    { id: 'turismo', name: 'Turismo de Portugal', type: 'public', category: 'entity', contracts: 20000000, connections: 2, risk: 'medium' },
-    { id: 'spms', name: 'SPMS', type: 'public', category: 'entity', contracts: 35000000, connections: 4, risk: 'medium' },
-    { id: 'saude', name: 'Ministério da Saúde', type: 'public', category: 'entity', contracts: 200000000, connections: 6, risk: 'medium' },
-    { id: 'hsj', name: 'Hospital de São José', type: 'public', category: 'entity', contracts: 15000000, connections: 3, risk: 'low' },
-    { id: 'chlc', name: 'CHLC (Centro Hospitalar Lisboa Central)', type: 'public', category: 'entity', contracts: 25000000, connections: 3, risk: 'low' },
+// ===== CONFIGURATION & DATA =====
 
-    // Private Companies (Amber)
-    { id: 'siemens', name: 'Siemens', type: 'private', category: 'entity', contracts: 180000000, connections: 3, risk: 'high' },
-    { id: 'elsevier', name: 'Elsevier', type: 'private', category: 'entity', contracts: 120000000, connections: 2, risk: 'critical' },
-    { id: 'dentsu', name: 'Dentsu', type: 'private', category: 'entity', contracts: 20000000, connections: 2, risk: 'medium' },
-    { id: 'autoeuropa', name: 'Autoeuropa (Volkswagen)', type: 'private', category: 'entity', contracts: 45500000, connections: 2, risk: 'critical' },
-    { id: 'fine', name: 'Fine Facility Services', type: 'private', category: 'entity', contracts: 8000000, connections: 2, risk: 'medium' },
-    { id: '2ss', name: '2SS - Soluções de Segurança', type: 'private', category: 'entity', contracts: 5000000, connections: 2, risk: 'high' },
-    { id: 'securitas', name: 'Securitas', type: 'private', category: 'entity', contracts: 12000000, connections: 3, risk: 'medium' },
-    { id: 'prosegur', name: 'Prosegur', type: 'private', category: 'entity', contracts: 8000000, connections: 2, risk: 'medium' },
-
-    // People (Purple)
-    { id: 'paulosousa', name: 'Paulo Jorge Rendeiro Correia de Sousa', type: 'people', category: 'person', connections: 2, risk: 'critical' },
-    { id: 'adelino', name: 'Adelino Gonçalves Mendes', type: 'people', category: 'person', connections: 2, risk: 'critical' },
-
-    // Critical Findings (Red)
-    { id: 'finding-45m', name: '€45,5M Dívida Ocultada', type: 'findings', category: 'finding', value: 45500000, risk: 'critical' },
-    { id: 'finding-21m', name: '€21M Consultoria Sem Concurso', type: 'findings', category: 'finding', value: 21000000, risk: 'critical' },
-    { id: 'finding-fraud', name: 'Acusações Fraude Comunitária', type: 'findings', category: 'finding', risk: 'critical' },
-    { id: 'finding-expansion', name: '11.373% Expansão de Contrato', type: 'findings', category: 'finding', risk: 'critical' },
-  ],
-
-  links: [
-    // SUCH connections
-    { source: 'such', target: 'autoeuropa', value: 45500000, description: '€45,5M contrato, 11.373% expansão', risk: 'critical', type: 'red' },
-    { source: 'such', target: 'hsj', value: 5000000, description: 'Serviços hospitalares', risk: 'medium', type: 'accent' },
-    { source: 'such', target: 'chlc', value: 8000000, description: 'Serviços hospitalares partilhados', risk: 'medium', type: 'accent' },
-    { source: 'such', target: 'saude', value: 35000000, description: 'Supervisão e alocação de orçamento', risk: 'medium', type: 'accent' },
-    { source: 'such', target: 'paulosousa', value: null, description: 'Presidente acusado de fraude', risk: 'critical', type: 'red' },
-    { source: 'such', target: 'finding-45m', value: 45500000, description: 'Dívida ocultada (Tribunal de Contas)', risk: 'critical', type: 'red' },
-    { source: 'such', target: 'finding-21m', value: 21000000, description: 'Contratos sem concurso (Accenture, Deloitte, CapGemini)', risk: 'critical', type: 'red' },
-    { source: 'such', target: 'finding-fraud', value: null, description: 'Envolvimento Operação Inovar', risk: 'critical', type: 'red' },
-
-    // Siemens connections
-    { source: 'siemens', target: 'ip', value: 89000000, description: '109 adjudicações diretas', risk: 'high', type: 'orange' },
-    { source: 'siemens', target: 'espap', value: 12000000, description: 'Sistemas de TI', risk: 'high', type: 'orange' },
-    { source: 'siemens', target: 'saude', value: 45000000, description: 'Equipamentos médicos e IT', risk: 'high', type: 'orange' },
-
-    // Elsevier connections
-    { source: 'elsevier', target: 'fct', value: 120000000, description: '€120M+ monopólio 15 anos', risk: 'critical', type: 'red' },
-    { source: 'elsevier', target: 'finding-45m', value: null, description: 'Parte de investigação de subsídios públicos', risk: 'critical', type: 'red' },
-
-    // Dentsu connections
-    { source: 'dentsu', target: 'turismo', value: 20000000, description: '€20M+ pipeline de contratos', risk: 'medium', type: 'orange' },
-
-    // Fine Facility connections
-    { source: 'fine', target: 'spms', value: 8000000, description: 'Contratos de limpeza', risk: 'medium', type: 'accent' },
-
-    // 2SS connections
-    { source: '2ss', target: 'spms', value: 5000000, description: 'Contratos de segurança', risk: 'high', type: 'orange' },
-    { source: '2ss', target: 'hsj', value: 1500000, description: 'Serviços de segurança', risk: 'medium', type: 'accent' },
-
-    // Securitas connections
-    { source: 'securitas', target: 'spms', value: 6000000, description: 'Serviços de segurança', risk: 'medium', type: 'accent' },
-    { source: 'securitas', target: 'saude', value: 4000000, description: 'Contratos de segurança hospitalar', risk: 'medium', type: 'accent' },
-
-    // Prosegur connections
-    { source: 'prosegur', target: 'chlc', value: 4000000, description: 'Serviços de segurança', risk: 'medium', type: 'accent' },
-    { source: 'prosegur', target: 'hsj', value: 3000000, description: 'Serviços de vigilância', risk: 'medium', type: 'accent' },
-
-    // People connections
-    { source: 'paulosousa', target: 'such', value: null, description: 'Presidente', risk: 'critical', type: 'red' },
-    { source: 'paulosousa', target: 'finding-fraud', value: null, description: 'Arguido em Operação Inovar', risk: 'critical', type: 'red' },
-    { source: 'adelino', target: 'spms', value: null, description: 'Antigas responsabilidades', risk: 'critical', type: 'red' },
-    { source: 'adelino', target: 'finding-fraud', value: null, description: 'Arguido em Operação Inovar', risk: 'critical', type: 'red' },
-
-    // Critical findings cross-references
-    { source: 'finding-45m', target: 'finding-21m', value: null, description: 'Padrão de má gestão financeira', risk: 'critical', type: 'red' },
-    { source: 'finding-45m', target: 'finding-fraud', value: null, description: 'Parte de investigação mais ampla', risk: 'critical', type: 'red' },
-    { source: 'finding-21m', target: 'finding-expansion', value: null, description: 'Contratos sem fiscalização adequada', risk: 'critical', type: 'red' },
-  ]
+const COLORS = {
+  bg: 0x050510,
+  blue: 0x3b82f6,
+  amber: 0xf59e0b,
+  purple: 0x8b5cf6,
+  red: 0xff4757,
+  orange: 0xffa502,
+  accent: 0x00d4aa,
+  white: 0xffffff
 };
 
-// D3 Force Simulation
-let simulation;
-let svg, g, nodes, links, labels, tooltips;
+const NODE_DATA = {
+  // Public entities
+  SUCH: { type: 'public', color: COLORS.blue, value: 245.5, risk: 'high' },
+  IP: { type: 'public', color: COLORS.blue, value: 150, risk: 'high' },
+  eSPap: { type: 'public', color: COLORS.blue, value: 80, risk: 'high' },
+  FCT: { type: 'public', color: COLORS.blue, value: 120, risk: 'high' },
+  TP: { type: 'public', color: COLORS.blue, value: 20, risk: 'high' },
+  SPMS: { type: 'public', color: COLORS.blue, value: 100, risk: 'high' },
+  MS: { type: 'public', color: COLORS.blue, value: 200, risk: 'high' },
+  HSJ: { type: 'public', color: COLORS.blue, value: 50, risk: 'medium' },
+  CHLC: { type: 'public', color: COLORS.blue, value: 60, risk: 'medium' },
+
+  // Private companies
+  Siemens: { type: 'private', color: COLORS.amber, value: 180, risk: 'high' },
+  Elsevier: { type: 'private', color: COLORS.amber, value: 120, risk: 'high' },
+  Dentsu: { type: 'private', color: COLORS.amber, value: 25, risk: 'high' },
+  Autoeuropa: { type: 'private', color: COLORS.amber, value: 45.5, risk: 'high' },
+  FFS: { type: 'private', color: COLORS.amber, value: 15, risk: 'medium' },
+  '2SS': { type: 'private', color: COLORS.amber, value: 10, risk: 'medium' },
+  Securitas: { type: 'private', color: COLORS.amber, value: 12, risk: 'medium' },
+  Prosegur: { type: 'private', color: COLORS.amber, value: 8, risk: 'medium' },
+
+  // People/Directors
+  RedirA: { type: 'people', color: COLORS.purple, value: 0, risk: 'low', label: 'Rede de Diretores A' },
+  RedirB: { type: 'people', color: COLORS.purple, value: 0, risk: 'low', label: 'Rede de Diretores B' },
+
+  // Findings
+  DVD: { type: 'finding', color: COLORS.red, value: 45.5, risk: 'high', label: 'Dívida Oculta €45.5M' },
+  MA: { type: 'finding', color: COLORS.red, value: 120, risk: 'high', label: 'Monopólio Académico' },
+  PI: { type: 'finding', color: COLORS.red, value: 20, risk: 'high', label: 'Pipeline de Incumbência' },
+  ADS: { type: 'finding', color: COLORS.red, value: 109, risk: 'high', label: 'Ajustes Diretos Sistemáticos' }
+};
+
+const EDGES = [
+  { source: 'SUCH', target: 'Autoeuropa', value: 45.5, type: 'critical', label: '€45.5M' },
+  { source: 'SUCH', target: 'HSJ', value: 50, type: 'normal' },
+  { source: 'SUCH', target: 'CHLC', value: 60, type: 'normal' },
+  { source: 'SUCH', target: 'MS', value: 200, type: 'normal' },
+  { source: 'SUCH', target: 'DVD', value: 45.5, type: 'critical' },
+
+  { source: 'Siemens', target: 'IP', value: 109, type: 'critical', label: '109 ajustes diretos' },
+  { source: 'Siemens', target: 'eSPap', value: 80, type: 'high' },
+  { source: 'Siemens', target: 'ADS', value: 109, type: 'critical' },
+
+  { source: 'Elsevier', target: 'FCT', value: 120, type: 'critical', label: '€120M+ monopólio' },
+  { source: 'Elsevier', target: 'MA', value: 120, type: 'critical' },
+
+  { source: 'Dentsu', target: 'TP', value: 20, type: 'high', label: '€20M+ pipeline' },
+  { source: 'Dentsu', target: 'PI', value: 20, type: 'critical' },
+
+  { source: 'FFS', target: 'SPMS', value: 15, type: 'high' },
+  { source: '2SS', target: 'SPMS', value: 10, type: 'high' },
+  { source: 'Securitas', target: 'SPMS', value: 12, type: 'normal' },
+  { source: 'Prosegur', target: 'SPMS', value: 8, type: 'normal' },
+
+  { source: 'RedirA', target: 'FFS', value: 0, type: 'director' },
+  { source: 'RedirA', target: '2SS', value: 0, type: 'director' },
+  { source: 'RedirB', target: 'Securitas', value: 0, type: 'director' },
+  { source: 'RedirB', target: 'Prosegur', value: 0, type: 'director' }
+];
+
+// ===== THREE.JS SETUP =====
+
+const canvas = document.getElementById('canvas');
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(COLORS.bg);
+scene.fog = new THREE.Fog(COLORS.bg, 200, 500);
+
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
+camera.position.set(0, 0, 100);
+
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(window.devicePixelRatio);
+renderer.shadowMap.enabled = true;
+
+// ===== LIGHTING =====
+
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+scene.add(ambientLight);
+
+const pointLight = new THREE.PointLight(0xffffff, 0.8);
+pointLight.position.set(100, 100, 100);
+scene.add(pointLight);
+
+// ===== STARFIELD =====
+
+function createStarfield() {
+  const starGeometry = new THREE.BufferGeometry();
+  const starCount = 1000;
+  const positions = new Float32Array(starCount * 3);
+
+  for (let i = 0; i < starCount * 3; i += 3) {
+    positions[i] = (Math.random() - 0.5) * 1000;
+    positions[i + 1] = (Math.random() - 0.5) * 1000;
+    positions[i + 2] = (Math.random() - 0.5) * 1000;
+  }
+
+  starGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  const starMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.5, sizeAttenuation: true });
+  const starfield = new THREE.Points(starGeometry, starMaterial);
+  scene.add(starfield);
+}
+
+createStarfield();
+
+// ===== PHYSICS SIMULATION =====
+
+class Node {
+  constructor(id, x, y, z, data) {
+    this.id = id;
+    this.position = new THREE.Vector3(x, y, z);
+    this.velocity = new THREE.Vector3(0, 0, 0);
+    this.acceleration = new THREE.Vector3(0, 0, 0);
+    this.data = data;
+    this.mass = Math.max(1, Math.log(data.value + 1) / 2);
+    this.fixed = false;
+  }
+
+  applyForce(force) {
+    const f = force.clone().divideScalar(this.mass);
+    this.acceleration.add(f);
+  }
+
+  update() {
+    if (this.fixed) return;
+
+    this.velocity.add(this.acceleration);
+    this.velocity.multiplyScalar(0.99); // damping
+    this.position.add(this.velocity);
+    this.acceleration.multiplyScalar(0);
+
+    // Bounds check
+    const bounds = 150;
+    if (Math.abs(this.position.x) > bounds) this.position.x = Math.sign(this.position.x) * bounds;
+    if (Math.abs(this.position.y) > bounds) this.position.y = Math.sign(this.position.y) * bounds;
+    if (Math.abs(this.position.z) > bounds) this.position.z = Math.sign(this.position.z) * bounds;
+  }
+}
+
+class SimulationNode extends THREE.Group {
+  constructor(id, data) {
+    super();
+    this.id = id;
+    this.data = data;
+    this.physicsNode = null;
+    this.mesh = null;
+    this.label = null;
+    this.haloMesh = null;
+    this.isHovered = false;
+    this.isSelected = false;
+    this.pulseTime = 0;
+  }
+
+  updateFromPhysics() {
+    if (this.physicsNode) {
+      this.position.copy(this.physicsNode.position);
+    }
+  }
+
+  setSelected(selected) {
+    this.isSelected = selected;
+    if (this.mesh) {
+      if (selected) {
+        this.mesh.material.emissive.setHex(this.data.color);
+        this.mesh.material.emissiveIntensity = 0.8;
+      } else {
+        this.mesh.material.emissiveIntensity = this.isHovered ? 0.5 : 0;
+      }
+    }
+  }
+
+  setHovered(hovered) {
+    this.isHovered = hovered;
+    if (this.mesh && !this.isSelected) {
+      this.mesh.material.emissiveIntensity = hovered ? 0.5 : 0;
+    }
+  }
+
+  update() {
+    this.pulseTime += 0.03;
+
+    if (this.haloMesh) {
+      const scale = 1 + Math.sin(this.pulseTime) * 0.1 + (this.isHovered ? 0.3 : 0);
+      this.haloMesh.scale.setScalar(scale);
+      this.haloMesh.material.opacity = 0.3 + Math.sin(this.pulseTime) * 0.2;
+    }
+
+    if (this.mesh && this.data.type === 'finding') {
+      this.mesh.rotation.x += 0.01;
+      this.mesh.rotation.y += 0.01;
+    }
+  }
+}
+
+// ===== CREATE NODES =====
+
+const nodes = [];
+const nodeMap = new Map();
+const physicsNodes = [];
+
+function createNodeMesh(id, data) {
+  let geometry;
+  const size = Math.max(1, Math.log(data.value + 1) * 0.8);
+
+  if (data.type === 'finding') {
+    // Octahedron for findings
+    geometry = new THREE.OctahedronGeometry(size * 0.7, 1);
+  } else {
+    // Sphere for all others
+    geometry = new THREE.IcosahedronGeometry(size, 4);
+  }
+
+  const material = new THREE.MeshPhongMaterial({
+    color: data.color,
+    emissive: 0x000000,
+    emissiveIntensity: 0,
+    wireframe: false,
+    shininess: 100,
+    specular: 0x111111
+  });
+
+  const mesh = new THREE.Mesh(geometry, material);
+  mesh.castShadow = true;
+  mesh.receiveShadow = true;
+
+  return mesh;
+}
+
+function createNodeHalo(color) {
+  const canvas = document.createElement('canvas');
+  canvas.width = 64;
+  canvas.height = 64;
+  const ctx = canvas.getContext('2d');
+
+  const gradient = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+  gradient.addColorStop(0, 'rgba(255,255,255,0.8)');
+  gradient.addColorStop(0.5, 'rgba(255,255,255,0.3)');
+  gradient.addColorStop(1, 'rgba(255,255,255,0)');
+
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, 64, 64);
+
+  const texture = new THREE.CanvasTexture(canvas);
+  const material = new THREE.SpriteMaterial({ map: texture, sizeAttenuation: true });
+  const sprite = new THREE.Sprite(material);
+  sprite.scale.setScalar(5);
+  sprite.position.z = -0.1;
+
+  return sprite;
+}
+
+for (const [id, data] of Object.entries(NODE_DATA)) {
+  const label = data.label || id;
+
+  // Random initial positions
+  const x = (Math.random() - 0.5) * 100;
+  const y = (Math.random() - 0.5) * 100;
+  const z = (Math.random() - 0.5) * 100;
+
+  const physicsNode = new Node(id, x, y, z, data);
+  physicsNodes.push(physicsNode);
+
+  const simNode = new SimulationNode(id, data);
+  simNode.position.copy(physicsNode.position);
+  simNode.physicsNode = physicsNode;
+
+  const mesh = createNodeMesh(id, data);
+  simNode.add(mesh);
+  simNode.mesh = mesh;
+
+  const halo = createNodeHalo(data.color);
+  simNode.add(halo);
+  simNode.haloMesh = halo;
+
+  // Add label text (using canvas texture)
+  const labelCanvas = document.createElement('canvas');
+  labelCanvas.width = 256;
+  labelCanvas.height = 64;
+  const labelCtx = labelCanvas.getContext('2d');
+  labelCtx.font = 'bold 20px Inter';
+  labelCtx.fillStyle = '#e8eaf0';
+  labelCtx.textAlign = 'center';
+  labelCtx.fillText(label.substring(0, 15), 128, 40);
+
+  const labelTexture = new THREE.CanvasTexture(labelCanvas);
+  const labelMaterial = new THREE.SpriteMaterial({ map: labelTexture });
+  const labelSprite = new THREE.Sprite(labelMaterial);
+  labelSprite.scale.set(20, 5, 1);
+  labelSprite.position.y = -8;
+  simNode.add(labelSprite);
+
+  scene.add(simNode);
+  nodes.push(simNode);
+  nodeMap.set(id, simNode);
+}
+
+// ===== CREATE EDGES =====
+
+const edges = [];
+const edgeLines = new THREE.Group();
+scene.add(edgeLines);
+
+for (const edgeData of EDGES) {
+  const sourceNode = nodeMap.get(edgeData.source);
+  const targetNode = nodeMap.get(edgeData.target);
+
+  if (!sourceNode || !targetNode) continue;
+
+  let color = COLORS.accent;
+  let thickness = 0.5;
+
+  if (edgeData.type === 'critical') {
+    color = COLORS.red;
+    thickness = 1.5;
+  } else if (edgeData.type === 'high') {
+    color = COLORS.orange;
+    thickness = 1.2;
+  } else if (edgeData.type === 'director') {
+    color = COLORS.purple;
+    thickness = 0.3;
+  }
+
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute('position', new THREE.BufferAttribute(
+    new Float32Array([0, 0, 0, 0, 0, 0]), 3
+  ));
+
+  const material = new THREE.LineBasicMaterial({
+    color: color,
+    linewidth: thickness * 2,
+    transparent: true,
+    opacity: 0.6
+  });
+
+  const line = new THREE.Line(geometry, material);
+  line.sourceNode = sourceNode;
+  line.targetNode = targetNode;
+  line.edgeData = edgeData;
+
+  edgeLines.add(line);
+  edges.push(line);
+}
+
+// ===== UPDATE EDGE POSITIONS =====
+
+function updateEdgePositions() {
+  for (const line of edges) {
+    const positions = line.geometry.attributes.position.array;
+    positions[0] = line.sourceNode.position.x;
+    positions[1] = line.sourceNode.position.y;
+    positions[2] = line.sourceNode.position.z;
+    positions[3] = line.targetNode.position.x;
+    positions[4] = line.targetNode.position.y;
+    positions[5] = line.targetNode.position.z;
+    line.geometry.attributes.position.needsUpdate = true;
+  }
+}
+
+// ===== PHYSICS SIMULATION LOOP =====
+
+function simulationStep() {
+  const repulsionStrength = 5;
+  const attractionStrength = 0.05;
+  const maxDistance = 200;
+
+  // Reset forces
+  for (const node of physicsNodes) {
+    node.acceleration.set(0, 0, 0);
+  }
+
+  // Repulsion between all nodes
+  for (let i = 0; i < physicsNodes.length; i++) {
+    for (let j = i + 1; j < physicsNodes.length; j++) {
+      const a = physicsNodes[i];
+      const b = physicsNodes[j];
+      const delta = new THREE.Vector3().subVectors(a.position, b.position);
+      const distSq = Math.max(delta.lengthSq(), 1);
+      const dist = Math.sqrt(distSq);
+
+      if (dist < maxDistance) {
+        const force = new THREE.Vector3().copy(delta).normalize().multiplyScalar(repulsionStrength / distSq);
+        a.applyForce(force);
+        b.applyForce(new THREE.Vector3().subVectors(new THREE.Vector3(), force));
+      }
+    }
+  }
+
+  // Attraction between connected nodes
+  for (const edge of edges) {
+    const sourcePhys = nodeMap.get(edge.edgeData.source).physicsNode;
+    const targetPhys = nodeMap.get(edge.edgeData.target).physicsNode;
+
+    const delta = new THREE.Vector3().subVectors(targetPhys.position, sourcePhys.position);
+    const dist = delta.length();
+    const force = new THREE.Vector3().copy(delta).normalize().multiplyScalar(attractionStrength * dist);
+
+    sourcePhys.applyForce(force);
+    targetPhys.applyForce(new THREE.Vector3().subVectors(new THREE.Vector3(), force));
+  }
+
+  // Update physics nodes
+  for (const node of physicsNodes) {
+    node.update();
+  }
+
+  // Update visual nodes from physics
+  for (const simNode of nodes) {
+    simNode.updateFromPhysics();
+  }
+
+  updateEdgePositions();
+}
+
+// ===== CAMERA CONTROLS =====
+
+const cameraState = {
+  autoRotate: true,
+  isDragging: false,
+  isPanning: false,
+  rotationVelocity: { x: 0, y: 0 },
+  panVelocity: { x: 0, y: 0 },
+  lastMouse: { x: 0, y: 0 },
+  targetDistance: 100,
+  targetRotation: { x: 0, y: 0 }
+};
+
+function updateCameraPosition() {
+  cameraState.targetRotation.y += cameraState.rotationVelocity.x * 0.02;
+  cameraState.targetRotation.x += cameraState.rotationVelocity.y * 0.02;
+
+  cameraState.rotationVelocity.x *= 0.95;
+  cameraState.rotationVelocity.y *= 0.95;
+
+  if (cameraState.autoRotate && !cameraState.isDragging && !cameraState.isPanning) {
+    cameraState.targetRotation.y += 0.0005;
+  }
+
+  const x = Math.sin(cameraState.targetRotation.y) * Math.cos(cameraState.targetRotation.x) * cameraState.targetDistance;
+  const y = Math.sin(cameraState.targetRotation.x) * cameraState.targetDistance;
+  const z = Math.cos(cameraState.targetRotation.y) * Math.cos(cameraState.targetRotation.x) * cameraState.targetDistance;
+
+  camera.position.set(x, y, z);
+  camera.lookAt(0, 0, 0);
+}
+
+document.addEventListener('mousedown', (e) => {
+  cameraState.lastMouse = { x: e.clientX, y: e.clientY };
+
+  if (e.button === 0) {
+    cameraState.isDragging = true;
+  } else if (e.button === 2) {
+    cameraState.isPanning = true;
+  }
+});
+
+document.addEventListener('mousemove', (e) => {
+  const deltaX = e.clientX - cameraState.lastMouse.x;
+  const deltaY = e.clientY - cameraState.lastMouse.y;
+
+  if (cameraState.isDragging) {
+    cameraState.rotationVelocity.x = deltaX;
+    cameraState.rotationVelocity.y = deltaY;
+  } else if (cameraState.isPanning) {
+    cameraState.panVelocity.x += deltaX * 0.3;
+    cameraState.panVelocity.y += deltaY * 0.3;
+  }
+
+  cameraState.lastMouse = { x: e.clientX, y: e.clientY };
+});
+
+document.addEventListener('mouseup', () => {
+  cameraState.isDragging = false;
+  cameraState.isPanning = false;
+});
+
+document.addEventListener('wheel', (e) => {
+  e.preventDefault();
+  cameraState.targetDistance = Math.max(30, Math.min(300, cameraState.targetDistance + e.deltaY * 0.1));
+}, { passive: false });
+
+document.addEventListener('contextmenu', (e) => e.preventDefault());
+
+// ===== RAYCASTING & INTERACTION =====
+
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
 let selectedNode = null;
-let currentFilter = 'all';
-let searchTerm = '';
 
-function initializeGraph() {
-  const container = document.getElementById('graph-container');
-  const width = container.clientWidth;
-  const height = container.clientHeight;
-
-  // SVG Setup
-  svg = d3.select('#graph-container')
-    .append('svg')
-    .attr('width', width)
-    .attr('height', height);
-
-  // Add zoom behavior
-  const zoom = d3.zoom()
-    .on('zoom', (event) => {
-      g.attr('transform', event.transform);
-    });
-
-  svg.call(zoom);
-
-  g = svg.append('g');
-
-  // Force simulation
-  simulation = d3.forceSimulation(networkData.nodes)
-    .force('link', d3.forceLink(networkData.links)
-      .id(d => d.id)
-      .distance(d => {
-        const value = d.value || 30000000;
-        return Math.max(80, Math.min(300, value / 500000));
-      })
-      .strength(0.3))
-    .force('charge', d3.forceManyBody()
-      .strength(-400)
-      .distanceMax(800))
-    .force('center', d3.forceCenter(width / 2, height / 2))
-    .force('collision', d3.forceCollide()
-      .radius(d => getNodeRadius(d) + 10))
-    .alpha(1)
-    .alphaDecay(0.005);
-
-  // Draw links
-  links = g.selectAll('.link')
-    .data(networkData.links)
-    .enter()
-    .append('line')
-    .attr('class', d => `link ${d.type}`)
-    .attr('stroke-width', d => Math.max(1, Math.min(6, (d.value || 1000000) / 8000000)));
-
-  // Draw nodes
-  nodes = g.selectAll('.node')
-    .data(networkData.nodes)
-    .enter()
-    .append('circle')
-    .attr('class', 'node')
-    .attr('r', d => getNodeRadius(d))
-    .attr('fill', d => getNodeColor(d))
-    .on('click', selectNode)
-    .on('mouseover', mouseoverNode)
-    .on('mouseout', mouseoutNode)
-    .call(d3.drag()
-      .on('start', dragstarted)
-      .on('drag', dragged)
-      .on('end', dragended));
-
-  // Draw labels
-  labels = g.selectAll('.node-label')
-    .data(networkData.nodes)
-    .enter()
-    .append('text')
-    .attr('class', 'node-label')
-    .text(d => d.name)
-    .attr('font-size', d => d.type === 'people' ? '0.6rem' : '0.7rem');
-
-  // Update positions on tick
-  simulation.on('tick', () => {
-    links
-      .attr('x1', d => d.source.x)
-      .attr('y1', d => d.source.y)
-      .attr('x2', d => d.target.x)
-      .attr('y2', d => d.target.y);
-
-    nodes
-      .attr('cx', d => d.x)
-      .attr('cy', d => d.y);
-
-    labels
-      .attr('x', d => d.x)
-      .attr('y', d => d.y);
-  });
-
-  // Event listeners
-  document.getElementById('search-input').addEventListener('input', (e) => {
-    searchTerm = e.target.value.toLowerCase();
-    highlightSearchResults();
-  });
-
-  document.querySelectorAll('.filter-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-      e.target.classList.add('active');
-      currentFilter = e.target.dataset.filter;
-      updateNodeVisibility();
-    });
-  });
-
-  // Initial layout animation
-  setTimeout(() => simulation.alpha(0.3).restart(), 100);
-}
-
-function getNodeRadius(d) {
-  if (d.type === 'people') return 8;
-  if (d.type === 'findings') return 12;
-  if (d.connections > 5) return 20;
-  if (d.connections > 3) return 16;
-  return 12;
-}
-
-function getNodeColor(d) {
-  if (d.type === 'public') return 'var(--blue)';
-  if (d.type === 'private') return 'var(--amber)';
-  if (d.type === 'people') return 'var(--purple)';
-  if (d.type === 'findings') return 'var(--red)';
-  return 'var(--accent)';
-}
-
-function selectNode(event, d) {
-  selectedNode = d;
-  updateNodeSelection();
-  showNodeDetails(d);
-}
-
-function updateNodeSelection() {
-  nodes.classed('selected', n => n === selectedNode)
-    .classed('dimmed', n => selectedNode && n !== selectedNode && !isConnected(n, selectedNode))
-    .classed('highlighted', n => !selectedNode || n === selectedNode || isConnected(n, selectedNode));
-
-  links.classed('dimmed', l => selectedNode && l.source !== selectedNode && l.target !== selectedNode)
-    .classed('highlighted', l => !selectedNode || l.source === selectedNode || l.target === selectedNode);
-
-  labels.classed('dimmed', n => selectedNode && n !== selectedNode && !isConnected(n, selectedNode));
-}
-
-function isConnected(a, b) {
-  return networkData.links.some(l =>
-    (l.source.id === a.id && l.target.id === b.id) ||
-    (l.source.id === b.id && l.target.id === a.id)
-  );
-}
-
-function mouseoverNode(event, d) {
-  nodes.classed('dimmed', n => n !== d && !isConnected(n, d))
-    .classed('highlighted', n => n === d || isConnected(n, d));
-
-  links.classed('dimmed', l => l.source !== d && l.target !== d)
-    .classed('highlighted', l => l.source === d || l.target === d);
-
-  labels.classed('dimmed', n => n !== d && !isConnected(n, d));
-
-  showTooltip(event, d);
-}
-
-function mouseoutNode() {
-  if (!selectedNode) {
-    nodes.classed('dimmed', false).classed('highlighted', false);
-    links.classed('dimmed', false).classed('highlighted', false);
-    labels.classed('dimmed', false);
-  }
-  hideTooltip();
-}
-
-function showTooltip(event, d) {
-  const tooltip = document.createElement('div');
-  tooltip.className = 'tooltip';
-
-  let content = `<div class="tooltip-title">${d.name}</div>`;
-
-  if (d.contracts) {
-    content += `<div class="tooltip-value">€${(d.contracts / 1000000).toFixed(1)}M</div>`;
-  }
-  if (d.value) {
-    content += `<div class="tooltip-value">€${(d.value / 1000000).toFixed(1)}M</div>`;
-  }
-  if (d.type === 'people' && d.risk === 'critical') {
-    content += `<div style="color: var(--red); font-size: 0.65rem; margin-top: 0.3rem;">⚠ Arguido</div>`;
+function onNodeClick(node) {
+  if (selectedNode) {
+    selectedNode.setSelected(false);
   }
 
-  tooltip.innerHTML = content;
-  document.body.appendChild(tooltip);
+  selectedNode = node;
+  node.setSelected(true);
 
-  const x = event.pageX + 10;
-  const y = event.pageY + 10;
-  tooltip.style.left = x + 'px';
-  tooltip.style.top = y + 'px';
-}
+  // Show info panel
+  showInfoPanel(node);
 
-function hideTooltip() {
-  const tooltip = document.querySelector('.tooltip');
-  if (tooltip) tooltip.remove();
-}
+  // Camera fly to node
+  cameraState.autoRotate = false;
+  const flyCamera = () => {
+    const target = new THREE.Vector3().copy(node.position).normalize().multiplyScalar(80);
+    camera.position.lerp(target, 0.05);
 
-function showNodeDetails(d) {
-  const panel = document.getElementById('info-panel');
-  const content = document.getElementById('panel-content');
-
-  let html = `
-    <div class="info-entity-type">${getEntityTypeLabel(d.type)}</div>
-    <div class="info-entity-name">${d.name}</div>
-
-    <div class="info-stat">
-      <div class="info-stat-item">
-        <div class="info-stat-value">${d.connections || 0}</div>
-        <div class="info-stat-label">Ligações</div>
-      </div>
-      <div class="info-stat-item">
-        <div class="info-stat-value">${d.contracts ? '€' + (d.contracts / 1000000).toFixed(1) + 'M' : 'N/A'}</div>
-        <div class="info-stat-label">Total Contratos</div>
-      </div>
-    </div>
-  `;
-
-  if (d.risk) {
-    html += `
-      <div class="info-risk">
-        <span class="info-risk-title">Nível de Risco</span>
-        <span class="risk-level ${d.risk}">${d.risk.toUpperCase()}</span>
-      </div>
-    `;
-  }
-
-  // Get connected entities
-  const connected = networkData.links.filter(l =>
-    l.source.id === d.id || l.target.id === d.id
-  );
-
-  if (connected.length > 0) {
-    html += `<span class="info-connections-title">Ligações Relevantes (${connected.length})</span><div class="info-connections">`;
-
-    connected.forEach(link => {
-      const targetNode = link.source.id === d.id ? link.target : link.source;
-      const riskClass = link.risk === 'critical' ? 'red' : (link.risk === 'high' ? 'orange' : '');
-
-      html += `
-        <div class="connection-item ${riskClass}">
-          <span class="connection-target">${targetNode.name}</span>
-          ${link.value ? `<span class="connection-value">€${(link.value / 1000000).toFixed(1)}M</span>` : ''}
-          <span class="connection-value">${link.description}</span>
-        </div>
-      `;
-    });
-
-    html += `</div>`;
-  }
-
-  html += `
-    <div class="info-footer">
-      <p>Para mais informações sobre as investigações, visite as páginas de análise detalhada.</p>
-      <p style="margin-top: 0.8rem;"><a href="index.html">Voltar ao índice</a></p>
-    </div>
-  `;
-
-  content.innerHTML = html;
-  panel.classList.add('open');
-}
-
-function closePanel() {
-  document.getElementById('info-panel').classList.remove('open');
-  selectedNode = null;
-  updateNodeSelection();
-}
-
-function getEntityTypeLabel(type) {
-  const labels = {
-    'public': 'Entidade Pública',
-    'private': 'Empresa Privada',
-    'people': 'Pessoa / Diretor',
-    'findings': 'Achado Crítico'
+    if (camera.position.distanceTo(target) > 1) {
+      requestAnimationFrame(flyCamera);
+    } else {
+      cameraState.autoRotate = true;
+    }
   };
-  return labels[type] || type;
+
+  flyCamera();
 }
 
-function highlightSearchResults() {
-  if (!searchTerm) {
-    nodes.classed('dimmed', false).classed('highlighted', false);
-    labels.classed('dimmed', false);
+function onMouseMove(event) {
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+  raycaster.setFromCamera(mouse, camera);
+
+  const intersects = raycaster.intersectObjects(nodes.map(n => n.mesh), true);
+
+  // Clear previous hover
+  for (const node of nodes) {
+    node.setHovered(false);
+  }
+
+  const tooltip = document.getElementById('tooltip');
+
+  if (intersects.length > 0) {
+    const mesh = intersects[0].object;
+    let simNode = null;
+
+    // Find the simulation node that owns this mesh
+    for (const node of nodes) {
+      if (node.mesh === mesh) {
+        simNode = node;
+        break;
+      }
+    }
+
+    if (simNode) {
+      simNode.setHovered(true);
+
+      // Show tooltip
+      tooltip.classList.add('visible');
+      tooltip.innerHTML = `<div class="tooltip-title">${NODE_DATA[simNode.id].label || simNode.id}</div>`;
+
+      if (simNode.data.value > 0) {
+        tooltip.innerHTML += `<div style="color: var(--accent); font-family: 'JetBrains Mono', monospace;">€${simNode.data.value}M</div>`;
+      }
+
+      tooltip.style.left = (event.clientX + 15) + 'px';
+      tooltip.style.top = (event.clientY + 15) + 'px';
+    }
+  } else {
+    tooltip.classList.remove('visible');
+  }
+}
+
+document.addEventListener('mousemove', onNodeMove);
+function onNodeMove(e) {
+  if (!cameraState.isDragging && !cameraState.isPanning) {
+    onMouseMove(e);
+  }
+}
+
+document.addEventListener('click', (event) => {
+  if (event.target.closest('.filter-btn') || event.target.closest('input') || event.target.closest('button')) {
     return;
   }
 
-  const matches = networkData.nodes.filter(n =>
-    n.name.toLowerCase().includes(searchTerm)
-  );
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
-  nodes.classed('dimmed', n => !matches.includes(n))
-    .classed('highlighted', n => matches.includes(n));
+  raycaster.setFromCamera(mouse, camera);
+  const intersects = raycaster.intersectObjects(nodes.map(n => n.mesh), true);
 
-  labels.classed('dimmed', n => !matches.includes(n));
-
-  // Zoom to first match
-  if (matches.length > 0) {
-    const node = matches[0];
-    svg.transition().duration(750).call(
-      d3.zoom().transform,
-      d3.zoomIdentity
-        .translate(window.innerWidth / 2, window.innerHeight / 2)
-        .scale(2)
-        .translate(-node.x, -node.y)
-    );
+  if (intersects.length > 0) {
+    const mesh = intersects[0].object;
+    for (const node of nodes) {
+      if (node.mesh === mesh) {
+        onNodeClick(node);
+        break;
+      }
+    }
   }
-}
-
-function updateNodeVisibility() {
-  nodes.style('display', d => {
-    if (currentFilter === 'all') return 'block';
-    return d.type === currentFilter ? 'block' : 'none';
-  });
-
-  labels.style('display', d => {
-    if (currentFilter === 'all') return 'block';
-    return d.type === currentFilter ? 'block' : 'none';
-  });
-
-  links.style('display', l => {
-    if (currentFilter === 'all') return 'block';
-    const sourceVisible = l.source.type === currentFilter;
-    const targetVisible = l.target.type === currentFilter;
-    return sourceVisible || targetVisible ? 'block' : 'none';
-  });
-}
-
-function dragstarted(event, d) {
-  if (!event.active) simulation.alphaTarget(0.3).restart();
-  d.fx = d.x;
-  d.fy = d.y;
-}
-
-function dragged(event, d) {
-  d.fx = event.x;
-  d.fy = event.y;
-}
-
-function dragended(event, d) {
-  if (!event.active) simulation.alphaTarget(0);
-  d.fx = null;
-  d.fy = null;
-}
-
-// Initialize on load
-window.addEventListener('load', () => {
-  setTimeout(initializeGraph, 100);
 });
 
-// Handle window resize
+// ===== UI INTERACTIONS =====
+
+function showInfoPanel(node) {
+  const panel = document.getElementById('info-panel');
+  const data = NODE_DATA[node.id] || node.data;
+
+  document.getElementById('info-name').textContent = data.label || node.id;
+  document.getElementById('info-type').textContent = {
+    public: 'Entidade Pública',
+    private: 'Empresa Privada',
+    people: 'Pessoa / Diretor',
+    finding: 'Descoberta Crítica'
+  }[data.type] || 'Entidade';
+
+  document.getElementById('info-value').textContent = data.value > 0 ? `€${data.value}M` : '—';
+
+  const connectedEdges = EDGES.filter(e => e.source === node.id || e.target === node.id);
+  document.getElementById('info-connections-count').textContent = connectedEdges.length;
+
+  const connectionsList = document.getElementById('info-connections-list');
+  connectionsList.innerHTML = '';
+
+  for (const edge of connectedEdges) {
+    const targetId = edge.source === node.id ? edge.target : edge.source;
+    const targetData = NODE_DATA[targetId];
+
+    const item = document.createElement('div');
+    item.className = 'connection-item ' + (edge.type === 'critical' ? 'red' : edge.type === 'high' ? 'orange' : '');
+
+    item.innerHTML = `
+      <span class="connection-target">${targetData.label || targetId}</span>
+      ${edge.value > 0 ? `<span class="connection-value">€${edge.value}M</span>` : ''}
+      ${edge.label ? `<span class="connection-value">${edge.label}</span>` : ''}
+    `;
+
+    connectionsList.appendChild(item);
+  }
+
+  const riskContainer = document.getElementById('info-risk-container');
+  if (data.risk && data.type !== 'people') {
+    riskContainer.style.display = 'block';
+    document.getElementById('info-risk').textContent = {
+      high: 'ALTO',
+      medium: 'MÉDIO',
+      low: 'BAIXO'
+    }[data.risk] || 'DESCONHECIDO';
+    document.getElementById('info-risk').className = 'risk-level ' + data.risk;
+  } else {
+    riskContainer.style.display = 'none';
+  }
+
+  panel.classList.add('open');
+}
+
+document.getElementById('close-panel').addEventListener('click', () => {
+  document.getElementById('info-panel').classList.remove('open');
+  if (selectedNode) {
+    selectedNode.setSelected(false);
+    selectedNode = null;
+  }
+});
+
+// Search
+document.getElementById('search-input').addEventListener('input', (e) => {
+  const query = e.target.value.toLowerCase();
+
+  if (!query) return;
+
+  for (const node of nodes) {
+    const label = (NODE_DATA[node.id].label || node.id).toLowerCase();
+    if (label.includes(query)) {
+      onNodeClick(node);
+      break;
+    }
+  }
+});
+
+// Filters
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    e.target.classList.add('active');
+
+    const filter = e.target.dataset.filter;
+    // TODO: Implement filtering
+  });
+});
+
+// ===== ANIMATION LOOP =====
+
+function animate() {
+  requestAnimationFrame(animate);
+
+  // Update simulation
+  simulationStep();
+
+  // Update camera
+  updateCameraPosition();
+
+  // Update nodes
+  for (const node of nodes) {
+    node.update();
+  }
+
+  // Render
+  renderer.render(scene, camera);
+}
+
+// ===== WINDOW RESIZE =====
+
 window.addEventListener('resize', () => {
-  // Restart simulation with new bounds
-  const container = document.getElementById('graph-container');
-  svg.attr('width', container.clientWidth)
-    .attr('height', container.clientHeight);
-
-  simulation.force('center', d3.forceCenter(
-    container.clientWidth / 2,
-    container.clientHeight / 2
-  ));
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
 });
+
+// Start animation
+animate();
+
+// Update stats
+document.getElementById('stat-nodes').textContent = nodes.length;
+document.getElementById('stat-edges').textContent = edges.length;
+
 </script>
 
 </body>
