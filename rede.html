@@ -56,7 +56,6 @@
     color: var(--text-primary);
   }
 
-  /* === SCANLINES OVERLAY === */
   body::before {
     content: '';
     position: fixed;
@@ -73,14 +72,12 @@
     z-index: 9999;
   }
 
-  /* === THREE.JS CANVAS === */
   #canvas {
     display: block;
     width: 100%;
     height: 100%;
   }
 
-  /* === NAVIGATION === */
   nav {
     position: fixed;
     top: 0; left: 0; right: 0;
@@ -171,7 +168,6 @@
     background: var(--accent-dim);
   }
 
-  /* === SEARCH BAR === */
   .search-container {
     position: fixed;
     top: 90px;
@@ -214,7 +210,6 @@
     font-size: 0.9rem;
   }
 
-  /* === FILTER BUTTONS === */
   .filter-container {
     position: fixed;
     top: 90px;
@@ -253,7 +248,6 @@
     color: var(--bg-primary);
   }
 
-  /* === LEGEND === */
   .legend-container {
     position: fixed;
     bottom: 2rem;
@@ -299,7 +293,6 @@
     flex-shrink: 0;
   }
 
-  /* === STATS PANEL === */
   .stats-container {
     position: fixed;
     top: 90px;
@@ -333,7 +326,6 @@
     font-weight: 700;
   }
 
-  /* === INFO PANEL === */
   .info-panel {
     position: fixed;
     right: -420px;
@@ -353,11 +345,18 @@
     right: 0;
   }
 
-  .info-panel-header {
+  .info-header {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: start;
     margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 1rem;
+  }
+
+  .info-title {
+    font-size: 1.1rem;
+    font-weight: 600;
   }
 
   .close-panel {
@@ -365,165 +364,110 @@
     border: none;
     color: var(--text-secondary);
     cursor: pointer;
-    font-size: 1.5rem;
-    transition: color 0.2s;
+    font-size: 1.2rem;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .close-panel:hover {
     color: var(--accent);
   }
 
-  .info-entity-type {
-    display: inline-block;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.6rem;
-    padding: 4px 8px;
-    background: var(--accent-dim);
-    color: var(--accent);
-    border-radius: 4px;
-    text-transform: uppercase;
-    margin-bottom: 0.5rem;
-  }
-
-  .info-entity-name {
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: var(--text-primary);
-    margin-bottom: 1rem;
-  }
-
-  .info-stat {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
+  .info-section {
     margin-bottom: 1.5rem;
   }
 
-  .info-stat-item {
-    background: rgba(0, 212, 170, 0.05);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 0.8rem;
-  }
-
-  .info-stat-value {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--accent);
-    margin-bottom: 0.3rem;
-  }
-
-  .info-stat-label {
-    font-size: 0.65rem;
-    color: var(--text-muted);
+  .info-label {
+    font-size: 0.7rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-  }
-
-  .info-connections {
-    margin-bottom: 1.5rem;
-  }
-
-  .info-connections-title {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.7rem;
-    color: var(--accent);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 0.8rem;
-    display: block;
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 0.8rem;
-  }
-
-  .connection-item {
-    padding: 0.6rem;
+    color: var(--text-muted);
     margin-bottom: 0.5rem;
-    background: rgba(0, 0, 0, 0.3);
-    border-radius: 4px;
-    font-size: 0.75rem;
-    border-left: 3px solid var(--accent);
-  }
-
-  .connection-item.red {
-    border-left-color: var(--red);
-  }
-
-  .connection-item.orange {
-    border-left-color: var(--orange);
-  }
-
-  .connection-target {
-    color: var(--text-primary);
-    font-weight: 600;
     display: block;
-    margin-bottom: 0.2rem;
   }
 
-  .connection-value {
-    color: var(--accent);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.7rem;
-  }
-
-  .info-risk {
-    margin-bottom: 1.5rem;
+  .info-value {
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    font-weight: 500;
   }
 
   .risk-level {
-    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
     padding: 4px 8px;
     border-radius: 4px;
-    font-size: 0.7rem;
-    font-weight: 700;
+    display: inline-block;
   }
 
   .risk-level.high {
     background: rgba(255, 71, 87, 0.2);
-    color: var(--red);
-    border: 1px solid var(--red);
+    color: #ff4757;
   }
 
   .risk-level.medium {
     background: rgba(255, 165, 2, 0.2);
-    color: var(--orange);
-    border: 1px solid var(--orange);
+    color: #ffa502;
   }
 
   .risk-level.low {
-    background: rgba(61, 130, 246, 0.2);
-    color: var(--blue);
-    border: 1px solid var(--blue);
+    background: rgba(76, 175, 80, 0.2);
+    color: #4caf50;
   }
 
-  .info-footer {
-    border-top: 1px solid var(--border);
-    padding-top: 1.5rem;
-    margin-top: 1.5rem;
-    font-size: 0.7rem;
-    color: var(--text-muted);
+  .connections-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
   }
 
-  .info-footer a {
-    color: var(--accent);
-    text-decoration: none;
+  .connection-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.6rem;
+    background: rgba(0, 212, 170, 0.05);
+    border-left: 2px solid var(--accent);
+    border-radius: 4px;
+    font-size: 0.8rem;
   }
 
-  /* === TOOLTIP === */
+  .connection-item.red {
+    background: rgba(255, 71, 87, 0.05);
+    border-left-color: #ff4757;
+  }
+
+  .connection-item.orange {
+    background: rgba(255, 165, 2, 0.05);
+    border-left-color: #ffa502;
+  }
+
+  .connection-target {
+    color: var(--text-primary);
+  }
+
+  .connection-value {
+    color: var(--text-secondary);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+  }
+
   .tooltip {
     position: fixed;
-    background: rgba(5, 5, 16, 0.95);
+    background: rgba(26, 31, 46, 0.95);
     border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 0.8rem;
-    font-size: 0.75rem;
-    color: var(--text-primary);
+    border-radius: 8px;
+    padding: 0.6rem 0.8rem;
+    font-size: 0.8rem;
     pointer-events: none;
     z-index: 300;
-    max-width: 200px;
+    white-space: nowrap;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(10px);
-    box-shadow: 0 8px 32px rgba(0, 212, 170, 0.1);
     display: none;
   }
 
@@ -531,86 +475,46 @@
     display: block;
   }
 
-  .tooltip-title {
-    font-weight: 600;
-    color: var(--accent);
-    margin-bottom: 0.3rem;
-  }
-
-  /* === INSTRUCTIONS === */
   .instructions {
     position: fixed;
-    bottom: 2rem;
-    right: 2rem;
-    z-index: 200;
+    top: 60px;
+    left: 50%;
+    transform: translateX(-50%);
     background: rgba(26, 31, 46, 0.85);
     border: 1px solid var(--border);
     border-radius: 8px;
-    padding: 1rem;
-    backdrop-filter: blur(10px);
-    font-size: 0.7rem;
+    padding: 0.8rem 1.2rem;
+    font-size: 0.75rem;
     color: var(--text-secondary);
-    text-align: right;
-    line-height: 1.5;
-    max-width: 220px;
-  }
-
-  /* === FOOTER === */
-  footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: auto;
-    background: rgba(5, 5, 16, 0.9);
-    border-top: 1px solid var(--border);
-    padding: 0.8rem 2rem;
-    font-size: 0.65rem;
-    color: var(--text-muted);
-    z-index: 50;
-  }
-
-  footer a {
-    color: var(--accent);
-    text-decoration: none;
-  }
-
-  /* === RESPONSIVE === */
-  @media (max-width: 768px) {
-    .filter-container { display: none; }
-    .legend-container { bottom: 80px; left: 1rem; max-width: 200px; }
-    .stats-container { display: none; }
-    .search-container { width: calc(100% - 4rem); left: 2rem; right: 2rem; max-width: none; }
-    .info-panel { width: 100%; right: -100%; }
-    .instructions { display: none; }
+    backdrop-filter: blur(10px);
+    z-index: 200;
   }
 </style>
-
 </head>
 <body>
 
-<canvas id="canvas"></canvas>
-
 <nav>
   <div class="nav-inner">
-    <a href="index.html" class="nav-brand">
+    <a href="/" class="nav-brand">
       <span class="logo">SIGIL</span>
-      <span class="tagline">Signal Intelligence Lab</span>
+      <span class="tagline">REDE 3D</span>
     </a>
-    <ul class="nav-links">
-      <li><a href="index.html">← Voltar às Investigações</a></li>
-    </ul>
-    <div class="lang-toggle">
-      <a href="network.html">EN</a>
-      <a href="rede.html" class="active">PT</a>
+    <div style="display: flex; gap: 2rem; align-items: center;">
+      <a href="/investigacoes" style="color: var(--text-secondary); text-decoration: none; font-size: 0.85rem; font-weight: 500; transition: color 0.2s;">← Voltar às Investigações</a>
+      <div class="lang-toggle">
+        <a href="#" class="active">PT</a>
+        <a href="#">EN</a>
+      </div>
     </div>
   </div>
 </nav>
 
+<canvas id="canvas"></canvas>
+
 <div class="search-container">
   <div class="search-box">
     <span class="search-icon">🔍</span>
-    <input type="text" class="search-input" id="search-input" placeholder="Procurar entidade...">
+    <input type="text" id="search-input" class="search-input" placeholder="Pesquisar entidade...">
   </div>
 </div>
 
@@ -619,118 +523,89 @@
   <button class="filter-btn" data-filter="public">Públicas</button>
   <button class="filter-btn" data-filter="private">Privadas</button>
   <button class="filter-btn" data-filter="people">Pessoas</button>
-  <button class="filter-btn" data-filter="findings">Descobertas</button>
-</div>
-
-<div class="legend-container">
-  <span class="legend-title">Tipo de Entidade</span>
-
-  <div class="legend-item">
-    <div class="legend-dot" style="background: var(--blue);"></div>
-    <span>Entidades Públicas</span>
-  </div>
-
-  <div class="legend-item">
-    <div class="legend-dot" style="background: var(--amber);"></div>
-    <span>Empresas Privadas</span>
-  </div>
-
-  <div class="legend-item">
-    <div class="legend-dot" style="background: var(--purple);"></div>
-    <span>Pessoas / Diretores</span>
-  </div>
-
-  <div class="legend-item">
-    <div class="legend-dot" style="background: var(--red);"></div>
-    <span>Descobertas Críticas</span>
-  </div>
-
-  <span class="legend-title" style="margin-top: 1rem;">Tipo de Ligação</span>
-
-  <div class="legend-item edge">
-    <div class="legend-line" style="background: var(--red);"></div>
-    <span>Crítica</span>
-  </div>
-
-  <div class="legend-item edge">
-    <div class="legend-line" style="background: var(--orange);"></div>
-    <span>Alto Risco</span>
-  </div>
-
-  <div class="legend-item edge">
-    <div class="legend-line" style="background: var(--accent);"></div>
-    <span>Normal</span>
-  </div>
+  <button class="filter-btn" data-filter="finding">Descobertas</button>
 </div>
 
 <div class="stats-container">
   <div class="stat-row">
-    <span class="stat-label">Total de Nós</span>
-    <span class="stat-value" id="stat-nodes">42</span>
+    <span class="stat-label">Entidades</span>
+    <span class="stat-value" id="stat-nodes">0</span>
   </div>
   <div class="stat-row">
     <span class="stat-label">Ligações</span>
-    <span class="stat-value" id="stat-edges">48</span>
+    <span class="stat-value" id="stat-edges">0</span>
   </div>
   <div class="stat-row">
     <span class="stat-label">Valor Total</span>
-    <span class="stat-value">€245M+</span>
+    <span class="stat-value" id="stat-value">€0M</span>
+  </div>
+</div>
+
+<div class="legend-container">
+  <span class="legend-title">Legenda</span>
+  <div class="legend-item">
+    <div class="legend-dot" style="background: var(--blue);"></div>
+    <span>Entidade Pública</span>
+  </div>
+  <div class="legend-item">
+    <div class="legend-dot" style="background: var(--amber);"></div>
+    <span>Empresa Privada</span>
+  </div>
+  <div class="legend-item">
+    <div class="legend-dot" style="background: var(--purple);"></div>
+    <span>Pessoa / Diretor</span>
+  </div>
+  <div class="legend-item">
+    <div class="legend-dot" style="background: var(--red);"></div>
+    <span>Descoberta Crítica</span>
+  </div>
+  <div class="legend-item">
+    <div class="legend-line" style="background: var(--red);"></div>
+    <span>Crítica</span>
+  </div>
+  <div class="legend-item">
+    <div class="legend-line" style="background: var(--orange);"></div>
+    <span>Alta</span>
   </div>
 </div>
 
 <div class="instructions">
-  <div>Arraste para rodar</div>
-  <div>Scroll para zoom</div>
-  <div>Clique para selecionar</div>
-  <div style="margin-top: 0.5rem; font-size: 0.65rem; color: var(--text-muted);">Botão direito para pan</div>
+  Arraste para rodar • Scroll para zoom • Clique para selecionar
 </div>
 
 <div class="info-panel" id="info-panel">
-  <div class="info-panel-header">
-    <div>
-      <div class="info-entity-type" id="info-type">Entidade Pública</div>
-      <div class="info-entity-name" id="info-name">Nome da Entidade</div>
-    </div>
+  <div class="info-header">
+    <div class="info-title" id="info-name">—</div>
     <button class="close-panel" id="close-panel">✕</button>
   </div>
 
-  <div class="info-stat">
-    <div class="info-stat-item">
-      <div class="info-stat-value" id="info-value">€0M</div>
-      <div class="info-stat-label">Valor Total</div>
-    </div>
-    <div class="info-stat-item">
-      <div class="info-stat-value" id="info-connections-count">0</div>
-      <div class="info-stat-label">Ligações</div>
+  <div class="info-section" id="info-value-container" style="display: none;">
+    <span class="info-label">Valor Total</span>
+    <div class="info-value" id="info-value">—</div>
+  </div>
+
+  <div class="info-section" id="info-type-container">
+    <span class="info-label">Tipo</span>
+    <div class="info-value" id="info-type">—</div>
+  </div>
+
+  <div class="info-section" id="info-risk-container" style="display: none;">
+    <span class="info-label">Nível de Risco</span>
+    <div class="info-value">
+      <span class="risk-level" id="info-risk">—</span>
     </div>
   </div>
 
-  <div class="info-risk" id="info-risk-container" style="display: none;">
-    <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--accent); text-transform: uppercase; letter-spacing: 1px;">Nível de Risco</span>
-    <div style="margin-top: 0.5rem;">
-      <span class="risk-level high" id="info-risk">Alto</span>
-    </div>
-  </div>
-
-  <div class="info-connections">
-    <span class="info-connections-title">Entidades Conectadas</span>
-    <div id="info-connections-list"></div>
-  </div>
-
-  <div class="info-footer">
-    Clique em entidades para explorar conexões • Passe com o rato para mais detalhes
+  <div class="info-section" id="info-connections-container" style="display: none;">
+    <span class="info-label">Ligações Diretas</span>
+    <div class="connections-list" id="info-connections"></div>
   </div>
 </div>
 
 <div class="tooltip" id="tooltip"></div>
 
-<footer>
-  Visualização 3D interativa de relações em contratação pública • Dados para análise apenas • IA-gerado com Claude
-</footer>
-
 <script>
-// ===== CONFIGURATION & DATA =====
-
+// ===== DATA =====
 const COLORS = {
   bg: 0x050510,
   blue: 0x3b82f6,
@@ -831,7 +706,7 @@ scene.add(pointLight);
 
 function createStarfield() {
   const starGeometry = new THREE.BufferGeometry();
-  const starCount = 1000;
+  const starCount = 2000;
   const positions = new Float32Array(starCount * 3);
 
   for (let i = 0; i < starCount * 3; i += 3) {
@@ -842,15 +717,15 @@ function createStarfield() {
 
   starGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
   const starMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.5, sizeAttenuation: true });
-  const starfield = new THREE.Points(starGeometry, starMaterial);
-  scene.add(starfield);
+  const stars = new THREE.Points(starGeometry, starMaterial);
+  scene.add(stars);
 }
 
 createStarfield();
 
-// ===== PHYSICS SIMULATION =====
+// ===== PHYSICS NODE CLASS =====
 
-class Node {
+class PhysicsNode {
   constructor(id, x, y, z, data) {
     this.id = id;
     this.position = new THREE.Vector3(x, y, z);
@@ -862,6 +737,7 @@ class Node {
   }
 
   applyForce(force) {
+    if (this.fixed) return;
     const f = force.clone().divideScalar(this.mass);
     this.acceleration.add(f);
   }
@@ -870,11 +746,10 @@ class Node {
     if (this.fixed) return;
 
     this.velocity.add(this.acceleration);
-    this.velocity.multiplyScalar(0.99); // damping
+    this.velocity.multiplyScalar(0.99);
     this.position.add(this.velocity);
     this.acceleration.multiplyScalar(0);
 
-    // Bounds check
     const bounds = 150;
     if (Math.abs(this.position.x) > bounds) this.position.x = Math.sign(this.position.x) * bounds;
     if (Math.abs(this.position.y) > bounds) this.position.y = Math.sign(this.position.y) * bounds;
@@ -882,76 +757,19 @@ class Node {
   }
 }
 
-class SimulationNode extends THREE.Group {
-  constructor(id, data) {
-    super();
-    this.nodeId = id;
-    this.data = data;
-    this.physicsNode = null;
-    this.mesh = null;
-    this.label = null;
-    this.haloMesh = null;
-    this.isHovered = false;
-    this.isSelected = false;
-    this.pulseTime = 0;
-  }
-
-  updateFromPhysics() {
-    if (this.physicsNode) {
-      this.position.copy(this.physicsNode.position);
-    }
-  }
-
-  setSelected(selected) {
-    this.isSelected = selected;
-    if (this.mesh) {
-      if (selected) {
-        this.mesh.material.emissive.setHex(this.data.color);
-        this.mesh.material.emissiveIntensity = 0.8;
-      } else {
-        this.mesh.material.emissiveIntensity = this.isHovered ? 0.5 : 0;
-      }
-    }
-  }
-
-  setHovered(hovered) {
-    this.isHovered = hovered;
-    if (this.mesh && !this.isSelected) {
-      this.mesh.material.emissiveIntensity = hovered ? 0.5 : 0;
-    }
-  }
-
-  update() {
-    this.pulseTime += 0.03;
-
-    if (this.haloMesh) {
-      const scale = 1 + Math.sin(this.pulseTime) * 0.1 + (this.isHovered ? 0.3 : 0);
-      this.haloMesh.scale.setScalar(scale);
-      this.haloMesh.material.opacity = 0.3 + Math.sin(this.pulseTime) * 0.2;
-    }
-
-    if (this.mesh && this.data.type === 'finding') {
-      this.mesh.rotation.x += 0.01;
-      this.mesh.rotation.y += 0.01;
-    }
-  }
-}
-
-// ===== CREATE NODES =====
+// ===== NODE CREATION =====
 
 const nodes = [];
 const nodeMap = new Map();
 const physicsNodes = [];
 
-function createNodeMesh(id, data) {
-  let geometry;
+function createNodeMesh(data) {
   const size = Math.max(1, Math.log(data.value + 1) * 0.8);
 
+  let geometry;
   if (data.type === 'finding') {
-    // Octahedron for findings
     geometry = new THREE.OctahedronGeometry(size * 0.7, 1);
   } else {
-    // Sphere for all others
     geometry = new THREE.IcosahedronGeometry(size, 4);
   }
 
@@ -964,14 +782,10 @@ function createNodeMesh(id, data) {
     specular: 0x111111
   });
 
-  const mesh = new THREE.Mesh(geometry, material);
-  mesh.castShadow = true;
-  mesh.receiveShadow = true;
-
-  return mesh;
+  return new THREE.Mesh(geometry, material);
 }
 
-function createNodeHalo(color) {
+function createNodeGlow(color) {
   const canvas = document.createElement('canvas');
   canvas.width = 64;
   canvas.height = 64;
@@ -989,57 +803,74 @@ function createNodeHalo(color) {
   const material = new THREE.SpriteMaterial({ map: texture, sizeAttenuation: true });
   const sprite = new THREE.Sprite(material);
   sprite.scale.setScalar(5);
-  sprite.position.z = -0.1;
+
+  return sprite;
+}
+
+function createNodeLabel(label) {
+  const canvas = document.createElement('canvas');
+  canvas.width = 256;
+  canvas.height = 64;
+  const ctx = canvas.getContext('2d');
+  ctx.font = 'bold 20px Inter';
+  ctx.fillStyle = '#e8eaf0';
+  ctx.textAlign = 'center';
+  ctx.fillText(label.substring(0, 15), 128, 40);
+
+  const texture = new THREE.CanvasTexture(canvas);
+  const material = new THREE.SpriteMaterial({ map: texture });
+  const sprite = new THREE.Sprite(material);
+  sprite.scale.set(20, 5, 1);
+  sprite.position.y = -8;
 
   return sprite;
 }
 
 for (const [id, data] of Object.entries(NODE_DATA)) {
-  const label = data.label || id;
-
-  // Random initial positions
   const x = (Math.random() - 0.5) * 100;
   const y = (Math.random() - 0.5) * 100;
   const z = (Math.random() - 0.5) * 100;
 
-  const physicsNode = new Node(id, x, y, z, data);
+  const physicsNode = new PhysicsNode(id, x, y, z, data);
   physicsNodes.push(physicsNode);
 
-  const simNode = new SimulationNode(id, data);
-  simNode.position.copy(physicsNode.position);
-  simNode.physicsNode = physicsNode;
+  // Plain object to store node data
+  const node = {
+    id: id,
+    physicsNode: physicsNode,
+    data: data,
+    label: data.label || id,
+    visible: true,
+    isHovered: false,
+    isSelected: false,
+    pulseTime: 0,
+    mesh: null,
+    glow: null,
+    labelSprite: null,
+    group: new THREE.Group()
+  };
 
-  const mesh = createNodeMesh(id, data);
-  simNode.add(mesh);
-  simNode.mesh = mesh;
+  // Create mesh (NOT extending THREE.Mesh)
+  node.mesh = createNodeMesh(data);
+  node.group.add(node.mesh);
 
-  const halo = createNodeHalo(data.color);
-  simNode.add(halo);
-  simNode.haloMesh = halo;
+  // Create glow
+  node.glow = createNodeGlow(data.color);
+  node.group.add(node.glow);
 
-  // Add label text (using canvas texture)
-  const labelCanvas = document.createElement('canvas');
-  labelCanvas.width = 256;
-  labelCanvas.height = 64;
-  const labelCtx = labelCanvas.getContext('2d');
-  labelCtx.font = 'bold 20px Inter';
-  labelCtx.fillStyle = '#e8eaf0';
-  labelCtx.textAlign = 'center';
-  labelCtx.fillText(label.substring(0, 15), 128, 40);
+  // Create label
+  node.labelSprite = createNodeLabel(node.label);
+  node.group.add(node.labelSprite);
 
-  const labelTexture = new THREE.CanvasTexture(labelCanvas);
-  const labelMaterial = new THREE.SpriteMaterial({ map: labelTexture });
-  const labelSprite = new THREE.Sprite(labelMaterial);
-  labelSprite.scale.set(20, 5, 1);
-  labelSprite.position.y = -8;
-  simNode.add(labelSprite);
+  // Position from physics
+  node.group.position.copy(physicsNode.position);
 
-  scene.add(simNode);
-  nodes.push(simNode);
-  nodeMap.set(id, simNode);
+  scene.add(node.group);
+  nodes.push(node);
+  nodeMap.set(id, node);
 }
 
-// ===== CREATE EDGES =====
+// ===== EDGES =====
 
 const edges = [];
 const edgeLines = new THREE.Group();
@@ -1070,318 +901,230 @@ for (const edgeData of EDGES) {
     new Float32Array([0, 0, 0, 0, 0, 0]), 3
   ));
 
-  const material = new THREE.LineBasicMaterial({
+  const lineMaterial = new THREE.LineBasicMaterial({
     color: color,
-    linewidth: thickness * 2,
-    transparent: true,
-    opacity: 0.6
+    linewidth: thickness,
+    fog: true
   });
 
-  const line = new THREE.Line(geometry, material);
-  line.sourceNode = sourceNode;
-  line.targetNode = targetNode;
-  line.edgeData = edgeData;
-
+  const line = new THREE.Line(geometry, lineMaterial);
   edgeLines.add(line);
-  edges.push(line);
+
+  const edge = {
+    source: sourceNode,
+    target: targetNode,
+    line: line,
+    ...edgeData
+  };
+
+  edges.push(edge);
 }
 
-// ===== UPDATE EDGE POSITIONS =====
+// ===== PHYSICS SIMULATION =====
 
-function updateEdgePositions() {
-  for (const line of edges) {
-    const positions = line.geometry.attributes.position.array;
-    positions[0] = line.sourceNode.position.x;
-    positions[1] = line.sourceNode.position.y;
-    positions[2] = line.sourceNode.position.z;
-    positions[3] = line.targetNode.position.x;
-    positions[4] = line.targetNode.position.y;
-    positions[5] = line.targetNode.position.z;
-    line.geometry.attributes.position.needsUpdate = true;
-  }
-}
+function simulatePhysics(iterations) {
+  const springForce = 0.5;
+  const repulsionForce = 50;
+  const restDistance = 30;
 
-// ===== PHYSICS SIMULATION LOOP =====
+  for (let iter = 0; iter < iterations; iter++) {
+    // Reset forces
+    for (const pnode of physicsNodes) {
+      pnode.acceleration.multiplyScalar(0);
+    }
 
-function simulationStep() {
-  const repulsionStrength = 5;
-  const attractionStrength = 0.05;
-  const maxDistance = 200;
+    // Spring forces along edges
+    for (const edge of edges) {
+      const source = edge.source.physicsNode;
+      const target = edge.target.physicsNode;
 
-  // Reset forces
-  for (const node of physicsNodes) {
-    node.acceleration.set(0, 0, 0);
-  }
+      const delta = target.position.clone().sub(source.position);
+      const distance = Math.max(delta.length(), 1);
+      const displacement = distance - restDistance;
 
-  // Repulsion between all nodes
-  for (let i = 0; i < physicsNodes.length; i++) {
-    for (let j = i + 1; j < physicsNodes.length; j++) {
-      const a = physicsNodes[i];
-      const b = physicsNodes[j];
-      const delta = new THREE.Vector3().subVectors(a.position, b.position);
-      const distSq = Math.max(delta.lengthSq(), 1);
-      const dist = Math.sqrt(distSq);
+      const force = delta.normalize().multiplyScalar(displacement * springForce);
 
-      if (dist < maxDistance) {
-        const force = new THREE.Vector3().copy(delta).normalize().multiplyScalar(repulsionStrength / distSq);
+      source.applyForce(force);
+      target.applyForce(force.clone().multiplyScalar(-1));
+    }
+
+    // Repulsion between all nodes
+    for (let i = 0; i < physicsNodes.length; i++) {
+      for (let j = i + 1; j < physicsNodes.length; j++) {
+        const a = physicsNodes[i];
+        const b = physicsNodes[j];
+
+        const delta = a.position.clone().sub(b.position);
+        const distance = Math.max(delta.length(), 1);
+        const force = delta.normalize().multiplyScalar(repulsionForce / (distance * distance));
+
         a.applyForce(force);
-        b.applyForce(new THREE.Vector3().subVectors(new THREE.Vector3(), force));
+        b.applyForce(force.clone().multiplyScalar(-1));
       }
     }
+
+    // Update physics
+    for (const pnode of physicsNodes) {
+      pnode.update();
+    }
   }
-
-  // Attraction between connected nodes
-  for (const edge of edges) {
-    const sourcePhys = nodeMap.get(edge.edgeData.source).physicsNode;
-    const targetPhys = nodeMap.get(edge.edgeData.target).physicsNode;
-
-    const delta = new THREE.Vector3().subVectors(targetPhys.position, sourcePhys.position);
-    const dist = delta.length();
-    const force = new THREE.Vector3().copy(delta).normalize().multiplyScalar(attractionStrength * dist);
-
-    sourcePhys.applyForce(force);
-    targetPhys.applyForce(new THREE.Vector3().subVectors(new THREE.Vector3(), force));
-  }
-
-  // Update physics nodes
-  for (const node of physicsNodes) {
-    node.update();
-  }
-
-  // Update visual nodes from physics
-  for (const simNode of nodes) {
-    simNode.updateFromPhysics();
-  }
-
-  updateEdgePositions();
 }
 
-// ===== CAMERA CONTROLS =====
+// Pre-settle layout
+simulatePhysics(200);
 
-const cameraState = {
-  autoRotate: true,
-  isDragging: false,
-  isPanning: false,
-  rotationVelocity: { x: 0, y: 0 },
-  panVelocity: { x: 0, y: 0 },
-  lastMouse: { x: 0, y: 0 },
-  targetDistance: 100,
-  targetRotation: { x: 0, y: 0 }
-};
-
-function updateCameraPosition() {
-  cameraState.targetRotation.y += cameraState.rotationVelocity.x * 0.02;
-  cameraState.targetRotation.x += cameraState.rotationVelocity.y * 0.02;
-
-  cameraState.rotationVelocity.x *= 0.95;
-  cameraState.rotationVelocity.y *= 0.95;
-
-  if (cameraState.autoRotate && !cameraState.isDragging && !cameraState.isPanning) {
-    cameraState.targetRotation.y += 0.0005;
-  }
-
-  const x = Math.sin(cameraState.targetRotation.y) * Math.cos(cameraState.targetRotation.x) * cameraState.targetDistance;
-  const y = Math.sin(cameraState.targetRotation.x) * cameraState.targetDistance;
-  const z = Math.cos(cameraState.targetRotation.y) * Math.cos(cameraState.targetRotation.x) * cameraState.targetDistance;
-
-  camera.position.set(x, y, z);
-  camera.lookAt(0, 0, 0);
-}
-
-document.addEventListener('mousedown', (e) => {
-  cameraState.lastMouse = { x: e.clientX, y: e.clientY };
-
-  if (e.button === 0) {
-    cameraState.isDragging = true;
-  } else if (e.button === 2) {
-    cameraState.isPanning = true;
-  }
-});
-
-document.addEventListener('mousemove', (e) => {
-  const deltaX = e.clientX - cameraState.lastMouse.x;
-  const deltaY = e.clientY - cameraState.lastMouse.y;
-
-  if (cameraState.isDragging) {
-    cameraState.rotationVelocity.x = deltaX;
-    cameraState.rotationVelocity.y = deltaY;
-  } else if (cameraState.isPanning) {
-    cameraState.panVelocity.x += deltaX * 0.3;
-    cameraState.panVelocity.y += deltaY * 0.3;
-  }
-
-  cameraState.lastMouse = { x: e.clientX, y: e.clientY };
-});
-
-document.addEventListener('mouseup', () => {
-  cameraState.isDragging = false;
-  cameraState.isPanning = false;
-});
-
-document.addEventListener('wheel', (e) => {
-  e.preventDefault();
-  cameraState.targetDistance = Math.max(30, Math.min(300, cameraState.targetDistance + e.deltaY * 0.1));
-}, { passive: false });
-
-document.addEventListener('contextmenu', (e) => e.preventDefault());
-
-// ===== RAYCASTING & INTERACTION =====
+// ===== RAYCASTER & INTERACTIONS =====
 
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
+
 let selectedNode = null;
+let hoveredNode = null;
+
+function updateNodeVisuals() {
+  for (const node of nodes) {
+    if (!node.visible) {
+      node.group.visible = false;
+      continue;
+    }
+
+    node.group.visible = true;
+
+    const isConnectedToSelected = selectedNode && (
+      edges.some(e => (e.source === node && e.target === selectedNode) || (e.target === node && e.source === selectedNode)) ||
+      node === selectedNode
+    );
+
+    if (node.isSelected) {
+      node.mesh.material.emissiveIntensity = 0.8;
+      node.mesh.material.emissive.setHex(node.data.color);
+      node.mesh.scale.multiplyScalar(1.2);
+    } else if (node.isHovered) {
+      node.mesh.material.emissiveIntensity = 0.6;
+      node.mesh.material.emissive.setHex(node.data.color);
+    } else if (selectedNode && !isConnectedToSelected) {
+      node.mesh.material.opacity = 0.2;
+      node.mesh.material.transparent = true;
+    } else {
+      node.mesh.material.emissiveIntensity = 0.3;
+      node.mesh.material.emissive.setHex(node.data.color);
+      node.mesh.material.opacity = 1;
+      node.mesh.material.transparent = false;
+    }
+
+    node.mesh.scale.set(1, 1, 1);
+    if (node.isSelected) {
+      node.mesh.scale.multiplyScalar(1.2);
+    }
+  }
+
+  // Update edge visibility
+  for (const edge of edges) {
+    if (!edge.source.visible || !edge.target.visible) {
+      edge.line.visible = false;
+      continue;
+    }
+
+    edge.line.visible = true;
+
+    if (selectedNode) {
+      const connected = (edge.source === selectedNode || edge.target === selectedNode);
+      edge.line.material.opacity = connected ? 1 : 0.1;
+      edge.line.material.transparent = true;
+    } else {
+      edge.line.material.opacity = 1;
+      edge.line.material.transparent = false;
+    }
+  }
+}
+
+function onNodeHover(node) {
+  if (hoveredNode === node) return;
+
+  if (hoveredNode) {
+    hoveredNode.isHovered = false;
+  }
+
+  hoveredNode = node;
+  if (hoveredNode) {
+    hoveredNode.isHovered = true;
+  }
+
+  updateNodeVisuals();
+}
 
 function onNodeClick(node) {
+  if (selectedNode === node) return;
+
   if (selectedNode) {
-    selectedNode.setSelected(false);
+    selectedNode.isSelected = false;
   }
 
   selectedNode = node;
-  node.setSelected(true);
+  selectedNode.isSelected = true;
 
-  // Show info panel
+  updateNodeVisuals();
   showInfoPanel(node);
-
-  // Camera fly to node
-  cameraState.autoRotate = false;
-  const flyCamera = () => {
-    const target = new THREE.Vector3().copy(node.position).normalize().multiplyScalar(80);
-    camera.position.lerp(target, 0.05);
-
-    if (camera.position.distanceTo(target) > 1) {
-      requestAnimationFrame(flyCamera);
-    } else {
-      cameraState.autoRotate = true;
-    }
-  };
-
-  flyCamera();
 }
-
-function onMouseMove(event) {
-  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-  raycaster.setFromCamera(mouse, camera);
-
-  const intersects = raycaster.intersectObjects(nodes.map(n => n.mesh), true);
-
-  // Clear previous hover
-  for (const node of nodes) {
-    node.setHovered(false);
-  }
-
-  const tooltip = document.getElementById('tooltip');
-
-  if (intersects.length > 0) {
-    const mesh = intersects[0].object;
-    let simNode = null;
-
-    // Find the simulation node that owns this mesh
-    for (const node of nodes) {
-      if (node.mesh === mesh) {
-        simNode = node;
-        break;
-      }
-    }
-
-    if (simNode) {
-      simNode.setHovered(true);
-
-      // Show tooltip
-      tooltip.classList.add('visible');
-      tooltip.innerHTML = `<div class="tooltip-title">${NODE_DATA[simNode.nodeId].label || simNode.nodeId}</div>`;
-
-      if (simNode.data.value > 0) {
-        tooltip.innerHTML += `<div style="color: var(--accent); font-family: 'JetBrains Mono', monospace;">€${simNode.data.value}M</div>`;
-      }
-
-      tooltip.style.left = (event.clientX + 15) + 'px';
-      tooltip.style.top = (event.clientY + 15) + 'px';
-    }
-  } else {
-    tooltip.classList.remove('visible');
-  }
-}
-
-document.addEventListener('mousemove', onNodeMove);
-function onNodeMove(e) {
-  if (!cameraState.isDragging && !cameraState.isPanning) {
-    onMouseMove(e);
-  }
-}
-
-document.addEventListener('click', (event) => {
-  if (event.target.closest('.filter-btn') || event.target.closest('input') || event.target.closest('button')) {
-    return;
-  }
-
-  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-  raycaster.setFromCamera(mouse, camera);
-  const intersects = raycaster.intersectObjects(nodes.map(n => n.mesh), true);
-
-  if (intersects.length > 0) {
-    const mesh = intersects[0].object;
-    for (const node of nodes) {
-      if (node.mesh === mesh) {
-        onNodeClick(node);
-        break;
-      }
-    }
-  }
-});
-
-// ===== UI INTERACTIONS =====
 
 function showInfoPanel(node) {
   const panel = document.getElementById('info-panel');
-  const data = NODE_DATA[node.nodeId] || node.data;
+  const data = node.data;
 
-  document.getElementById('info-name').textContent = data.label || node.id;
-  document.getElementById('info-type').textContent = {
+  document.getElementById('info-name').textContent = node.label;
+
+  if (data.value > 0 && data.type !== 'people') {
+    document.getElementById('info-value-container').style.display = 'block';
+    document.getElementById('info-value').textContent = '€' + data.value + 'M';
+  } else {
+    document.getElementById('info-value-container').style.display = 'none';
+  }
+
+  const typeLabels = {
     public: 'Entidade Pública',
     private: 'Empresa Privada',
     people: 'Pessoa / Diretor',
     finding: 'Descoberta Crítica'
-  }[data.type] || 'Entidade';
+  };
 
-  document.getElementById('info-value').textContent = data.value > 0 ? `€${data.value}M` : '—';
+  document.getElementById('info-type').textContent = typeLabels[data.type] || data.type;
 
-  const connectedEdges = EDGES.filter(e => e.source === node.nodeId || e.target === node.nodeId);
-  document.getElementById('info-connections-count').textContent = connectedEdges.length;
-
-  const connectionsList = document.getElementById('info-connections-list');
-  connectionsList.innerHTML = '';
-
-  for (const edge of connectedEdges) {
-    const targetId = edge.source === node.nodeId ? edge.target : edge.source;
-    const targetData = NODE_DATA[targetId];
-
-    const item = document.createElement('div');
-    item.className = 'connection-item ' + (edge.type === 'critical' ? 'red' : edge.type === 'high' ? 'orange' : '');
-
-    item.innerHTML = `
-      <span class="connection-target">${targetData.label || targetId}</span>
-      ${edge.value > 0 ? `<span class="connection-value">€${edge.value}M</span>` : ''}
-      ${edge.label ? `<span class="connection-value">${edge.label}</span>` : ''}
-    `;
-
-    connectionsList.appendChild(item);
+  if (data.risk && data.type !== 'people') {
+    document.getElementById('info-risk-container').style.display = 'block';
+    const riskText = { high: 'ALTO', medium: 'MÉDIO', low: 'BAIXO' }[data.risk] || 'DESCONHECIDO';
+    const riskEl = document.getElementById('info-risk');
+    riskEl.textContent = riskText;
+    riskEl.className = 'risk-level ' + data.risk;
+  } else {
+    document.getElementById('info-risk-container').style.display = 'none';
   }
 
-  const riskContainer = document.getElementById('info-risk-container');
-  if (data.risk && data.type !== 'people') {
-    riskContainer.style.display = 'block';
-    document.getElementById('info-risk').textContent = {
-      high: 'ALTO',
-      medium: 'MÉDIO',
-      low: 'BAIXO'
-    }[data.risk] || 'DESCONHECIDO';
-    document.getElementById('info-risk').className = 'risk-level ' + data.risk;
+  // Connections
+  const connectionsList = document.getElementById('info-connections');
+  connectionsList.innerHTML = '';
+
+  const connections = edges.filter(e => e.source === node || e.target === node);
+
+  if (connections.length > 0) {
+    document.getElementById('info-connections-container').style.display = 'block';
+
+    for (const edge of connections) {
+      const targetId = edge.source === node ? edge.target.id : edge.source.id;
+      const targetNode = nodeMap.get(targetId);
+
+      const item = document.createElement('div');
+      item.className = 'connection-item ' + (edge.type === 'critical' ? 'red' : edge.type === 'high' ? 'orange' : '');
+
+      item.innerHTML = `
+        <span class="connection-target">${targetNode.label}</span>
+        ${edge.value > 0 ? `<span class="connection-value">€${edge.value}M</span>` : ''}
+        ${edge.label ? `<span class="connection-value">${edge.label}</span>` : ''}
+      `;
+
+      connectionsList.appendChild(item);
+    }
   } else {
-    riskContainer.style.display = 'none';
+    document.getElementById('info-connections-container').style.display = 'none';
   }
 
   panel.classList.add('open');
@@ -1390,19 +1133,20 @@ function showInfoPanel(node) {
 document.getElementById('close-panel').addEventListener('click', () => {
   document.getElementById('info-panel').classList.remove('open');
   if (selectedNode) {
-    selectedNode.setSelected(false);
+    selectedNode.isSelected = false;
     selectedNode = null;
+    updateNodeVisuals();
   }
 });
 
 // Search
 document.getElementById('search-input').addEventListener('input', (e) => {
-  const query = e.target.value.toLowerCase();
+  const query = e.target.value.toLowerCase().trim();
 
   if (!query) return;
 
   for (const node of nodes) {
-    const label = (NODE_DATA[node.nodeId].label || node.nodeId).toLowerCase();
+    const label = node.label.toLowerCase();
     if (label.includes(query)) {
       onNodeClick(node);
       break;
@@ -1412,50 +1156,220 @@ document.getElementById('search-input').addEventListener('input', (e) => {
 
 // Filters
 document.querySelectorAll('.filter-btn').forEach(btn => {
-  btn.addEventListener('click', (e) => {
+  btn.addEventListener('click', () => {
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    e.target.classList.add('active');
+    btn.classList.add('active');
 
-    const filter = e.target.dataset.filter;
-    // TODO: Implement filtering
+    const filter = btn.dataset.filter;
+
+    for (const node of nodes) {
+      if (filter === 'all') {
+        node.visible = true;
+      } else if (filter === 'public') {
+        node.visible = node.data.type === 'public';
+      } else if (filter === 'private') {
+        node.visible = node.data.type === 'private';
+      } else if (filter === 'people') {
+        node.visible = node.data.type === 'people';
+      } else if (filter === 'finding') {
+        node.visible = node.data.type === 'finding';
+      }
+    }
+
+    updateNodeVisuals();
   });
+});
+
+// Mouse interaction
+window.addEventListener('mousemove', (event) => {
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+  raycaster.setFromCamera(mouse, camera);
+
+  // Find intersections with node meshes
+  const intersects = [];
+  for (const node of nodes) {
+    if (!node.visible) continue;
+    const result = raycaster.ray.intersectSphere(node.group.position, 5);
+    if (result) {
+      intersects.push({ node, distance: node.group.position.distanceTo(camera.position) });
+    }
+  }
+
+  intersects.sort((a, b) => a.distance - b.distance);
+
+  if (intersects.length > 0) {
+    onNodeHover(intersects[0].node);
+
+    const tooltip = document.getElementById('tooltip');
+    tooltip.textContent = intersects[0].node.label + ' (€' + intersects[0].node.data.value + 'M)';
+    tooltip.classList.add('visible');
+    tooltip.style.left = event.clientX + 10 + 'px';
+    tooltip.style.top = event.clientY + 10 + 'px';
+  } else {
+    onNodeHover(null);
+    document.getElementById('tooltip').classList.remove('visible');
+  }
+});
+
+window.addEventListener('click', (event) => {
+  if (event.target.closest('.info-panel') || event.target.closest('.filter-container') ||
+      event.target.closest('.search-container') || event.target.closest('nav') ||
+      event.target.closest('.legend-container') || event.target.closest('.stats-container') ||
+      event.target.closest('.instructions')) {
+    return;
+  }
+
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+  raycaster.setFromCamera(mouse, camera);
+
+  const intersects = [];
+  for (const node of nodes) {
+    if (!node.visible) continue;
+    const result = raycaster.ray.intersectSphere(node.group.position, 5);
+    if (result) {
+      intersects.push({ node, distance: node.group.position.distanceTo(camera.position) });
+    }
+  }
+
+  intersects.sort((a, b) => a.distance - b.distance);
+
+  if (intersects.length > 0) {
+    onNodeClick(intersects[0].node);
+  }
+});
+
+// Camera controls
+let cameraControls = {
+  isRotating: false,
+  phi: 0,
+  theta: 0,
+  distance: 100,
+  lastX: 0,
+  lastY: 0,
+  idleTimer: 0
+};
+
+function updateCameraPosition() {
+  const x = cameraControls.distance * Math.sin(cameraControls.phi) * Math.cos(cameraControls.theta);
+  const y = cameraControls.distance * Math.cos(cameraControls.phi);
+  const z = cameraControls.distance * Math.sin(cameraControls.phi) * Math.sin(cameraControls.theta);
+
+  camera.position.set(x, y, z);
+  camera.lookAt(0, 0, 0);
+}
+
+canvas.addEventListener('mousedown', (e) => {
+  cameraControls.isRotating = true;
+  cameraControls.lastX = e.clientX;
+  cameraControls.lastY = e.clientY;
+  cameraControls.idleTimer = 0;
+});
+
+canvas.addEventListener('mousemove', (e) => {
+  if (!cameraControls.isRotating) return;
+
+  const deltaX = e.clientX - cameraControls.lastX;
+  const deltaY = e.clientY - cameraControls.lastY;
+
+  cameraControls.theta += deltaX * 0.005;
+  cameraControls.phi += deltaY * 0.005;
+
+  cameraControls.phi = Math.max(0.1, Math.min(Math.PI - 0.1, cameraControls.phi));
+
+  cameraControls.lastX = e.clientX;
+  cameraControls.lastY = e.clientY;
+  cameraControls.idleTimer = 0;
+
+  updateCameraPosition();
+});
+
+canvas.addEventListener('mouseup', () => {
+  cameraControls.isRotating = false;
+});
+
+canvas.addEventListener('wheel', (e) => {
+  e.preventDefault();
+  cameraControls.distance += e.deltaY * 0.1;
+  cameraControls.distance = Math.max(30, Math.min(200, cameraControls.distance));
+  cameraControls.idleTimer = 0;
+  updateCameraPosition();
+}, { passive: false });
+
+// Stats update
+function updateStats() {
+  const visibleNodes = nodes.filter(n => n.visible);
+  const visibleEdges = edges.filter(e => e.source.visible && e.target.visible);
+  const totalValue = visibleNodes.reduce((sum, n) => sum + n.data.value, 0);
+
+  document.getElementById('stat-nodes').textContent = visibleNodes.length;
+  document.getElementById('stat-edges').textContent = visibleEdges.length;
+  document.getElementById('stat-value').textContent = '€' + totalValue.toFixed(1) + 'M';
+}
+
+updateStats();
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', updateStats);
 });
 
 // ===== ANIMATION LOOP =====
 
+let time = 0;
+
 function animate() {
   requestAnimationFrame(animate);
 
-  // Update simulation
-  simulationStep();
+  time += 0.016;
 
-  // Update camera
-  updateCameraPosition();
+  // Continue physics simulation
+  simulatePhysics(5);
 
-  // Update nodes
+  // Update node positions from physics
   for (const node of nodes) {
-    node.update();
+    node.group.position.copy(node.physicsNode.position);
   }
 
-  // Render
+  // Update edge geometry
+  for (const edge of edges) {
+    const pos = edge.line.geometry.attributes.position;
+    pos.array[0] = edge.source.group.position.x;
+    pos.array[1] = edge.source.group.position.y;
+    pos.array[2] = edge.source.group.position.z;
+    pos.array[3] = edge.target.group.position.x;
+    pos.array[4] = edge.target.group.position.y;
+    pos.array[5] = edge.target.group.position.z;
+    pos.needsUpdate = true;
+  }
+
+  // Rotate findings
+  for (const node of nodes) {
+    if (node.data.type === 'finding') {
+      node.mesh.rotation.x += 0.01;
+      node.mesh.rotation.y += 0.01;
+    }
+  }
+
+  // Idle rotation
+  cameraControls.idleTimer += 0.016;
+  if (cameraControls.idleTimer > 3 && !cameraControls.isRotating) {
+    cameraControls.theta += 0.0005;
+    updateCameraPosition();
+  }
+
   renderer.render(scene, camera);
 }
 
-// ===== WINDOW RESIZE =====
+animate();
 
+// Handle window resize
 window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
-
-// Start animation
-animate();
-
-// Update stats
-document.getElementById('stat-nodes').textContent = nodes.length;
-document.getElementById('stat-edges').textContent = edges.length;
-
 </script>
 
 </body>
